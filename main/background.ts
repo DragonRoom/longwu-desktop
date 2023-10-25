@@ -16,7 +16,7 @@ if (isProd) {
 
   const mainWindow = createWindow('main', {
     width: 1000,
-    height: 600,
+    height: 700,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
