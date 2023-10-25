@@ -7,7 +7,7 @@ export default function HomePage() {
   return (
     <React.Fragment>
       <Head>
-        <title>Home - Nextron (with-tailwindcss)</title>
+        <title>龙屋</title>
       </Head>
       <div className="grid grid-col-1 text-2xl w-full text-center">
         <div>

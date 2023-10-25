@@ -1,6 +1,6 @@
-appId: com.example.nextron
-productName: My Nextron App
-copyright: Copyright © 2018 Yoshihide Shiono
+appId: xyz.longwu
+productName: 龙屋
+copyright: Copyright © 2023 龙屋
 directories:
   output: dist
   buildResources: resources
