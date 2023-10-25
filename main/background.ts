@@ -1,5 +1,5 @@
 import path from 'path'
-import { app, ipcMain } from 'electron'
+import { app, ipcMain, nativeTheme } from 'electron'
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
 
@@ -29,6 +29,8 @@ if (isProd) {
     await mainWindow.loadURL(`http://localhost:${port}/home`)
     mainWindow.webContents.openDevTools()
   }
+
+  nativeTheme.themeSource = 'light';
 })()
 
 app.on('window-all-closed', () => {

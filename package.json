@@ -16,6 +16,7 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
+    "antd": "^5.10.2",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.1.0"
   },

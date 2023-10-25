@@ -12,7 +12,12 @@ module.exports = {
       gray: colors.gray,
       blue: colors.blue,
     },
-    extend: {},
+    extend: {
+      colors: {
+        'gray-custom': '#e8e8e8',
+        'blue-custom': '#c0d4d7'
+      },
+    },
   },
   plugins: [],
 }
