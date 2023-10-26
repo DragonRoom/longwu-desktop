@@ -47,7 +47,7 @@ export default function NewBook() {
             <div className={`border-2 rounded-xl h-[90%] shadow bg-[#def2f9c6] flex flex-col items-center justify-center cursor-pointer relative`} onClick={()=>{
               inputFileRef.current.click();
             }}>
-              <img src={cover} alt="Cover Image" className="absolute inset-0 w-full h-full object-cover z-0"/>
+              <img src={cover} alt="Cover Image" className="absolute inset-0 w-full h-full object-cover rounded-xl z-0"/>
               <div className='text-5xl font-extrabold drop-shadow-4xl shadow-lg m-5 text-stroke z-10'>{title}</div>
               <div className='bg-gray-100 bg-opacity-80 drop-shadow-2xl shadow-lg rounded-2xl p-10 pt-5 pb-5 mt-20 mb-20 z-10'>
                 点击选择作品封面图片...
