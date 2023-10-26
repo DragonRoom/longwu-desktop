@@ -5,5 +5,12 @@
 @layer base {
   body {
     @apply bg-gradient-to-tr from-blue-custom to-gray-custom w-full h-full text-gray-900;
+    /* font-family: '霞鹜新晰黑'; */
+    /* font-family: 'youzai'!important; */
   }
+}
+
+.text-stroke {
+  -webkit-text-stroke: 1px white; /* 描边宽度和颜色 */
+  text-fill-color: transparent;   /* 使用此属性使文本内部透明，仅显示描边 */
 }
