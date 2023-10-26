@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useMemo } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -15,6 +15,12 @@ export default function NewBook() {
   const [author, setAuthor] = useState('');
   const [intro, setIntro] = useState('');
   const [cover, setCover] = useState('/images/cover.png');
+  const titleStatus = useMemo(()=>{
+    if (title) {
+      return '';
+    }
+    return 'error';
+  }, [title]);
 
   const inputFileRef = useRef(null)
   const handleImageChange = (event) => {
@@ -37,7 +43,7 @@ export default function NewBook() {
         <div className='rounded-2xl shadow-2xl w-[800px] h-[596px] bg-gradient-to-tl from-blue-custom to-white flex'>
           <div className='w-[50%] bg-white rounded-l-2xl p-8'>
             <div className='font-bold text-lg'>新建作品</div>
-            <Input size="large" placeholder="请输入作品名称" prefix={<CrownOutlined />} className='mt-5' value={title} onChange={e=>setTitle(e.target.value)} />
+            <Input size="large" placeholder="请输入作品名称" prefix={<CrownOutlined />} className='mt-5' value={title} onChange={e=>setTitle(e.target.value)} status={titleStatus} />
             <Input size="large" placeholder="请输入主要人物" prefix={<UserOutlined />} className='mt-5' value={mainCharacter} onChange={e=>setMainCharacter(e.target.value)} />
             <Input size="large" placeholder="请输入作品类型" prefix={<BulbOutlined />} className='mt-5' value={type} onChange={e=>setType(e.target.value)} />
             <Input size="large" placeholder="请输入作者笔名" prefix={<img src='/images/Author.png' alt='author' width={16} />} className='mt-5' value={author} onChange={e=>setAuthor(e.target.value)} />
@@ -56,7 +62,7 @@ export default function NewBook() {
               <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} ref={inputFileRef}/>
             </div>
 
-            <button className='m-4 bg-blue-400 pt-2 pb-2 pl-14 pr-14 rounded-xl shadow-lg hover:shadow-xl hover:bg-[#89d4d6]' onClick={()=>{
+            <button className='m-4 bg-blue-400 pt-2 pb-2 pl-14 pr-14 rounded-xl shadow-lg hover:shadow-xl hover:bg-[#89d4d6] disabled:bg-gray-300 disabled:cursor-not-allowed' disabled={titleStatus === 'error'} onClick={()=>{
               router.push('/home');
             }}>确认</button>
             <button className='bg-[#89d3d69c] pt-2 pb-2 pl-14 pr-14 rounded-xl shadow-lg hover:bg-[#eea298]' onClick={()=>{
