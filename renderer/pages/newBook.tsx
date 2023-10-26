@@ -62,8 +62,21 @@ export default function NewBook() {
               <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} ref={inputFileRef}/>
             </div>
 
-            <button className='m-4 bg-blue-400 pt-2 pb-2 pl-14 pr-14 rounded-xl shadow-lg hover:shadow-xl hover:bg-[#89d4d6] disabled:bg-gray-300 disabled:cursor-not-allowed' disabled={titleStatus === 'error'} onClick={()=>{
-              router.push('/home');
+            <button className='m-4 bg-blue-400 pt-2 pb-2 pl-14 pr-14 rounded-xl shadow-lg hover:shadow-xl hover:bg-[#89d4d6] disabled:bg-gray-300 disabled:cursor-not-allowed' disabled={titleStatus === 'error'} onClick={async ()=>{
+              window.ipc.send('create-book', {
+                title,
+                mainCharacter,
+                type,
+                author,
+                intro,
+                cover,
+              });
+              window.ipc.on('create-book', (arg) => {
+                console.log('create-book', arg);  // 打印来自主进程的消息
+                if (arg) {
+                  router.push('/home');
+                }
+              });
             }}>确认</button>
             <button className='bg-[#89d3d69c] pt-2 pb-2 pl-14 pr-14 rounded-xl shadow-lg hover:bg-[#eea298]' onClick={()=>{
               router.push('/home');
