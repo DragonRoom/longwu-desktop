@@ -32,10 +32,12 @@ export default function HomePage() {
                 router.push(`/book/${book.id}`);
               }}>
                 <img src={book.cover} alt={book.title} className='w-[160px] h-[220px] rounded-2xl object-cover' />
-                <div className='absolute inset-0 flex flex-col items-center justify-center'>
-                  <div className='text-2xl font-bold text-white drop-shadow-2xl shadow-lg m-5 text-stroke-2'>{book.title}</div>
-                  <div className='text-xl font-bold text-white drop-shadow-2xl shadow-lg m-5 text-stroke-2'>{book.author}</div>
-                </div>
+                {
+                  book.cover.includes('cover.png') && <div className='absolute inset-0 flex flex-col items-center justify-center'>
+                    <div className='text-2xl font-bold text-white drop-shadow-2xl shadow-lg m-5 text-stroke-2'>{book.title}</div>
+                    <div className='text-xl font-bold text-white drop-shadow-2xl shadow-lg m-5 text-stroke-2'>{book.author ? book.author + ' 著': ''}</div>
+                  </div>
+                }
               </div>
             )
           })
