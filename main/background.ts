@@ -56,6 +56,15 @@ async function ensureDirectoryExists(directoryPath) {
   }
 }
 
+async function checkDirectoryExists(directoryPath) {
+  try {
+    await fs.access(directoryPath);
+    return true;
+  } catch (error) {
+    return false
+  }
+}
+
 function listSubdirectories(directoryPath) {
   return new Promise((resolve, reject) => {
     fs.readdir(directoryPath, { withFileTypes: true }, (error, entries) => {
@@ -90,16 +99,22 @@ ipcMain.on('create-book', async (event, arg) => {
   try {
     await ensureDirectoryExists(bookRoot);
     let bookPath = path.join(bookRoot, arg.title);
-    await ensureDirectoryExists(bookPath);
+    let exists = await checkDirectoryExists(bookPath);
+    if (exists) {
+      event.reply('create-book', {success: false, reason: '书名重复'});
+      return;
+    } else {
+      await ensureDirectoryExists(bookPath);
+    }
     // write book json
     let bookJsonPath = path.join(bookPath, 'meta.json');
     let bookJson = arg;
     bookJson.createTime = new Date().getTime();
     await fs.writeFile(bookJsonPath, JSON.stringify(bookJson));
     console.log('bookJsonPath', bookJsonPath);
-    event.reply('create-book', true);
+    event.reply('create-book', {success: true});
   } catch (error) {
     console.log(error);
-    event.reply('create-book', false);
+    event.reply('create-book', {success: false, reason: '创建失败'});
   }
 });

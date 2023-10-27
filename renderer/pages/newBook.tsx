@@ -71,10 +71,12 @@ export default function NewBook() {
                 intro,
                 cover,
               });
-              window.ipc.on('create-book', (arg) => {
+              window.ipc.on('create-book', (arg: any) => {
                 console.log('create-book', arg);  // 打印来自主进程的消息
-                if (arg) {
+                if (arg.success) {
                   router.push('/home');
+                } else {
+                  alert(arg.reason);
                 }
               });
             }}>确认</button>
