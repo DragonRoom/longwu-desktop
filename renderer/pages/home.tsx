@@ -30,7 +30,7 @@ export default function HomePage() {
             books.sort((a,b)=>(a.createTime - b.createTime)).map((book, index)=>{
               return (
                 <div key={book.title + '_' + book.createTime} className='w-[160px] h-[220px] bg-[#fefefed2] rounded-2xl shadow-2xl drop-shadow-xl cursor-pointer flex items-center justify-center relative group mr-5 mb-5' onClick={()=>{
-                  router.push(`/book/${book.id}`);
+                  router.push(`/book/${book.title}`);
                 }}>
                   <img src={book.cover} alt={book.title} className='w-[160px] h-[220px] rounded-2xl object-cover' />
                   {
