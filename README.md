@@ -1,38 +1,35 @@
-<p align="center"><img src="https://i.imgur.com/a9QWW0v.png"></p>
+# 龙屋
 
-## Usage
+一款专为网络写手开发的写作工具软件。
 
-### Create an App
+## 功能
 
-```
-# with npx
-$ npx create-nextron-app my-app --example with-tailwindcss
+纯享版功能：
 
-# with yarn
-$ yarn create nextron-app my-app --example with-tailwindcss
+- 专为网文写手定制UI，书籍管理，封面管理，简介管理，人物卡片，剧情大纲等；
 
-# with pnpm
-$ pnpm dlx create-nextron-app my-app --example with-tailwindcss
-```
+- 背景颜色、透明度、图片自由更换；
 
-### Install Dependencies
+- 字体、字体颜色、字体大小自由更换；
 
-```
-$ cd my-app
+- 支持全屏沉浸写作模式；
 
-# using yarn or npm
-$ yarn (or `npm install`)
+- 所有数据保存在本地；
 
-# using pnpm
-$ pnpm install --shamefully-hoist
-```
+- 自动保存、自动备份；
 
-### Use it
+- 快捷键插入新章节、设置标题级别；
 
-```
-# development mode
-$ yarn dev (or `npm run dev` or `pnpm run dev`)
+- 自动识别章节目录，自动按标题级别显示字数；
 
-# production build
-$ yarn build (or `npm run build` or `pnpm run build`)
-```
+- 支持卡片列表，可自由分类添加人物、道具、事件、副本卡片；
+
+---
+
+## 界面
+
+![Alt text](image.png)
+
+![Alt text](image-2.png)
+
+![Alt text](image-1.png)
