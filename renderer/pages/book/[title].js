@@ -132,8 +132,8 @@ export default function BookInfo(props) {
         </div>
         <div className='flex justify-around'>
           <Button className='bg-[#04D8B2] text-white font-bold rounded-full w-[120px] shadow'>开始创作</Button>
-          <Button className='bg-[#c49af1] text-white font-bold rounded-full w-[120px] shadow'>作品导出</Button>
-          <Button className='bg-[#6bbbbc] text-white font-bold rounded-full w-[120px] shadow'>自动备份</Button>
+          <Button className='bg-[#c49af1] text-white font-bold rounded-full w-[120px] shadow' disabled>作品导出</Button>
+          <Button className='bg-[#6bbbbc] text-white font-bold rounded-full w-[120px] shadow' disabled>自动备份</Button>
           <Button className='bg-[#049cd8] text-white font-bold rounded-full w-[120px] shadow' onClick={()=>{
             router.push('/home');
           }}>返回书库</Button>
