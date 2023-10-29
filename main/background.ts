@@ -118,3 +118,34 @@ ipcMain.on('create-book', async (event, arg) => {
     event.reply('create-book', {success: false, reason: '创建失败'});
   }
 });
+
+// get book info 
+ipcMain.on('get-book-info', async (event, arg) => {
+  try {
+    console.log('get-book-info', arg);
+    let bookPath = path.join(bookRoot, arg);
+    let bookJsonPath = path.join(bookPath, 'meta.json');
+    let bookJson = await fs.readFile(bookJsonPath, 'utf-8');
+    event.reply('get-book-info', {success: true, data: JSON.parse(bookJson)});
+  } catch (error) {
+    console.log(error);
+    event.reply('get-book-info', {success: false, reason: '获取失败'});
+  }
+});
+
+// update book info
+ipcMain.on('update-book-info', async (event, arg) => {
+  try {
+    console.log('update-book-info', arg);
+    let bookPath = path.join(bookRoot, arg.title);
+    let bookJsonPath = path.join(bookPath, 'meta.json');
+    let bookJson = await fs.readFile(bookJsonPath, 'utf-8');
+    bookJson = {...JSON.parse(bookJson), ...arg};
+    bookJson.updateTime = new Date().getTime();
+    await fs.writeFile(bookJsonPath, JSON.stringify(bookJson));
+    event.reply('update-book-info', {success: true});
+  } catch (error) {
+    console.log(error);
+    event.reply('update-book-info', {success: false, reason: '更新失败'});
+  }
+});
