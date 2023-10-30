@@ -69,7 +69,7 @@ export default function BookInfo(props) {
 
   return <React.Fragment>
   <Head>
-    <title>龙空 - 作品信息</title>
+    <title>龙空 - 作品信息 - {title}</title>
   </Head>
   <div className="h-[100vh] p-10 flex items-center justify-center">
     <div className='rounded-2xl shadow-2xl w-[950px] h-[610px] bg-gradient-to-tl from-blue-custom to-white'>
@@ -131,7 +131,9 @@ export default function BookInfo(props) {
           <TimeLine data={data} />
         </div>
         <div className='flex justify-around'>
-          <Button className='bg-[#04D8B2] text-white font-bold rounded-full w-[120px] shadow'>开始创作</Button>
+          <Button className='bg-[#04D8B2] text-white font-bold rounded-full w-[120px] shadow' onClick={()=>{
+            router.push('/book/edit/' + title);
+          }}>开始创作</Button>
           <Button className='bg-[#c49af1] text-white font-bold rounded-full w-[120px] shadow' disabled>作品导出</Button>
           <Button className='bg-[#6bbbbc] text-white font-bold rounded-full w-[120px] shadow' disabled>自动备份</Button>
           <Button className='bg-[#049cd8] text-white font-bold rounded-full w-[120px] shadow' onClick={()=>{
