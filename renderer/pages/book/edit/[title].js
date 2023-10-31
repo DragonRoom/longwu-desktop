@@ -4,55 +4,46 @@ import Head from 'next/head';
 import { ContactsOutlined, OrderedListOutlined, FormOutlined } from '@ant-design/icons';
 import { Tooltip, Divider } from 'antd';
 
-
 export default function EditBook(props) {
   const router = useRouter();
   const { title } = router.query;
 
-  const topDivRef = useRef(null);
-  const bottomDivRef = useRef(null);
-  const rightDivRef = useRef(null);
+  const leftRef = useRef(null);
+  const midRef = useRef(null);
+  const rightRef = useRef(null);
 
-  const handleVerticalResizeMouseDown = (e) => {
-    e.preventDefault();
-
-    const startY = e.clientY;
-    const startHeightTop = topDivRef.current.offsetHeight;
-    const startHeightBottom = bottomDivRef.current.offsetHeight;
-
-    const doMouseMove = (e) => {
-      const deltaY = e.clientY - startY;
-      topDivRef.current.style.height = `${startHeightTop + deltaY}px`;
-      bottomDivRef.current.style.height = `${startHeightBottom - deltaY}px`;
-    };
-
-    const doMouseUp = () => {
-      document.removeEventListener('mousemove', doMouseMove);
-      document.removeEventListener('mouseup', doMouseUp);
-    };
-
-    document.addEventListener('mousemove', doMouseMove);
-    document.addEventListener('mouseup', doMouseUp);
+  const handleMouseDownLeft = (e) => {
+    console.log('1');
+    window.isResizingLeft = true;
+    document.addEventListener('mousemove', handleMouseMoveLeft);
+    document.addEventListener('mouseup', () => {
+      console.log('2');
+      window.isResizingLeft = false;
+      document.removeEventListener('mousemove', handleMouseMoveLeft);
+    });
   };
 
-  const handleHorizontalResizeMouseDown = (e) => {
-    e.preventDefault();
+  const handleMouseMoveLeft = (e) => {
+    console.log('3', window.isResizingLeft, e.clientX);
+    if (window.isResizingLeft && leftRef.current) {
+      leftRef.current.style.width = `${e.clientX * 2}px`;
+      console.log('4');
+    }
+  };
 
-    const startX = e.clientX;
-    const startWidth = rightDivRef.current.offsetWidth;
+  const handleMouseDownRight = (e) => {
+    window.isResizingRight = true;
+    document.addEventListener('mousemove', handleMouseMoveRight);
+    document.addEventListener('mouseup', () => {
+      window.isResizingRight = false;
+      document.removeEventListener('mousemove', handleMouseMoveRight);
+    });
+  };
 
-    const doMouseMove = (e) => {
-      const deltaX = e.clientX - startX;
-      rightDivRef.current.style.width = `${startWidth - deltaX}px`;
-    };
-
-    const doMouseUp = () => {
-      document.removeEventListener('mousemove', doMouseMove);
-      document.removeEventListener('mouseup', doMouseUp);
-    };
-
-    document.addEventListener('mousemove', doMouseMove);
-    document.addEventListener('mouseup', doMouseUp);
+  const handleMouseMoveRight = (e) => {
+    if (window.isResizingRight && midRef.current) {
+      rightRef.current.style.width = `${(window.innerWidth - e.clientX)*2}px`;
+    }
   };
   
   return <React.Fragment>
@@ -74,16 +65,12 @@ export default function EditBook(props) {
         <ContactsOutlined className='cursor-pointer bg-gray-200 hover:bg-blue-200 p-[2px] pr-[4px] pl-[4px] rounded transform hover:scale-105 transition-all' />
       </Tooltip>
     </div>
-    <div className='flex'>
-      <div className='w-full'>
-        <div ref={topDivRef} className='bg-white h-[46vh] mt-2 w-full rounded-r-lg'>Hello</div>
-        <div onMouseDown={handleVerticalResizeMouseDown} className='p-1 cursor-ns-resize'></div>
-        <div ref={bottomDivRef} className='bg-white h-[46.8vh] w-full rounded-r-lg'>Hello</div>
-      </div>
-      <div onMouseDown={handleHorizontalResizeMouseDown} className='p-1 cursor-ew-resize'></div>
-      <div ref={rightDivRef} className='bg-white h-[94vh] mt-2 w-full rounded-lg'>Hello</div>
-      <div className='p-1 cursor-ew-resize'></div>
-      <div className='bg-white h-[94vh] mt-2 w-full rounded-l-lg'>Hello</div>
+    <div className='flex h-full pb-10 w-full'>
+      <div ref={leftRef} className='bg-white h-full mt-2 w-[500px] rounded-r-lg'>Hello</div>
+      <div onMouseDown={handleMouseDownLeft} className='p-1 cursor-ew-resize'></div>
+      <div ref={midRef} className='bg-white h-full mt-2 w-full rounded-lg'>Hello</div>
+      <div onMouseDown={handleMouseDownRight} className='p-1 cursor-ew-resize'></div>
+      <div ref={rightRef} className='bg-white h-full mt-2 w-[500px] rounded-l-lg'>Hello</div>
     </div>
   </div>
   </React.Fragment>
