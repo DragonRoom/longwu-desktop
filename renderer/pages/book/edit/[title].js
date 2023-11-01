@@ -9,9 +9,12 @@ import {
   CloudSyncOutlined,
 } from "@ant-design/icons";
 import { Tooltip, Divider, Button } from "antd";
-import { Allotment } from "allotment";
+import { Allotment, setSashSize } from "allotment";
 import "allotment/dist/style.css";
 import styles from "./basic.module.css";
+
+setSashSize(5);
+
 
 export default function EditBook(props) {
   const router = useRouter();
@@ -20,6 +23,7 @@ export default function EditBook(props) {
   const [showTree, setShowTree] = useState(false);
   const [showText, setShowText] = useState(true);
   const [showCard, setShowCard] = useState(true);
+
 
   return (
     <React.Fragment>
@@ -95,6 +99,7 @@ export default function EditBook(props) {
         </div>
         <Allotment
           snap={false}
+          separator={false}
           defaultSizes={[100, 200, 200, 100]}
           className="flex w-full"
           onVisibleChange={(e) => {
@@ -106,7 +111,7 @@ export default function EditBook(props) {
             className={styles.leftPane}
             minSize={180}
           >
-            <div className="bg-white h-full mt-2 w-full rounded-r-lg overflow-hidden">
+            <div className="bg-white h-full mt-2 w-full rounded-r-lg overflow-hidden border-2">
               <div className="bg-gray-500 bg-opacity-10 rounded-lg m-1">
                 目录
               </div>
@@ -117,7 +122,7 @@ export default function EditBook(props) {
             className={styles.rightPane}
             minSize={200}
           >
-            <div className="bg-white h-full mt-2 w-full rounded-lg overflow-hidden">
+            <div className="bg-white h-full mt-2 w-full rounded-lg overflow-hidden border-2">
               <div className="bg-gray-500 bg-opacity-10 rounded-lg m-1">
                 正文
               </div>
@@ -128,7 +133,7 @@ export default function EditBook(props) {
             className={styles.rightPane}
             minSize={180}
           >
-            <div className="bg-white h-full mt-2 w-full rounded-lg overflow-hidden">
+            <div className="bg-white h-full mt-2 w-full rounded-lg overflow-hidden border-2">
               <div className="bg-gray-500 bg-opacity-10 rounded-lg m-1">
                 大纲
               </div>
@@ -139,7 +144,7 @@ export default function EditBook(props) {
             className={styles.rightPane}
             minSize={180}
           >
-            <div className="bg-white h-full mt-2 w-full rounded-l-lg overflow-hidden">
+            <div className="bg-white h-full mt-2 w-full rounded-l-lg overflow-hidden border-2">
               <div className="bg-gray-500 bg-opacity-10 rounded-lg m-1">
                 卡片
               </div>
