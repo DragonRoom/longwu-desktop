@@ -18,7 +18,8 @@
   "dependencies": {
     "antd": "^5.10.2",
     "electron-serve": "^1.1.0",
-    "electron-store": "^8.1.0"
+    "electron-store": "^8.1.0",
+    "react-split": "^2.0.14"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
