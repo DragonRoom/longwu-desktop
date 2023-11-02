@@ -19,7 +19,8 @@
     "allotment": "^1.19.3",
     "antd": "^5.10.2",
     "electron-serve": "^1.1.0",
-    "electron-store": "^8.1.0"
+    "electron-store": "^8.1.0",
+    "local-font": "^0.1.1"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
