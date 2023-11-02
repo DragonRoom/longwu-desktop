@@ -7,6 +7,7 @@
     @apply bg-gradient-to-tr from-blue-custom to-gray-custom w-full h-full text-gray-900;
     /* font-family: '霞鹜新晰黑'; */
     /* font-family: 'youzai'!important; */
+    font-family: 'dynamic-font', 'Courier New', Courier, monospace;
   }
 }
 

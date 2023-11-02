@@ -12,6 +12,11 @@ import { Tooltip, Divider, Button, Popover, ColorPicker } from "antd";
 import { Allotment, setSashSize } from "allotment";
 import "allotment/dist/style.css";
 import styles from "./basic.module.css";
+import {
+  isSupportQueryLocalFonts,
+  queryFontList,
+  queryTargetFontBlob,
+} from 'local-font';
 
 setSashSize(5);
 
@@ -28,6 +33,17 @@ export default function EditBook(props) {
   const [color3, setColor3] = useState('#000');
   const [bgImage, setBgImage] = useState(null);
   const [bgOpacity, setBgOpacity] = useState(50);
+  const [fonts, setFonts] = useState([]);
+
+  useEffect(() => {
+    if (isSupportQueryLocalFonts()) {
+      queryFontList().then(v=>{
+        setFonts(v);
+      }).catch(console.error); // FontData[]
+    } else {
+      console.log('不支持查询本地字体');
+    }
+  }, []);
 
   const StylePanel = (
     <div>
@@ -51,11 +67,23 @@ export default function EditBook(props) {
       </div>
       <div className="flex justify-start items-center mb-5">
         <div className="mr-4">字体选择：</div>
+        <select className="mr-5" onChange={async (e)=>{
+          console.log('点击', e.target.value);
+          const textStyle = document.createElement("style");
+          textStyle.textContent = `@font-face {font-family: "dynamic-font";src: local("${e.target.value}");}`;
+          document.body.appendChild(textStyle);
+          document.body.style.fontFamily = "dynamic-font";          
+        }}>
+          {fonts.map((v)=><option key={v.postscriptName} value={v.postscriptName}>{v.fullName}</option>)}
+        </select>
       </div>
       <div className="flex justify-center items-center mb-2">
         <Button size="small" onClick={()=>{
           setColor1('#c0d4d7');
           setColor2('#e8e8e8');
+          document.body.style.fontFamily = "sans-serif";          
+          setColor3('#000');
+          setBgOpacity(50);
         }}>恢复默认</Button>
       </div>
     </div>
