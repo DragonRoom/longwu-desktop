@@ -1,19 +1,4 @@
-.button {
-  background-color: rgb(255, 255, 255);
-  border-color: rgb(209, 213, 219);
-  border-width: 1px;
-  border-radius: 0.375rem;
-  border-style: solid;
-  color: rgb(55, 65, 81);
-  cursor: pointer;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  margin-bottom: 8px;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-}
+
 
 .container {
   border: 1px solid rgba(128, 128, 128, 0.35);

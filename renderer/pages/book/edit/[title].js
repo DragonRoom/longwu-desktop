@@ -100,8 +100,6 @@ export default function EditBook(props) {
     }
   }, []);
 
-  console.log('customThemes', customThemes, currentTheme);
-
   const StylePanel = (
     <div>
       <div className="flex justify-start items-center mb-5">
