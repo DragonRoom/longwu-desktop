@@ -106,7 +106,7 @@ export default function EditBook(props) {
     <div>
       <div className="flex justify-start items-center mb-5">
         <div className="mr-4">主题模板：</div>
-        <select className="mr-5" onChange={e=>{
+        <select className="mr-5" value={currentTheme} onChange={e=>{
           console.log('点击', e.target.value);
           setCurrentTheme(e.target.value);
         }}>
@@ -148,13 +148,7 @@ export default function EditBook(props) {
         <Button type='primary' className="bg-blue-500 mr-3" size="small" onClick={()=>{
         }}>保存为模板</Button>
         <Button size="small" onClick={()=>{
-          setColor1('#c0d4d7');
-          setColor2('#e8e8e8');
-          document.body.style.fontFamily = "sans-serif";          
-          setColorFont('#000');
-          setColorPanel('#ffffff80');
-          setColorTitle('#00000010');
-          setBgImage(null);
+          setCurrentTheme(0);
         }}>恢复默认</Button>
         <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} ref={inputFileRef}/>
       </div>
