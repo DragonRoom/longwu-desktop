@@ -21,10 +21,10 @@ export default function Editor(props) {
 
   return (
     <LexicalComposer initialConfig={editorConfig}>
-      <div className="editor" style={{ height: '100%' }}>
+      <div className="editor" style={{ height: 'calc(100% - 40px)' }}>
         {/* 使用PlainTextPlugin来支持纯文本编辑 */}
         <PlainTextPlugin
-          contentEditable={<ContentEditable className="editor__content-editable" style={{ height: '100%', width: '100%', border: '1px solid orange', boxSizing: 'border-box' }} />}
+          contentEditable={<ContentEditable className="rounded-lg overflow-y-auto text-left p-5" style={{ height: '100%', width: '100%', boxSizing: 'border-box' }} />}
         />
         {/* 使用OnChangePlugin来监听编辑器状态的变化 */}
         <OnChangePlugin onChange={onChange} />
