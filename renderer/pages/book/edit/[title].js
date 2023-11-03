@@ -19,7 +19,9 @@ import {
 } from 'local-font';
 import Editor from "../../../components/Editor";
 
-setSashSize(5);
+if (typeof window !== 'undefined' && window.document) {
+  setSashSize(5);
+}
 
 
 export default function EditBook(props) {
@@ -345,8 +347,11 @@ export default function EditBook(props) {
 }
 
 // 在外部初始化style元素，以便复用
-const textStyle = document.createElement('style');
-document.head.appendChild(textStyle); // 将style元素添加到head中，而不是body
+let textStyle;
+if (typeof window !== 'undefined' && window.document) {
+  textStyle = document.createElement('style');
+  document.head.appendChild(textStyle); // 将style元素添加到head中，而不是body
+}
 
 function updateFontFamily(fontName) {
   // 只更新style元素的textContent来更改字体
