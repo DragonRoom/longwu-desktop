@@ -16,8 +16,10 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
+    "@lexical/markdown": "^0.12.2",
     "@lexical/plain-text": "^0.12.2",
     "@lexical/react": "^0.12.2",
+    "@lexical/rich-text": "^0.12.2",
     "allotment": "^1.19.3",
     "antd": "^5.10.2",
     "electron-serve": "^1.1.0",
