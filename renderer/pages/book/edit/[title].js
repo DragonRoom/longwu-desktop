@@ -165,7 +165,7 @@ export default function EditBook(props) {
           backgroundImage: bgImage ? `url(${bgImage})` : `linear-gradient(to top right, ${color1}, ${color2})`,
           color: colorFont,
         }}
-        className={`h-[100vh] text-center items-center overflow-hidden`}
+        className={`h-[100vh] text-center items-center overflow-hidden relative`}
       >
         <div className="w-[600px] rounded-full bg-white m-auto rounded-t-none h-[26px] flex items-center text-center justify-center relative">
           <Tooltip title="返回书库" color={"blue"}>
@@ -237,6 +237,10 @@ export default function EditBook(props) {
           </Tooltip>
 
         </div>
+        <div className="h-2"></div>
+        <div
+          style={{height: 'calc(100% - 40px)'}}
+        className="relative h-full">
         <Allotment
           snap={false}
           separator={false}
@@ -255,7 +259,7 @@ export default function EditBook(props) {
               style={{
                 backgroundColor: `${colorPanel}`,
               }}
-            className={`h-full mt-2 w-full rounded-r-lg overflow-hidden border-2`}>
+            className={`h-full w-full rounded-r-lg overflow-hidden border-2`}>
               <div style={{
                 backgroundColor: `${colorTitle}`,
               }} className=" rounded-lg m-1">
@@ -274,7 +278,7 @@ export default function EditBook(props) {
                   style={{
                     backgroundColor: `${colorPanel}`,
                   }}
-                  className={`h-full mt-2 w-full rounded-lg overflow-hidden border-2`}>
+                  className={`h-full w-full rounded-lg overflow-hidden border-2`}>
                   <div style={{
                     backgroundColor: `${colorTitle}`,
                   }} className=" rounded-lg m-1">
@@ -286,7 +290,7 @@ export default function EditBook(props) {
                 <div
                   style={{
                     backgroundColor: `${colorPanel}`,
-                  }} className={` h-full mt-[2px] w-full rounded-lg overflow-hidden border-2`}>
+                  }} className={`h-full mt-[0px] w-full rounded-lg overflow-hidden border-2`}>
                   <div style={{
                     backgroundColor: `${colorTitle}`,
                   }} className=" rounded-lg m-1">
@@ -305,7 +309,7 @@ export default function EditBook(props) {
             <div
               style={{
                 backgroundColor: `${colorPanel}`,
-              }} className={` h-full mt-2 w-full rounded-lg overflow-hidden border-2`}>
+              }} className={`h-full w-full rounded-lg overflow-hidden border-2`}>
               <div style={{
                 backgroundColor: `${colorTitle}`,
               }} className=" rounded-lg m-1">
@@ -325,7 +329,7 @@ export default function EditBook(props) {
             <div
               style={{
                 backgroundColor: `${colorPanel}`,
-              }} className={` h-full mt-2 w-full rounded-l-lg overflow-hidden border-2`}>
+              }} className={` h-full w-full rounded-l-lg overflow-hidden border-2`}>
               <div style={{
                 backgroundColor: `${colorTitle}`,
               }} className=" rounded-lg m-1">
@@ -334,6 +338,7 @@ export default function EditBook(props) {
             </div>
           </Allotment.Pane>
         </Allotment>
+        </div>
       </div>
     </React.Fragment>
   );
