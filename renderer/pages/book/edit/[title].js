@@ -28,9 +28,10 @@ export default function EditBook(props) {
   const [showTree, setShowTree] = useState(true);
   const [showText, setShowText] = useState(true);
   const [showCard, setShowCard] = useState(true);
-  const [color1, setColor1] = useState('#c0d4d7');
-  const [color2, setColor2] = useState('#e8e8e8');
-  const [color3, setColor3] = useState('#000');
+  const [color1, setColor1] = useState('#c0d4d7'); // bg color
+  const [color2, setColor2] = useState('#e8e8e8'); // bg color
+  const [colorFont, setColorFont] = useState('#000'); // font color
+  const [colorPanel, setColorPanel] = useState('#ffffff80'); // panel color
   const [bgImage, setBgImage] = useState(null);
   const [bgOpacity, setBgOpacity] = useState(50);
   const [fonts, setFonts] = useState([]);
@@ -53,9 +54,13 @@ export default function EditBook(props) {
         <ColorPicker showText value={color2} onChange={v=>setColor2(v.toHexString())} />
       </div>
       <div className="flex justify-start items-center mb-5">
-        <div className="mr-4">背景透明：</div>
-        <input className="mr-5" type="range" min="0" max="100" value={bgOpacity} onChange={e=>setBgOpacity(e.target.value)} /> {bgOpacity + '%'}
+        <div className="mr-4">面板颜色：</div>
+        <ColorPicker showText value={colorPanel} onChange={v=>setColorPanel(v.toHexString())} /> &nbsp;&nbsp;
       </div>
+      {/* <div className="flex justify-start items-center mb-5">
+        <div className="mr-4">面板透明：</div>
+        <input className="mr-5" type="range" min="0" max="100" value={bgOpacity} onChange={e=>setBgOpacity(e.target.value)} /> {bgOpacity + '%'}
+      </div> */}
       <div className="flex justify-start items-center mb-5">
         <div className="mr-4">背景图片：</div>
         <Button size="small" className="mr-1">选取...</Button>
@@ -63,16 +68,17 @@ export default function EditBook(props) {
       </div>
       <div className="flex justify-start items-center mb-5">
         <div className="mr-4">文字颜色：</div>
-        <ColorPicker showText value={color3} onChange={v=>setColor3(v.toHexString())} /> &nbsp;&nbsp;
+        <ColorPicker showText value={colorFont} onChange={v=>setColorFont(v.toHexString())} /> &nbsp;&nbsp;
       </div>
       <div className="flex justify-start items-center mb-5">
         <div className="mr-4">字体选择：</div>
         <select className="mr-5" onChange={async (e)=>{
           console.log('点击', e.target.value);
-          const textStyle = document.createElement("style");
-          textStyle.textContent = `@font-face {font-family: "dynamic-font";src: local("${e.target.value}");}`;
-          document.body.appendChild(textStyle);
-          document.body.style.fontFamily = "dynamic-font";          
+          updateFontFamily(e.target.value);
+          // const textStyle = document.createElement("style");
+          // textStyle.textContent = `@font-face {font-family: "dynamic-font";src: local("${e.target.value}");}`;
+          // document.body.appendChild(textStyle);
+          // document.body.style.fontFamily = "dynamic-font";          
         }}>
           {fonts.map((v)=><option key={v.postscriptName} value={v.postscriptName}>{v.fullName}</option>)}
         </select>
@@ -82,7 +88,8 @@ export default function EditBook(props) {
           setColor1('#c0d4d7');
           setColor2('#e8e8e8');
           document.body.style.fontFamily = "sans-serif";          
-          setColor3('#000');
+          setColorFont('#000');
+          setColorPanel('#ffffff80');
           setBgOpacity(50);
         }}>恢复默认</Button>
       </div>
@@ -98,7 +105,7 @@ export default function EditBook(props) {
       <div 
         style={{ 
           backgroundImage: `linear-gradient(to top right, ${color1}, ${color2})`,
-          color: color3,
+          color: colorFont,
         }}
         className={`h-[100vh] text-center items-center overflow-hidden`}
       >
@@ -188,7 +195,7 @@ export default function EditBook(props) {
           >
             <div
               style={{
-                backgroundColor: `rgba(255,255,255,${bgOpacity/100})`,
+                backgroundColor: `${colorPanel}`,
               }}
             className={`h-full mt-2 w-full rounded-r-lg overflow-hidden border-2`}>
               <div className="bg-gray-500 bg-opacity-10 rounded-lg m-1">
@@ -205,7 +212,7 @@ export default function EditBook(props) {
               <Allotment.Pane>
                 <div
                   style={{
-                    backgroundColor: `rgba(255,255,255,${bgOpacity/100})`,
+                    backgroundColor: `${colorPanel}`,
                   }}
                   className={`h-full mt-2 w-full rounded-lg overflow-hidden border-2`}>
                   <div className="bg-gray-500 bg-opacity-10 rounded-lg m-1">
@@ -216,7 +223,7 @@ export default function EditBook(props) {
               <Allotment.Pane>
                 <div
                   style={{
-                    backgroundColor: `rgba(255,255,255,${bgOpacity/100})`,
+                    backgroundColor: `${colorPanel}`,
                   }} className={` h-full mt-[2px] w-full rounded-lg overflow-hidden border-2`}>
                   <div className="bg-gray-500 bg-opacity-10 rounded-lg m-1">
                     细纲 / 章纲
@@ -233,7 +240,7 @@ export default function EditBook(props) {
           >
             <div
               style={{
-                backgroundColor: `rgba(255,255,255,${bgOpacity/100})`,
+                backgroundColor: `${colorPanel}`,
               }} className={` h-full mt-2 w-full rounded-lg overflow-hidden border-2`}>
               <div className="bg-gray-500 bg-opacity-10 rounded-lg m-1">
                 正文
@@ -248,7 +255,7 @@ export default function EditBook(props) {
           >
             <div
               style={{
-                backgroundColor: `rgba(255,255,255,${bgOpacity/100})`,
+                backgroundColor: `${colorPanel}`,
               }} className={` h-full mt-2 w-full rounded-l-lg overflow-hidden border-2`}>
               <div className="bg-gray-500 bg-opacity-10 rounded-lg m-1">
                 卡片
@@ -259,5 +266,15 @@ export default function EditBook(props) {
       </div>
     </React.Fragment>
   );
+}
+
+// 在外部初始化style元素，以便复用
+const textStyle = document.createElement('style');
+document.head.appendChild(textStyle); // 将style元素添加到head中，而不是body
+
+function updateFontFamily(fontName) {
+  // 只更新style元素的textContent来更改字体
+  textStyle.textContent = `@font-face {font-family: "dynamic-font"; src: local("${fontName}");}`;
+  document.body.style.fontFamily = "dynamic-font";
 }
 
