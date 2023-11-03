@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useEffect } from "react";
+import React, { useState, useRef, useMemo, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import {
@@ -34,8 +34,48 @@ export default function EditBook(props) {
   const [colorPanel, setColorPanel] = useState('#ffffff80'); // panel color
   const [colorTitle, setColorTitle] = useState('#00000010'); // panel title color
   const [bgImage, setBgImage] = useState(null);
-  const [bgOpacity, setBgOpacity] = useState(50);
   const [fonts, setFonts] = useState([]);
+  const [customThemes, setCustomThemes] = useState([]);
+  const [currentTheme, setCurrentTheme] = useState(0);
+
+  useEffect(()=>{
+    // {
+    //   "title": "晨曦微露", 
+    //   "bgColor1": "#F0F0F0", 
+    //   "bgColor2": "#F5F5F5", 
+    //   "bgImg": null, 
+    //   "panelColor": "rgba(255, 255, 255, 0.8)", 
+    //   "panelTitle": "rgba(0, 0, 0, 0.8)", 
+    //   "fontColor": "#333333", 
+    //   "fontName": null
+    // }
+    setColor1(customThemes[currentTheme]?.bgColor1 || '#c0d4d7');
+    setColor2(customThemes[currentTheme]?.bgColor2 || '#e8e8e8');
+    setColorPanel(customThemes[currentTheme]?.panelColor || '#ffffff80');
+    setColorTitle(customThemes[currentTheme]?.panelTitle || '#00000010');
+    setColorFont(customThemes[currentTheme]?.fontColor || '#000');
+    setBgImage(customThemes[currentTheme]?.bgImg || null);
+    if (customThemes[currentTheme]?.fontName) {
+      updateFontFamily(customThemes[currentTheme]?.fontName);
+    }
+  }, [currentTheme, customThemes]);
+
+  const inputFileRef = useRef(null)
+  const handleImageChange = (event) => {
+    console.log('select bg img1');
+    const file = event.target.files[0];
+    console.log('select bg img2', file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        console.log('select bg img3');
+
+        setBgImage(reader.result);
+        console.log(reader.result);
+      }
+      reader.readAsDataURL(file);
+    }
+  };
 
   useEffect(() => {
     if (isSupportQueryLocalFonts()) {
@@ -45,16 +85,32 @@ export default function EditBook(props) {
     } else {
       console.log('不支持查询本地字体');
     }
+
+    // get-themes-list from window.ipc 
+    if (window.ipc) {
+      window.ipc.send('get-themes-list', {});
+      window.ipc.on('get-themes-list', (arg) => {
+        console.log('get-themes-list', arg);
+        // arg is an array of themes
+        if (arg.success) {
+          console.log('themes', arg.data);
+          setCustomThemes(arg.data);
+        }
+      });
+    }
   }, []);
+
+  console.log('customThemes', customThemes, currentTheme);
 
   const StylePanel = (
     <div>
       <div className="flex justify-start items-center mb-5">
         <div className="mr-4">主题模板：</div>
-        <select className="mr-5">
-          <option value="1">模板1</option>
-          <option value="2">模板2</option>
-          <option value="3">模板3</option>
+        <select className="mr-5" onChange={e=>{
+          console.log('点击', e.target.value);
+          setCurrentTheme(e.target.value);
+        }}>
+          {customThemes.map((v, i)=><option key={i} value={i}>{v.title}</option>)}
         </select>
       </div>
 
@@ -66,7 +122,9 @@ export default function EditBook(props) {
 
       <div className="flex justify-start items-center mb-5">
         <div className="mr-4">背景图片：</div>
-        <Button size="small" className="mr-1">选取...</Button>
+        <Button size="small" className="mr-1" onClick={()=>{
+          inputFileRef.current.click();
+        }}>选取...</Button>
       </div>
       <div className="flex justify-start items-center mb-5">
         <div className="mr-4">面板颜色：</div>
@@ -81,11 +139,7 @@ export default function EditBook(props) {
         <div className="mr-4">字体选择：</div>
         <select className="mr-5" onChange={async (e)=>{
           console.log('点击', e.target.value);
-          updateFontFamily(e.target.value);
-          // const textStyle = document.createElement("style");
-          // textStyle.textContent = `@font-face {font-family: "dynamic-font";src: local("${e.target.value}");}`;
-          // document.body.appendChild(textStyle);
-          // document.body.style.fontFamily = "dynamic-font";          
+          updateFontFamily(e.target.value);         
         }}>
           {fonts.map((v)=><option key={v.postscriptName} value={v.postscriptName}>{v.fullName}</option>)}
         </select>
@@ -100,9 +154,9 @@ export default function EditBook(props) {
           setColorFont('#000');
           setColorPanel('#ffffff80');
           setColorTitle('#00000010');
-          setBgOpacity(50);
+          setBgImage(null);
         }}>恢复默认</Button>
-
+        <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} ref={inputFileRef}/>
       </div>
     </div>
   );
@@ -115,7 +169,7 @@ export default function EditBook(props) {
       </Head>
       <div 
         style={{ 
-          backgroundImage: `linear-gradient(to top right, ${color1}, ${color2})`,
+          backgroundImage: bgImage ? `url(${bgImage})` : `linear-gradient(to top right, ${color1}, ${color2})`,
           color: colorFont,
         }}
         className={`h-[100vh] text-center items-center overflow-hidden`}
