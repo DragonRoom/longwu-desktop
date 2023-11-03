@@ -32,6 +32,7 @@ export default function EditBook(props) {
   const [color2, setColor2] = useState('#e8e8e8'); // bg color
   const [colorFont, setColorFont] = useState('#000'); // font color
   const [colorPanel, setColorPanel] = useState('#ffffff80'); // panel color
+  const [colorTitle, setColorTitle] = useState('#00000010'); // panel title color
   const [bgImage, setBgImage] = useState(null);
   const [bgOpacity, setBgOpacity] = useState(50);
   const [fonts, setFonts] = useState([]);
@@ -39,7 +40,7 @@ export default function EditBook(props) {
   useEffect(() => {
     if (isSupportQueryLocalFonts()) {
       queryFontList().then(v=>{
-        setFonts(v);
+        setFonts(v.filter(v=>containsChinese(v.fullName)));
       }).catch(console.error); // FontData[]
     } else {
       console.log('不支持查询本地字体');
@@ -49,22 +50,28 @@ export default function EditBook(props) {
   const StylePanel = (
     <div>
       <div className="flex justify-start items-center mb-5">
+        <div className="mr-4">主题模板：</div>
+        <select className="mr-5">
+          <option value="1">模板1</option>
+          <option value="2">模板2</option>
+          <option value="3">模板3</option>
+        </select>
+      </div>
+
+      <div className="flex justify-start items-center mb-5">
         <div className="mr-4">背景颜色：</div>
         <ColorPicker showText value={color1} onChange={v=>setColor1(v.toHexString())} /> &nbsp;&nbsp;
         <ColorPicker showText value={color2} onChange={v=>setColor2(v.toHexString())} />
       </div>
-      <div className="flex justify-start items-center mb-5">
-        <div className="mr-4">面板颜色：</div>
-        <ColorPicker showText value={colorPanel} onChange={v=>setColorPanel(v.toHexString())} /> &nbsp;&nbsp;
-      </div>
-      {/* <div className="flex justify-start items-center mb-5">
-        <div className="mr-4">面板透明：</div>
-        <input className="mr-5" type="range" min="0" max="100" value={bgOpacity} onChange={e=>setBgOpacity(e.target.value)} /> {bgOpacity + '%'}
-      </div> */}
+
       <div className="flex justify-start items-center mb-5">
         <div className="mr-4">背景图片：</div>
         <Button size="small" className="mr-1">选取...</Button>
-        <Button size="small">清除</Button>
+      </div>
+      <div className="flex justify-start items-center mb-5">
+        <div className="mr-4">面板颜色：</div>
+        <ColorPicker showText value={colorPanel} onChange={v=>setColorPanel(v.toHexString())} /> &nbsp;&nbsp;
+        <ColorPicker showText value={colorTitle} onChange={v=>setColorTitle(v.toHexString())} /> &nbsp;&nbsp;
       </div>
       <div className="flex justify-start items-center mb-5">
         <div className="mr-4">文字颜色：</div>
@@ -84,14 +91,18 @@ export default function EditBook(props) {
         </select>
       </div>
       <div className="flex justify-center items-center mb-2">
+        <Button type='primary' className="bg-blue-500 mr-3" size="small" onClick={()=>{
+        }}>保存为模板</Button>
         <Button size="small" onClick={()=>{
           setColor1('#c0d4d7');
           setColor2('#e8e8e8');
           document.body.style.fontFamily = "sans-serif";          
           setColorFont('#000');
           setColorPanel('#ffffff80');
+          setColorTitle('#00000010');
           setBgOpacity(50);
         }}>恢复默认</Button>
+
       </div>
     </div>
   );
@@ -198,7 +209,9 @@ export default function EditBook(props) {
                 backgroundColor: `${colorPanel}`,
               }}
             className={`h-full mt-2 w-full rounded-r-lg overflow-hidden border-2`}>
-              <div className="bg-gray-500 bg-opacity-10 rounded-lg m-1">
+              <div style={{
+                backgroundColor: `${colorTitle}`,
+              }} className=" rounded-lg m-1">
                 目录
               </div>
             </div>
@@ -215,7 +228,9 @@ export default function EditBook(props) {
                     backgroundColor: `${colorPanel}`,
                   }}
                   className={`h-full mt-2 w-full rounded-lg overflow-hidden border-2`}>
-                  <div className="bg-gray-500 bg-opacity-10 rounded-lg m-1">
+                  <div style={{
+                    backgroundColor: `${colorTitle}`,
+                  }} className=" rounded-lg m-1">
                     大纲
                   </div>
                 </div>
@@ -225,7 +240,9 @@ export default function EditBook(props) {
                   style={{
                     backgroundColor: `${colorPanel}`,
                   }} className={` h-full mt-[2px] w-full rounded-lg overflow-hidden border-2`}>
-                  <div className="bg-gray-500 bg-opacity-10 rounded-lg m-1">
+                  <div style={{
+                    backgroundColor: `${colorTitle}`,
+                  }} className=" rounded-lg m-1">
                     细纲 / 章纲
                   </div>
                 </div>
@@ -242,7 +259,9 @@ export default function EditBook(props) {
               style={{
                 backgroundColor: `${colorPanel}`,
               }} className={` h-full mt-2 w-full rounded-lg overflow-hidden border-2`}>
-              <div className="bg-gray-500 bg-opacity-10 rounded-lg m-1">
+              <div style={{
+                backgroundColor: `${colorTitle}`,
+              }} className=" rounded-lg m-1">
                 正文
               </div>
             </div>
@@ -257,7 +276,9 @@ export default function EditBook(props) {
               style={{
                 backgroundColor: `${colorPanel}`,
               }} className={` h-full mt-2 w-full rounded-l-lg overflow-hidden border-2`}>
-              <div className="bg-gray-500 bg-opacity-10 rounded-lg m-1">
+              <div style={{
+                backgroundColor: `${colorTitle}`,
+              }} className=" rounded-lg m-1">
                 卡片
               </div>
             </div>
@@ -278,3 +299,6 @@ function updateFontFamily(fontName) {
   document.body.style.fontFamily = "dynamic-font";
 }
 
+function containsChinese(text) {
+  return /[\u4e00-\u9fff]/.test(text);
+}
