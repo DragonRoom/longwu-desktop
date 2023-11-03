@@ -17,6 +17,7 @@ import {
   queryFontList,
   queryTargetFontBlob,
 } from 'local-font';
+import Editor from "../../../components/Editor";
 
 setSashSize(5);
 
@@ -309,6 +310,9 @@ export default function EditBook(props) {
                 backgroundColor: `${colorTitle}`,
               }} className=" rounded-lg m-1">
                 正文
+              </div>
+              <div className="h-full w-full">
+                <Editor />
               </div>
             </div>
           </Allotment.Pane>
