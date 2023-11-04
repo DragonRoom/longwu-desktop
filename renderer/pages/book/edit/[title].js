@@ -15,9 +15,9 @@ import styles from "./basic.module.css";
 import {
   isSupportQueryLocalFonts,
   queryFontList,
-  queryTargetFontBlob,
 } from 'local-font';
-import Editor from "../../../components/Editor";
+
+import LexicalEditor from '../../../components/LexicalEditor';
 
 if (typeof window !== 'undefined' && window.document) {
   setSashSize(5);
@@ -318,7 +318,7 @@ export default function EditBook(props) {
                 正文
               </div>
               <div className="h-full w-full">
-                <Editor />
+                <LexicalEditor />
               </div>
             </div>
           </Allotment.Pane>

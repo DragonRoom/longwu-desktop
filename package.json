@@ -16,16 +16,24 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
+    "@excalidraw/excalidraw": "^0.16.1",
+    "@lexical/file": "^0.12.2",
     "@lexical/markdown": "^0.12.2",
     "@lexical/plain-text": "^0.12.2",
     "@lexical/react": "^0.12.2",
     "@lexical/rich-text": "^0.12.2",
+    "@lexical/yjs": "^0.12.2",
     "allotment": "^1.19.3",
     "antd": "^5.10.2",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.1.0",
+    "katex": "^0.16.9",
     "lexical": "^0.12.2",
-    "local-font": "^0.1.1"
+    "local-font": "^0.1.1",
+    "lodash-es": "^4.17.21",
+    "prettier": "^3.0.3",
+    "y-websocket": "^1.5.0",
+    "yjs": "^13.6.8"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
