@@ -22,7 +22,7 @@ export default function Editor(props) {
 
   return (
     <LexicalComposer initialConfig={editorConfig}>
-      <div className="editor" style={{ height: 'calc(100% - 40px)' }}>
+      <div className="editor" style={{ height: 'calc(100% - 33px)' }}>
         {/* 使用PlainTextPlugin来支持纯文本编辑 */}
         <RichTextPlugin
           contentEditable={<ContentEditable className="rounded-lg overflow-y-auto text-left p-5" style={{ height: '100%', width: '100%', boxSizing: 'border-box' }} />}
