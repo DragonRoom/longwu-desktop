@@ -7,6 +7,7 @@ import {
   FormOutlined,
   EyeOutlined,
   CloudSyncOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import { Tooltip, Divider, Button, Popover, ColorPicker } from "antd";
 import { Allotment, setSashSize } from "allotment";
@@ -261,11 +262,14 @@ export default function EditBook(props) {
               style={{
                 backgroundColor: `${colorPanel}`,
               }}
-            className={`h-full w-full rounded-r-lg overflow-hidden border-2`}>
+            className={`h-full w-full rounded-r-lg overflow-hidden border-2 relative`}>
               <div style={{
                 backgroundColor: `${colorTitle}`,
               }} className=" rounded-lg m-1">
                 目录
+                <Button onClick={()=>setShowContent(!showContent)} size="small" className="absolute right-[1px] border-none top-[1px]" >
+                  <CloseOutlined />
+                </Button>
               </div>
             </div>
           </Allotment.Pane>
@@ -280,11 +284,14 @@ export default function EditBook(props) {
                   style={{
                     backgroundColor: `${colorPanel}`,
                   }}
-                  className={`h-full w-full rounded-lg overflow-hidden border-2`}>
+                  className={`h-full w-full rounded-lg overflow-hidden border-2 relative`}>
                   <div style={{
                     backgroundColor: `${colorTitle}`,
                   }} className=" rounded-lg m-1">
                     大纲
+                    <Button onClick={()=>setShowTree(!showTree)} size="small" className="absolute right-[1px] border-none top-[1px]" >
+                      <CloseOutlined />
+                    </Button>
                   </div>
                 </div>
               </Allotment.Pane>
@@ -292,11 +299,14 @@ export default function EditBook(props) {
                 <div
                   style={{
                     backgroundColor: `${colorPanel}`,
-                  }} className={`h-full mt-[0px] w-full rounded-lg overflow-hidden border-2`}>
+                  }} className={`h-full mt-[0px] w-full rounded-lg overflow-hidden border-2 relative`}>
                   <div style={{
                     backgroundColor: `${colorTitle}`,
                   }} className=" rounded-lg m-1">
                     细纲 / 章纲
+                    <Button  onClick={()=>setShowTree(!showTree)} size="small" className="absolute right-[1px] border-none top-[1px]" >
+                      <CloseOutlined />
+                    </Button>
                   </div>
                 </div>
               </Allotment.Pane>
@@ -311,11 +321,14 @@ export default function EditBook(props) {
             <div
               style={{
                 backgroundColor: `${colorPanel}`,
-              }} className={`h-full w-full rounded-lg overflow-hidden border-2`}>
+              }} className={`h-full w-full rounded-lg overflow-hidden border-2 relative`}>
               <div style={{
                 backgroundColor: `${colorTitle}`,
               }} className=" rounded-lg m-1">
                 正文
+                <Button onClick={()=>setShowText(!showText)} size="small" className="absolute right-[1px] border-none top-[1px]" >
+                  <CloseOutlined />
+                </Button>
               </div>
               <div className="h-full w-full">
                 <LexicalEditor />
@@ -331,11 +344,14 @@ export default function EditBook(props) {
             <div
               style={{
                 backgroundColor: `${colorPanel}`,
-              }} className={` h-full w-full rounded-l-lg overflow-hidden border-2`}>
+              }} className={` h-full w-full rounded-l-lg overflow-hidden border-2 relative`}>
               <div style={{
                 backgroundColor: `${colorTitle}`,
               }} className=" rounded-lg m-1">
                 卡片
+                <Button onClick={()=>setShowCard(!showCard)} size="small" className="absolute right-[1px] border-none top-[1px]" >
+                  <CloseOutlined />
+                </Button>
               </div>
             </div>
           </Allotment.Pane>
