@@ -293,6 +293,9 @@ export default function EditBook(props) {
                       <CloseOutlined />
                     </Button>
                   </div>
+                  <div className="h-full w-full">
+                    <LexicalEditor />
+                  </div>
                 </div>
               </Allotment.Pane>
               <Allotment.Pane>
@@ -307,6 +310,9 @@ export default function EditBook(props) {
                     <Button  onClick={()=>setShowTree(!showTree)} size="small" className="absolute right-[1px] border-none top-[1px]" >
                       <CloseOutlined />
                     </Button>
+                  </div>
+                  <div className="h-full w-full">
+                    <LexicalEditor />
                   </div>
                 </div>
               </Allotment.Pane>
@@ -330,7 +336,7 @@ export default function EditBook(props) {
                   <CloseOutlined />
                 </Button>
               </div>
-              <div className="h-full w-full">
+              <div className="h-full w-full relative">
                 <LexicalEditor />
               </div>
             </div>
