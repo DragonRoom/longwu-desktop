@@ -179,7 +179,7 @@ export default function ActionsPlugin({
       <button
         className="action-button import"
         onClick={() => importFile(editor)}
-        title="Import"
+        title="导入"
         aria-label="Import editor state from JSON">
         <i className="import" />
       </button>
@@ -187,11 +187,11 @@ export default function ActionsPlugin({
         className="action-button export"
         onClick={() =>
           exportFile(editor, {
-            fileName: `Playground ${new Date().toISOString()}`,
-            source: 'Playground',
+            fileName: `龙屋_${new Date().toISOString()}`,
+            source: '龙屋',
           })
         }
-        title="Export"
+        title="导出"
         aria-label="Export editor state to JSON">
         <i className="export" />
       </button>

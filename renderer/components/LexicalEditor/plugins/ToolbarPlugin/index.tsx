@@ -100,17 +100,17 @@ import {InsertNewTableDialog, InsertTableDialog} from '../TablePlugin';
 
 const blockTypeToBlockName = {
   bullet: 'Bulleted List',
-  check: 'Check List',
-  code: 'Code Block',
-  h1: 'Heading 1',
-  h2: 'Heading 2',
-  h3: 'Heading 3',
-  h4: 'Heading 4',
-  h5: 'Heading 5',
-  h6: 'Heading 6',
+  check: '待办事项',
+  code: '代码段',
+  h1: '1级标题',
+  h2: '2级标题',
+  h3: '3级标题',
+  h4: '4级标题',
+  h5: '5级标题',
+  h6: '6级标题',
   number: 'Numbered List',
-  paragraph: 'Normal',
-  quote: 'Quote',
+  paragraph: '正文',
+  quote: '引用',
 };
 
 const rootTypeToRootName = {
@@ -153,6 +153,16 @@ const FONT_SIZE_OPTIONS: [string, string][] = [
   ['18px', '18px'],
   ['19px', '19px'],
   ['20px', '20px'],
+  ['21px', '21px'],
+  ['22px', '22px'],
+  ['23px', '23px'],
+  ['24px', '24px'],
+  ['25px', '25px'],
+  ['26px', '26px'],
+  ['27px', '27px'],
+  ['28px', '28px'],
+  ['29px', '29px'],
+  ['30px', '30px'],
 ];
 
 const ELEMENT_FORMAT_OPTIONS: {
@@ -309,27 +319,27 @@ function BlockFormatDropDown({
         className={'item ' + dropDownActiveClass(blockType === 'paragraph')}
         onClick={formatParagraph}>
         <i className="icon paragraph" />
-        <span className="text">Normal</span>
+        <span className="text">普通文本</span>
       </DropDownItem>
       <DropDownItem
         className={'item ' + dropDownActiveClass(blockType === 'h1')}
         onClick={() => formatHeading('h1')}>
         <i className="icon h1" />
-        <span className="text">Heading 1</span>
+        <span className="text">1级标题</span>
       </DropDownItem>
       <DropDownItem
         className={'item ' + dropDownActiveClass(blockType === 'h2')}
         onClick={() => formatHeading('h2')}>
         <i className="icon h2" />
-        <span className="text">Heading 2</span>
+        <span className="text">2级标题</span>
       </DropDownItem>
       <DropDownItem
         className={'item ' + dropDownActiveClass(blockType === 'h3')}
         onClick={() => formatHeading('h3')}>
         <i className="icon h3" />
-        <span className="text">Heading 3</span>
+        <span className="text">3级标题</span>
       </DropDownItem>
-      <DropDownItem
+      {/* <DropDownItem
         className={'item ' + dropDownActiveClass(blockType === 'bullet')}
         onClick={formatBulletList}>
         <i className="icon bullet-list" />
@@ -340,24 +350,24 @@ function BlockFormatDropDown({
         onClick={formatNumberedList}>
         <i className="icon numbered-list" />
         <span className="text">Numbered List</span>
-      </DropDownItem>
+      </DropDownItem> */}
       <DropDownItem
         className={'item ' + dropDownActiveClass(blockType === 'check')}
         onClick={formatCheckList}>
         <i className="icon check-list" />
-        <span className="text">Check List</span>
+        <span className="text">待办事项</span>
       </DropDownItem>
       <DropDownItem
         className={'item ' + dropDownActiveClass(blockType === 'quote')}
         onClick={formatQuote}>
         <i className="icon quote" />
-        <span className="text">Quote</span>
+        <span className="text">引用</span>
       </DropDownItem>
       <DropDownItem
         className={'item ' + dropDownActiveClass(blockType === 'code')}
         onClick={formatCode}>
         <i className="icon code" />
-        <span className="text">Code Block</span>
+        <span className="text">代码段</span>
       </DropDownItem>
     </DropDown>
   );
@@ -827,7 +837,7 @@ export default function ToolbarPlugin({
         onClick={() => {
           activeEditor.dispatchCommand(UNDO_COMMAND, undefined);
         }}
-        title={IS_APPLE ? 'Undo (⌘Z)' : 'Undo (Ctrl+Z)'}
+        title={IS_APPLE ? '撤销 (⌘Z)' : '撤销 (Ctrl+Z)'}
         type="button"
         className="toolbar-item spaced"
         aria-label="Undo">
@@ -838,7 +848,7 @@ export default function ToolbarPlugin({
         onClick={() => {
           activeEditor.dispatchCommand(REDO_COMMAND, undefined);
         }}
-        title={IS_APPLE ? 'Redo (⌘Y)' : 'Redo (Ctrl+Y)'}
+        title={IS_APPLE ? '重做 (⌘Y)' : '重做 (Ctrl+Y)'}
         type="button"
         className="toolbar-item"
         aria-label="Redo">
@@ -877,12 +887,12 @@ export default function ToolbarPlugin({
         </DropDown>
       ) : (
         <>
-          <FontDropDown
+          {/* <FontDropDown
             disabled={!isEditable}
             style={'font-family'}
             value={fontFamily}
             editor={editor}
-          />
+          /> */}
           <FontDropDown
             disabled={!isEditable}
             style={'font-size'}
@@ -896,7 +906,7 @@ export default function ToolbarPlugin({
               activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
             }}
             className={'toolbar-item spaced ' + (isBold ? 'active' : '')}
-            title={IS_APPLE ? 'Bold (⌘B)' : 'Bold (Ctrl+B)'}
+            title={IS_APPLE ? '加粗 (⌘B)' : '加粗 (Ctrl+B)'}
             type="button"
             aria-label={`Format text as bold. Shortcut: ${
               IS_APPLE ? '⌘B' : 'Ctrl+B'
@@ -909,7 +919,7 @@ export default function ToolbarPlugin({
               activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
             }}
             className={'toolbar-item spaced ' + (isItalic ? 'active' : '')}
-            title={IS_APPLE ? 'Italic (⌘I)' : 'Italic (Ctrl+I)'}
+            title={IS_APPLE ? '斜体 (⌘I)' : '斜体 (Ctrl+I)'}
             type="button"
             aria-label={`Format text as italics. Shortcut: ${
               IS_APPLE ? '⌘I' : 'Ctrl+I'
@@ -922,7 +932,7 @@ export default function ToolbarPlugin({
               activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
             }}
             className={'toolbar-item spaced ' + (isUnderline ? 'active' : '')}
-            title={IS_APPLE ? 'Underline (⌘U)' : 'Underline (Ctrl+U)'}
+            title={IS_APPLE ? '下划线 (⌘U)' : '下划线 (Ctrl+U)'}
             type="button"
             aria-label={`Format text to underlined. Shortcut: ${
               IS_APPLE ? '⌘U' : 'Ctrl+U'
@@ -935,7 +945,7 @@ export default function ToolbarPlugin({
               activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
             }}
             className={'toolbar-item spaced ' + (isCode ? 'active' : '')}
-            title="Insert code block"
+            title="代码段"
             type="button"
             aria-label="Insert code block">
             <i className="format code" />
@@ -945,7 +955,7 @@ export default function ToolbarPlugin({
             onClick={insertLink}
             className={'toolbar-item spaced ' + (isLink ? 'active' : '')}
             aria-label="Insert link"
-            title="Insert link"
+            title="超链接"
             type="button">
             <i className="format link" />
           </button>
@@ -956,7 +966,7 @@ export default function ToolbarPlugin({
             buttonIconClassName="icon font-color"
             color={fontColor}
             onChange={onFontColorSelect}
-            title="text color"
+            title="文字颜色"
           />
           <DropdownColorPicker
             disabled={!isEditable}
@@ -965,7 +975,7 @@ export default function ToolbarPlugin({
             buttonIconClassName="icon bg-color"
             color={bgColor}
             onChange={onBgColorSelect}
-            title="bg color"
+            title="文字底色"
           />
           <DropDown
             disabled={!isEditable}
@@ -981,20 +991,20 @@ export default function ToolbarPlugin({
                 );
               }}
               className={'item ' + dropDownActiveClass(isStrikethrough)}
-              title="Strikethrough"
+              title="删除线"
               aria-label="Format text with a strikethrough">
               <i className="icon strikethrough" />
-              <span className="text">Strikethrough</span>
+              <span className="text">删除线</span>
             </DropDownItem>
             <DropDownItem
               onClick={() => {
                 activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'subscript');
               }}
               className={'item ' + dropDownActiveClass(isSubscript)}
-              title="Subscript"
+              title="下标"
               aria-label="Format text with a subscript">
               <i className="icon subscript" />
-              <span className="text">Subscript</span>
+              <span className="text">下标</span>
             </DropDownItem>
             <DropDownItem
               onClick={() => {
@@ -1004,10 +1014,10 @@ export default function ToolbarPlugin({
                 );
               }}
               className={'item ' + dropDownActiveClass(isSuperscript)}
-              title="Superscript"
+              title="上标"
               aria-label="Format text with a superscript">
               <i className="icon superscript" />
-              <span className="text">Superscript</span>
+              <span className="text">上标</span>
             </DropDownItem>
             <DropDownItem
               onClick={clearFormatting}
@@ -1015,7 +1025,7 @@ export default function ToolbarPlugin({
               title="Clear text formatting"
               aria-label="Clear all text formatting">
               <i className="icon clear" />
-              <span className="text">Clear Formatting</span>
+              <span className="text">清除格式</span>
             </DropDownItem>
           </DropDown>
           <Divider />
@@ -1041,7 +1051,7 @@ export default function ToolbarPlugin({
           <DropDown
             disabled={!isEditable}
             buttonClassName="toolbar-item spaced"
-            buttonLabel="Insert"
+            buttonLabel="插入"
             buttonAriaLabel="Insert specialized editor node"
             buttonIconClassName="icon plus">
             <DropDownItem
@@ -1053,7 +1063,7 @@ export default function ToolbarPlugin({
               }}
               className="item">
               <i className="icon horizontal-rule" />
-              <span className="text">Horizontal Rule</span>
+              <span className="text">分行符</span>
             </DropDownItem>
             <DropDownItem
               onClick={() => {
@@ -1061,7 +1071,7 @@ export default function ToolbarPlugin({
               }}
               className="item">
               <i className="icon page-break" />
-              <span className="text">Page Break</span>
+              <span className="text">分页符</span>
             </DropDownItem>
             <DropDownItem
               onClick={() => {
@@ -1074,11 +1084,11 @@ export default function ToolbarPlugin({
               }}
               className="item">
               <i className="icon image" />
-              <span className="text">Image</span>
+              <span className="text">图片</span>
             </DropDownItem>
             <DropDownItem
               onClick={() => {
-                showModal('Insert Inline Image', (onClose) => (
+                showModal('插入图片', (onClose) => (
                   <InsertInlineImageDialog
                     activeEditor={activeEditor}
                     onClose={onClose}
@@ -1087,7 +1097,7 @@ export default function ToolbarPlugin({
               }}
               className="item">
               <i className="icon image" />
-              <span className="text">Inline Image</span>
+              <span className="text">行内图片</span>
             </DropDownItem>
             <DropDownItem
               onClick={() =>
@@ -1109,9 +1119,9 @@ export default function ToolbarPlugin({
               }}
               className="item">
               <i className="icon diagram-2" />
-              <span className="text">Excalidraw</span>
+              <span className="text">自由绘制</span>
             </DropDownItem>
-            <DropDownItem
+            {/* <DropDownItem
               onClick={() => {
                 showModal('Insert Table', (onClose) => (
                   <InsertTableDialog
@@ -1123,7 +1133,7 @@ export default function ToolbarPlugin({
               className="item">
               <i className="icon table" />
               <span className="text">Table</span>
-            </DropDownItem>
+            </DropDownItem> */}
             <DropDownItem
               onClick={() => {
                 showModal('Insert Table', (onClose) => (
@@ -1135,9 +1145,9 @@ export default function ToolbarPlugin({
               }}
               className="item">
               <i className="icon table" />
-              <span className="text">Table (Experimental)</span>
+              <span className="text">表格</span>
             </DropDownItem>
-            <DropDownItem
+            {/* <DropDownItem
               onClick={() => {
                 showModal('Insert Poll', (onClose) => (
                   <InsertPollDialog
@@ -1149,7 +1159,7 @@ export default function ToolbarPlugin({
               className="item">
               <i className="icon poll" />
               <span className="text">Poll</span>
-            </DropDownItem>
+            </DropDownItem> */}
             <DropDownItem
               onClick={() => {
                 showModal('Insert Columns Layout', (onClose) => (
@@ -1161,7 +1171,7 @@ export default function ToolbarPlugin({
               }}
               className="item">
               <i className="icon columns" />
-              <span className="text">Columns Layout</span>
+              <span className="text">左右分栏</span>
             </DropDownItem>
 
             <DropDownItem
@@ -1175,7 +1185,7 @@ export default function ToolbarPlugin({
               }}
               className="item">
               <i className="icon equation" />
-              <span className="text">Equation</span>
+              <span className="text">数学公式</span>
             </DropDownItem>
             <DropDownItem
               onClick={() => {
@@ -1187,7 +1197,7 @@ export default function ToolbarPlugin({
               }}
               className="item">
               <i className="icon sticky" />
-              <span className="text">Sticky Note</span>
+              <span className="text">便签纸</span>
             </DropDownItem>
             <DropDownItem
               onClick={() => {
@@ -1195,9 +1205,9 @@ export default function ToolbarPlugin({
               }}
               className="item">
               <i className="icon caret-right" />
-              <span className="text">Collapsible container</span>
+              <span className="text">折叠面板</span>
             </DropDownItem>
-            {EmbedConfigs.map((embedConfig) => (
+            {/* {EmbedConfigs.map((embedConfig) => (
               <DropDownItem
                 key={embedConfig.type}
                 onClick={() => {
@@ -1210,17 +1220,17 @@ export default function ToolbarPlugin({
                 {embedConfig.icon}
                 <span className="text">{embedConfig.contentName}</span>
               </DropDownItem>
-            ))}
+            ))} */}
           </DropDown>
         </>
       )}
       <Divider />
-      <ElementFormatDropdown
+      {/* <ElementFormatDropdown
         disabled={!isEditable}
         value={elementFormat}
         editor={editor}
         isRTL={isRTL}
-      />
+      /> */}
 
       {modal}
     </div>
