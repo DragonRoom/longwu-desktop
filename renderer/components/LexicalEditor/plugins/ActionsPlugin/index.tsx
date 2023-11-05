@@ -159,7 +159,7 @@ export default function ActionsPlugin({
 
   return (
     <div className="actions">
-      {SUPPORT_SPEECH_RECOGNITION && (
+      {/* {SUPPORT_SPEECH_RECOGNITION && (
         <button
           onClick={() => {
             editor.dispatchCommand(SPEECH_TO_TEXT_COMMAND, !isSpeechToText);
@@ -175,7 +175,7 @@ export default function ActionsPlugin({
           } speech to text`}>
           <i className="mic" />
         </button>
-      )}
+      )} */}
       <button
         className="action-button import"
         onClick={() => importFile(editor)}
@@ -195,7 +195,7 @@ export default function ActionsPlugin({
         aria-label="Export editor state to JSON">
         <i className="export" />
       </button>
-      <button
+      {/* <button
         className="action-button clear"
         disabled={isEditorEmpty}
         onClick={() => {
@@ -226,8 +226,8 @@ export default function ActionsPlugin({
         title="Convert From Markdown"
         aria-label="Convert from markdown">
         <i className="markdown" />
-      </button>
-      {isCollabActive && (
+      </button> */}
+      {/* {isCollabActive && (
         <button
           className="action-button connect"
           onClick={() => {
@@ -241,7 +241,7 @@ export default function ActionsPlugin({
           } a collaborative editing server`}>
           <i className={connected ? 'disconnect' : 'connect'} />
         </button>
-      )}
+      )} */}
       {modal}
     </div>
   );

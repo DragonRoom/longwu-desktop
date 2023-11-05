@@ -20,5 +20,3 @@
   -webkit-text-stroke: 1px black; /* 描边宽度和颜色 */
   text-fill-color: transparent;   /* 使用此属性使文本内部透明，仅显示描边 */
 }
-
-@import './editor.css';

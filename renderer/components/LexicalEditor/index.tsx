@@ -139,10 +139,10 @@ export default function LexicalEditor(): JSX.Element {
             <div className="editor-shell">
               <Editor />
             </div>
-            <Settings />
-            {isDevPlayground ? <DocsPlugin /> : null}
-            {isDevPlayground ? <PasteLogPlugin /> : null}
-            {isDevPlayground ? <TestRecorderPlugin /> : null}
+            {/* <Settings /> */}
+            {/* {isDevPlayground ? <DocsPlugin /> : null} */}
+            {/* {isDevPlayground ? <PasteLogPlugin /> : null} */}
+            {/* {isDevPlayground ? <TestRecorderPlugin /> : null} */}
 
             {measureTypingPerf ? <TypingPerfPlugin /> : null}
           </SharedAutocompleteContext>

@@ -43,7 +43,7 @@ export const DEFAULT_SETTINGS: Settings = {
   shouldUseLexicalContextMenu: false,
   showNestedEditorTreeView: false,
   showTableOfContents: false,
-  showTreeView: true,
+  showTreeView: false,
   tableCellBackgroundColor: true,
   tableCellMerge: true,
 };

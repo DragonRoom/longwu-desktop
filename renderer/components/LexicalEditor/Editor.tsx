@@ -99,7 +99,7 @@ export default function Editor(): JSX.Element {
   const text = isCollab
     ? 'Enter some collaborative rich text...'
     : isRichText
-    ? 'Enter some rich text...'
+    ? '请输入内容...'
     : 'Enter some plain text...';
   const placeholder = <Placeholder>{text}</Placeholder>;
   const [floatingAnchorElem, setFloatingAnchorElem] =

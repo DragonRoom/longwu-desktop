@@ -24,7 +24,7 @@ export default function HomePage() {
       <Head>
         <title>龙屋</title>
       </Head>
-      <div className="min-h-[100vh] p-10">
+      <div className="min-h-[100vh] p-10 pr-0">
         <div className="flex flex-row flex-wrap" >
           {
             books.sort((a,b)=>(a.createTime - b.createTime)).map((book, index)=>{

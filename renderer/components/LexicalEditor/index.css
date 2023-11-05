@@ -8,7 +8,7 @@
 
 @import 'https://fonts.googleapis.com/css?family=Reenie+Beanie';
 
-body {
+/* body {
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular',
     sans-serif;
@@ -16,7 +16,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: #eee;
   padding: 0 20px;
-}
+} */
 
 header {
   max-width: 580px;
@@ -46,17 +46,19 @@ header h1 {
 }
 
 .editor-shell {
-  margin: 20px auto;
+  margin: 5px;
+  height: 100%;
   border-radius: 2px;
-  max-width: 1100px;
+  /* max-width: 1100px; */
   color: #000;
   position: relative;
   line-height: 1.7;
   font-weight: 400;
+  text-align: left;
 }
 
 .editor-shell .editor-container {
-  background: #fff;
+  background: transparent;
   position: relative;
   display: block;
   border-bottom-left-radius: 10px;
@@ -79,7 +81,7 @@ header h1 {
   position: relative;
   outline: 0;
   z-index: 0;
-  overflow: auto;
+  overflow: scroll;
   resize: vertical;
 }
 
@@ -87,6 +89,7 @@ header h1 {
   flex: auto;
   position: relative;
   resize: vertical;
+  height: calc(100vh - 120px);
   z-index: -1;
 }
 
