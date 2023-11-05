@@ -182,3 +182,63 @@ ipcMain.on('get-themes-list', async (event, arg) => {
     event.reply('get-themes-list', {success: false, reason: '获取失败'});
   }
 });
+
+// add volume directory 
+ipcMain.on('add-volume-directory', async (event, arg) => {
+  try {
+    console.log('add-volume-directory', arg);
+    let bookPath = path.join(bookRoot, arg.title);
+    let volumes = await listSubdirectories(bookPath);
+    console.log('volumes', volumes, bookPath);
+    // fiter non-number directory
+    volumes = (volumes as any).filter((item) => {
+      let volumeName = path.basename(item);
+      return !isNaN(Number(volumeName));
+    });
+    console.log('volumes', volumes);
+    // get the largest number of volume name number 
+    let volumeNameNumber = 0;
+    for (let i=0; i<(volumes as any).length; i++) {
+      let volumeName = path.basename(volumes[i]);
+      let volumeNumber = Number(volumeName);
+      if (volumeNumber > volumeNameNumber) {
+        volumeNameNumber = volumeNumber;
+      }
+    }
+
+    // create volume directory by number + 1
+    let volumeNumber = (volumeNameNumber + 1).toString();
+    let volumePath = path.join(bookPath, volumeNumber);
+    await ensureDirectoryExists(volumePath);
+    // write volume json
+    await writeMetaJson(volumePath, {title: arg.volumeTitle, createTime: new Date().getTime()});
+
+    volumes = await listSubdirectories(bookPath);
+    volumes = (volumes as any).filter((item) => {
+      let volumeName = path.basename(item);
+      return !isNaN(Number(volumeName));
+    });
+    // get number array
+    let volumeNameNumbers = [];
+    for (let i=0; i<(volumes as any).length; i++) {
+      let volumeName = path.basename(volumes[i]);
+      let volumeNumber = Number(volumeName);
+      volumeNameNumbers.push(volumeNumber);
+    }
+    // sort number array
+    volumeNameNumbers.sort((a, b) => a - b);
+    event.reply('add-volume-directory', {success: true, data: volumeNameNumbers});
+  } catch (error) {
+    console.log(error);
+    event.reply('add-volume-directory', {success: false, reason: '添加失败'});
+  }
+});
+
+async function writeMetaJson(metaJsonPath, metaJson) {
+  await fs.writeFile(path.join(metaJsonPath, 'meta.json'), JSON.stringify(metaJson), 'utf-8');
+}
+
+async function readMetaJson(metaJsonPath) {
+  let metaJson = await fs.readFile(path.join(metaJsonPath, 'meta.json'), 'utf-8');
+  return JSON.parse(metaJson);
+}

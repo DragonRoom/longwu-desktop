@@ -8,8 +8,15 @@ import {
   EyeOutlined,
   CloudSyncOutlined,
   CloseOutlined,
+  PlusCircleOutlined,
+  PlusSquareOutlined,
+  DownOutlined,
+  FrownFilled,
+  FrownOutlined,
+  MehOutlined,
+  SmileOutlined,
 } from "@ant-design/icons";
-import { Tooltip, Divider, Button, Popover, ColorPicker } from "antd";
+import { Tooltip, Divider, Button, Popover, ColorPicker, Tree } from "antd";
 import { Allotment, setSashSize } from "allotment";
 import "allotment/dist/style.css";
 import styles from "./basic.module.css";
@@ -24,6 +31,25 @@ if (typeof window !== 'undefined' && window.document) {
   setSashSize(5);
 }
 
+const treeData = [
+  {
+    title: 'parent 1',
+    key: '0-0',
+    icon: <SmileOutlined />,
+    children: [
+      {
+        title: 'leaf',
+        key: '0-0-0',
+        icon: <MehOutlined />,
+      },
+      {
+        title: 'leaf',
+        key: '0-0-1',
+        icon: ({ selected }) => (selected ? <FrownFilled /> : <FrownOutlined />),
+      },
+    ],
+  },
+];
 
 export default function EditBook(props) {
   const router = useRouter();
@@ -41,6 +67,8 @@ export default function EditBook(props) {
   const [fonts, setFonts] = useState([]);
   const [customThemes, setCustomThemes] = useState([]);
   const [currentTheme, setCurrentTheme] = useState(0);
+  const [newVolumeName, setNewVolumeName] = useState('');
+  const [showNewVolumePanel, setShowNewVolumePanel] = useState(false);
 
   useEffect(()=>{
     // {
@@ -157,6 +185,29 @@ export default function EditBook(props) {
     </div>
   );
 
+  const NewVolumePanel = (
+    <div>
+      <div className="flex justify-start items-center mb-5">
+        <div className="mr-0">分卷名称：</div>
+        <input type="text" className=" border mr-3" value={newVolumeName} onChange={e=>setNewVolumeName(e.target.value)} />
+        <Button type='primary' className="bg-blue-500" size="small" onClick={async ()=>{
+          console.log('添加分卷');
+          if (!window.ipc) return;
+          window.ipc.send('add-volume-directory', {title, volumeTitle: newVolumeName});
+          window.ipc.on('add-volume-directory', (arg) => {
+            console.log('add-volume-directory', arg);
+            // arg is an array of themes
+            if (arg.success) {
+              console.log('volumes', arg.data);
+              // setCustomThemes(arg.data);
+              setShowNewVolumePanel(false);
+              setNewVolumeName('');
+            }
+          });
+          }}>确定</Button>
+      </div>
+    </div>
+  );
   
   return (
     <React.Fragment>
@@ -270,6 +321,27 @@ export default function EditBook(props) {
                 <Button onClick={()=>setShowContent(!showContent)} size="small" className="absolute right-[1px] border-none top-[1px]" >
                   <CloseOutlined />
                 </Button>
+              </div>
+              <div className="mr-1 ml-1 flex justify-between">
+              <Popover placement="bottomLeft" title={'添加分卷'} open={showNewVolumePanel} onOpenChange={v=>setShowNewVolumePanel(v)} content={NewVolumePanel} trigger="click">
+                <Button size='small' className="p-0 bg-gray-200 hover:bg-blue-200 rounded-full border-none relative w-[24px] overflow-hidden hover:w-[84px]" >
+                  <PlusSquareOutlined  className="absolute top-[5px] left-[5px]" />
+                  <span className="absolute top-[1px] left-[15px]">添加分卷</span>
+                </Button>
+                </Popover>
+                <Button size='small' className="p-0 bg-gray-200 hover:bg-blue-200 rounded-full border-none relative w-[24px] overflow-hidden hover:w-[84px]">
+                  <PlusCircleOutlined className="absolute top-[5px] left-[5px]" />
+                  <span className="absolute top-[1px] left-[15px]">添加章节</span>
+                </Button>
+              </div>
+              <div>
+              <Tree
+                showIcon
+                defaultExpandAll
+                defaultSelectedKeys={['0-0-0']}
+                switcherIcon={<DownOutlined />}
+                treeData={treeData}
+              />
               </div>
             </div>
           </Allotment.Pane>
