@@ -26,26 +26,56 @@ import {
 } from 'local-font';
 
 import LexicalEditor from '../../../components/LexicalEditor';
+import { formatNumber } from "../[title]";
 
 if (typeof window !== 'undefined' && window.document) {
   setSashSize(5);
 }
 
+const iconStyle = ({ selected }) => (selected ? <img src="/images/openChapter.svg" width={22} alt="章" /> : <img src="/images/chapter.svg" width={22} alt="章" />);
+
 const treeData = [
   {
-    title: 'parent 1',
+    title: '第1卷 风起萧墙',
     key: '0-0',
-    icon: <SmileOutlined />,
+    icon: <img src="/images/volume.svg" width={22} alt="卷" />,
+    words: 41245,
     children: [
       {
-        title: 'leaf',
+        title: '第1章 苏醒',
         key: '0-0-0',
-        icon: <MehOutlined />,
+        icon:  iconStyle,
+        words: 3245,
       },
       {
-        title: 'leaf',
+        title: '第2章 重生',
         key: '0-0-1',
-        icon: ({ selected }) => (selected ? <FrownFilled /> : <FrownOutlined />),
+        icon: iconStyle,
+        words: 3015,
+      },
+      {
+        title: '第3章 冲突',
+        key: '0-0-2',
+        icon: iconStyle,
+        words: 3515,
+      },
+      {
+        title: '第4章 反转',
+        key: '0-0-3',
+        icon: iconStyle,
+        words: 2015,
+      },
+      {
+        title: '第5章 横行',
+        key: '0-0-4',
+        icon: iconStyle,
+        words: 5015,
+      },
+      {
+        title: '第6章 结局',
+        key: '0-0-5',
+        icon: iconStyle,
+        words: 4015,
       },
     ],
   },
@@ -71,16 +101,6 @@ export default function EditBook(props) {
   const [showNewVolumePanel, setShowNewVolumePanel] = useState(false);
 
   useEffect(()=>{
-    // {
-    //   "title": "晨曦微露", 
-    //   "bgColor1": "#F0F0F0", 
-    //   "bgColor2": "#F5F5F5", 
-    //   "bgImg": null, 
-    //   "panelColor": "rgba(255, 255, 255, 0.8)", 
-    //   "panelTitle": "rgba(0, 0, 0, 0.8)", 
-    //   "fontColor": "#333333", 
-    //   "fontName": null
-    // }
     setColor1(customThemes[currentTheme]?.bgColor1 || '#c0d4d7');
     setColor2(customThemes[currentTheme]?.bgColor2 || '#e8e8e8');
     setColorPanel(customThemes[currentTheme]?.panelColor || '#ffffff80');
@@ -334,14 +354,25 @@ export default function EditBook(props) {
                   <span className="absolute top-[1px] left-[15px]">添加章节</span>
                 </Button>
               </div>
-              <div>
-              <Tree
-                showIcon
-                defaultExpandAll
-                defaultSelectedKeys={['0-0-0']}
-                switcherIcon={<DownOutlined />}
-                treeData={treeData}
-              />
+              <div className="h-full w-full overflow-scroll text-left">
+                <div className="h-full p-2 inline-block whitespace-nowrap">
+                  <Tree
+                    showIcon
+                    defaultExpandAll
+                    defaultSelectedKeys={['0-0-0']}
+                    switcherIcon={<DownOutlined />}
+                    treeData={treeData}
+                    showLine
+                    titleRender={(nodeData) => {
+                      return (
+                        <span>
+                          <span>{nodeData.title}</span>
+                          <span className="text-gray-400 ml-3 text-xs">{formatNumber(nodeData.words)}</span>
+                        </span>
+                      );
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </Allotment.Pane>

@@ -205,7 +205,7 @@ function TimeLine(props) {
 }
 
 // 输入数字，返回格式： XX 万 XXXX 字
-function formatNumber(num) {
+export function formatNumber(num) {
   if (num < 10000) {
     return formatNumberWithCommas(num) + ' 字';
   } else {
