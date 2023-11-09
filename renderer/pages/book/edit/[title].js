@@ -16,7 +16,7 @@ import {
   MehOutlined,
   SmileOutlined,
 } from "@ant-design/icons";
-import { Tooltip, Divider, Button, Popover, ColorPicker, Tree } from "antd";
+import { Tooltip, Divider, Button, Popover, ColorPicker, Tree, Dropdown } from "antd";
 import { Allotment, setSashSize } from "allotment";
 import "allotment/dist/style.css";
 import styles from "./basic.module.css";
@@ -142,10 +142,8 @@ export default function EditBook(props) {
     if (window.ipc) {
       window.ipc.send('get-themes-list', {});
       window.ipc.on('get-themes-list', (arg) => {
-        console.log('get-themes-list', arg);
         // arg is an array of themes
         if (arg.success) {
-          console.log('themes', arg.data);
           setCustomThemes(arg.data);
         }
       });
@@ -232,7 +230,7 @@ export default function EditBook(props) {
   return (
     <React.Fragment>
       <Head>
-        <title>{title} → 第1卷 风起云涌 | 第2章 苏醒 → 3,245字</title>
+        <title>{title} → 第1卷 风起云涌 | 第2章 苏醒</title>
       </Head>
       <div 
         style={{ 
@@ -292,14 +290,6 @@ export default function EditBook(props) {
               <img src="/images/card2.png" width={15} alt="大纲" />
             </Button>
           </Tooltip>
-          
-          {/* <Tooltip title="沉浸模式 (按Esc键退出沉浸模式)" color={"blue"}>
-            <Button
-              className={`cursor-pointer mr-2 p-1 pt-0 hover:bg-blue-200 rounded border-none`}
-            >
-              <EyeOutlined />
-            </Button>
-          </Tooltip> */}
           <Tooltip title="界面样式" placement="right" color={"blue"}>
             <Popover placement="bottomLeft" title={'界面样式调整'} content={StylePanel} trigger="click">
               <Button
@@ -356,22 +346,7 @@ export default function EditBook(props) {
               </div>
               <div className="h-full w-full overflow-scroll text-left">
                 <div className="h-full p-2 inline-block whitespace-nowrap">
-                  <Tree
-                    showIcon
-                    defaultExpandAll
-                    defaultSelectedKeys={['0-0-0']}
-                    switcherIcon={<DownOutlined />}
-                    treeData={treeData}
-                    showLine
-                    titleRender={(nodeData) => {
-                      return (
-                        <span>
-                          <span>{nodeData.title}</span>
-                          <span className="text-gray-400 ml-3 text-xs">{formatNumber(nodeData.words)}</span>
-                        </span>
-                      );
-                    }}
-                  />
+                  <ContentTree />
                 </div>
               </div>
             </div>
@@ -391,7 +366,7 @@ export default function EditBook(props) {
                   <div style={{
                     backgroundColor: `${colorTitle}`,
                   }} className=" rounded-lg m-1">
-                    大纲
+                    大纲 <span className="text-gray-500">{formatNumber(3245)}</span>
                     <Button onClick={()=>setShowTree(!showTree)} size="small" className="absolute right-[1px] border-none top-[1px]" >
                       <CloseOutlined />
                     </Button>
@@ -409,7 +384,7 @@ export default function EditBook(props) {
                   <div style={{
                     backgroundColor: `${colorTitle}`,
                   }} className=" rounded-lg m-1">
-                    细纲 / 章纲
+                    细纲 / 章纲 <span className="text-gray-500">{formatNumber(3245)}</span>
                     <Button  onClick={()=>setShowTree(!showTree)} size="small" className="absolute right-[1px] border-none top-[1px]" >
                       <CloseOutlined />
                     </Button>
@@ -434,7 +409,7 @@ export default function EditBook(props) {
               <div style={{
                 backgroundColor: `${colorTitle}`,
               }} className=" rounded-lg m-1">
-                正文
+                正文 <span className="text-gray-500">{formatNumber(3245)}</span>
                 <Button onClick={()=>setShowText(!showText)} size="small" className="absolute right-[1px] border-none top-[1px]" >
                   <CloseOutlined />
                 </Button>
@@ -469,6 +444,33 @@ export default function EditBook(props) {
       </div>
     </React.Fragment>
   );
+}
+
+
+function ContentTree(props) {
+  return <Tree
+    showIcon
+    defaultExpandAll
+    defaultSelectedKeys={['0-0-0']}
+    switcherIcon={<DownOutlined />}
+    treeData={treeData}
+    showLine
+    titleRender={(nodeData) => {
+      return (
+        <span className="relative group">
+          <span>{nodeData.title}</span>
+          <button className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out" 
+            onClick={()=>{
+              console.log('编辑章节');
+            }}
+          >
+            <FormOutlined />
+          </button>
+          <span className="text-gray-400 ml-1 text-xs">{formatNumber(nodeData.words)}</span>
+        </span>
+      );
+    }}
+  />
 }
 
 // 在外部初始化style元素，以便复用
