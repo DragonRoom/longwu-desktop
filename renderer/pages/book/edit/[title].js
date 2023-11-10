@@ -99,6 +99,8 @@ export default function EditBook(props) {
   const [currentTheme, setCurrentTheme] = useState(0);
   const [newVolumeName, setNewVolumeName] = useState('');
   const [showNewVolumePanel, setShowNewVolumePanel] = useState(false);
+  const [newChapterName, setNewChapterName] = useState('');
+  const [showNewChapterPanel, setShowNewChapterPanel] = useState(false);
 
   useEffect(()=>{
     setColor1(customThemes[currentTheme]?.bgColor1 || '#c0d4d7');
@@ -226,6 +228,30 @@ export default function EditBook(props) {
       </div>
     </div>
   );
+
+  const NewChapterPanel = (
+    <div>
+      <div className="flex justify-start items-center mb-5">
+        <div className="mr-0">章节名称：</div>
+        <input type="text" className=" border mr-3" value={newChapterName} onChange={e=>setNewChapterName(e.target.value)} />
+        <Button type='primary' className="bg-blue-500" size="small" onClick={async ()=>{
+          console.log('添加分卷');
+          if (!window.ipc) return;
+          window.ipc.send('add-volume-directory', {title, volumeTitle: newVolumeName});
+          window.ipc.on('add-volume-directory', (arg) => {
+            console.log('add-volume-directory', arg);
+            // arg is an array of themes
+            if (arg.success) {
+              console.log('volumes', arg.data);
+              // setCustomThemes(arg.data);
+              setShowNewVolumePanel(false);
+              setNewVolumeName('');
+            }
+          });
+          }}>确定</Button>
+      </div>
+    </div>
+  );
   
   return (
     <React.Fragment>
@@ -333,16 +359,18 @@ export default function EditBook(props) {
                 </Button>
               </div>
               <div className="mr-1 ml-1 flex justify-between">
-              <Popover placement="bottomLeft" title={'添加分卷'} open={showNewVolumePanel} onOpenChange={v=>setShowNewVolumePanel(v)} content={NewVolumePanel} trigger="click">
-                <Button size='small' className="p-0 bg-gray-200 hover:bg-blue-200 rounded-full border-none relative w-[24px] overflow-hidden hover:w-[84px]" >
-                  <PlusSquareOutlined  className="absolute top-[5px] left-[5px]" />
-                  <span className="absolute top-[1px] left-[15px]">添加分卷</span>
-                </Button>
+                <Popover placement="bottomLeft" title={'添加分卷'} open={showNewVolumePanel} onOpenChange={v=>setShowNewVolumePanel(v)} content={NewVolumePanel} trigger="click">
+                  <Button size='small' className="p-0 bg-gray-200 hover:bg-blue-200 rounded-full border-none relative w-[24px] overflow-hidden hover:w-[84px]" >
+                    <PlusSquareOutlined  className="absolute top-[5px] left-[5px]" />
+                    <span className="absolute top-[1px] left-[15px]">添加分卷</span>
+                  </Button>
                 </Popover>
-                <Button size='small' className="p-0 bg-gray-200 hover:bg-blue-200 rounded-full border-none relative w-[24px] overflow-hidden hover:w-[84px]">
-                  <PlusCircleOutlined className="absolute top-[5px] left-[5px]" />
-                  <span className="absolute top-[1px] left-[15px]">添加章节</span>
-                </Button>
+                <Popover placement="bottomLeft" title={'添加章节'} open={showNewChapterPanel} onOpenChange={v=>setShowNewChapterPanel(v)} content={NewChapterPanel} trigger="click">
+                  <Button size='small' className="p-0 bg-gray-200 hover:bg-blue-200 rounded-full border-none relative w-[24px] overflow-hidden hover:w-[84px]">
+                    <PlusCircleOutlined className="absolute top-[5px] left-[5px]" />
+                    <span className="absolute top-[1px] left-[15px]">添加章节</span>
+                  </Button>
+                </Popover>
               </div>
               <div className="h-full w-full overflow-scroll text-left">
                 <div className="h-full p-2 inline-block whitespace-nowrap">
@@ -448,29 +476,59 @@ export default function EditBook(props) {
 
 
 function ContentTree(props) {
+  const [showRenamePanel, setShowRenamePanel] = useState({});
+  const [newName, setNewName] = useState('');
+
+  const RenamePanel = (
+    <div>
+      <div className="flex justify-start items-center mb-5">
+        <div className="mr-0">新名称：</div>
+        <input type="text" className=" border mr-3" value={newName} onChange={e=>setNewName(e.target.value)} />
+        <Button type='primary' className="bg-blue-500" size="small" onClick={async ()=>{
+          console.log('添加分卷');
+          if (!window.ipc) return;
+          window.ipc.send('add-volume-directory', {title, volumeTitle: newVolumeName});
+          window.ipc.on('add-volume-directory', (arg) => {
+            console.log('add-volume-directory', arg);
+            // arg is an array of themes
+            if (arg.success) {
+              console.log('volumes', arg.data);
+              // setCustomThemes(arg.data);
+              setShowRenamePanel(false);
+              setNewName('');
+            }
+          });
+          }}>确定</Button>
+      </div>
+    </div>
+  );
+
   return <Tree
-    showIcon
-    defaultExpandAll
-    defaultSelectedKeys={['0-0-0']}
-    switcherIcon={<DownOutlined />}
-    treeData={treeData}
-    showLine
-    titleRender={(nodeData) => {
-      return (
-        <span className="relative group">
-          <span>{nodeData.title}</span>
-          <button className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out" 
-            onClick={()=>{
-              console.log('编辑章节');
-            }}
-          >
-            <FormOutlined />
-          </button>
-          <span className="text-gray-400 ml-1 text-xs">{formatNumber(nodeData.words)}</span>
-        </span>
-      );
-    }}
-  />
+      showIcon
+      defaultExpandAll
+      defaultSelectedKeys={['0-0-0']}
+      switcherIcon={<DownOutlined />}
+      treeData={treeData}
+      showLine
+      titleRender={(nodeData) => {
+        return (
+          <span className="relative group">
+            <span>{nodeData.title}</span>
+            <Popover placement="left" title={'修改名称'} open={showRenamePanel[nodeData.key]} onOpenChange={v=>setShowRenamePanel((pre)=>({...pre, [nodeData.key]:v}))} content={RenamePanel} trigger="click">
+            <button className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out" 
+              onClick={()=>{
+                console.log('编辑章节');
+              }}
+            >
+              <FormOutlined />
+            </button>
+            </Popover>
+            
+            <span className="text-gray-400 ml-1 text-xs">{formatNumber(nodeData.words)}</span>
+          </span>
+        );
+      }}
+    />
 }
 
 // 在外部初始化style元素，以便复用
