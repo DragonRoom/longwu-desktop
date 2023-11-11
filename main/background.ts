@@ -1,8 +1,9 @@
 import path from 'path'
 import { app, ipcMain, nativeTheme } from 'electron'
 import serve from 'electron-serve'
-import { createWindow } from './helpers'
+import { createWindow, readMetaJson } from './helpers'
 import { defaultThemes } from './themes'
+import { writeMetaJson, listSubdirectories, checkDirectoryExists, ensureDirectoryExists } from './helpers'
 
 const fs = require('fs').promises;
 
@@ -48,40 +49,6 @@ ipcMain.on('message', async (event, arg) => {
 // apis
 
 let bookRoot = path.join(app.getPath('userData'), 'Books');
-async function ensureDirectoryExists(directoryPath) {
-  try {
-    await fs.access(directoryPath);
-  } catch (error) {
-    // 如果目录不存在，则创建它
-    await fs.mkdir(directoryPath, { recursive: true });
-    console.log('目录已创建成功');
-  }
-}
-
-async function checkDirectoryExists(directoryPath) {
-  try {
-    await fs.access(directoryPath);
-    return true;
-  } catch (error) {
-    return false
-  }
-}
-
-function listSubdirectories(directoryPath) {
-  return new Promise((resolve, reject) => {
-    fs.readdir(directoryPath, { withFileTypes: true }, (error, entries) => {
-      if (error) {
-        reject(error);
-      } else {
-        // 使用 filter 筛选出是目录的条目，并获取它们的名称
-        const subdirectories = entries
-          .filter(entry => entry.isDirectory())
-          .map(dir => path.join(directoryPath, dir.name));
-        resolve(subdirectories);
-      }
-    });
-  });
-}
 
 ipcMain.on('list-books', async (event, arg) => {
   await ensureDirectoryExists(bookRoot);
@@ -234,11 +201,37 @@ ipcMain.on('add-volume-directory', async (event, arg) => {
   }
 });
 
-async function writeMetaJson(metaJsonPath, metaJson) {
-  await fs.writeFile(path.join(metaJsonPath, 'meta.json'), JSON.stringify(metaJson), 'utf-8');
-}
+// get volume list
+ipcMain.on('get-volume-list', async (event, arg) => {
+  try {
+    console.log('get-volume-list', arg);
+    let bookPath = path.join(bookRoot, arg);
+    let volumes = await listSubdirectories(bookPath);
+    volumes = (volumes as any).filter((item) => {
+      let volumeName = path.basename(item);
+      return !isNaN(Number(volumeName));
+    });
+    // get number array
+    let volumeNameNumbers = [];
+    for (let i=0; i<(volumes as any).length; i++) {
+      let volumeName = path.basename(volumes[i]);
+      let volumeNumber = Number(volumeName);
+      volumeNameNumbers.push(volumeNumber);
+    }
+    // sort number array
+    volumeNameNumbers.sort((a, b) => a - b);
 
-async function readMetaJson(metaJsonPath) {
-  let metaJson = await fs.readFile(path.join(metaJsonPath, 'meta.json'), 'utf-8');
-  return JSON.parse(metaJson);
-}
+    // get metajson from directory 
+    let volumeJsons = {};
+    for (let i=0; i<(volumeNameNumbers as any).length; i++) {
+      let volumePath = path.join(bookPath, volumeNameNumbers[i].toString());
+      let volumeJson = await readMetaJson(volumePath);
+      volumeJsons[i] = JSON.parse(volumeJson);
+    }
+    event.reply('get-volume-list', {success: true, data: volumeJsons});
+  } catch (error) {
+    console.log(error);
+    event.reply('get-volume-list', {success: false, reason: '获取失败'});
+  }
+});
+
