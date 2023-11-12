@@ -45,3 +45,29 @@ export function listSubdirectories(directoryPath) {
   });
 }
 
+// remove directory
+export async function removeDirectory(directoryPath) {
+  try {
+    await fs.rmdir(directoryPath, { recursive: true });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// pack directory to zip file
+export async function packDirectory(directoryPath, zipFilePath) {
+  const archiver = require('archiver');
+  const output = fs.createWriteStream(zipFilePath);
+  const archive = archiver('zip', {
+    zlib: { level: 9 } // Sets the compression level.
+  });
+  archive.pipe(output);
+  archive.directory(directoryPath, false);
+  await archive.finalize();
+}
+
+// unpack zip file to directory
+export async function unpackDirectory(zipFilePath, directoryPath) {
+  const decompress = require('decompress');
+  await decompress(zipFilePath, directoryPath);
+}
