@@ -83,6 +83,20 @@ export function initChapterApi(bookRoot) {
     }
   });
 
+  // update metajson of chapter in volume directory
+  // arg: {bookTitle: '', volumeNumber: '', chapterNumber: '', metaJson: {title: '', updateTime: '', wordCount: ''}}
+  ipcMain.on('update-chapter-meta', async (event, arg) => {
+    try {
+      console.log('update-chapter-meta', arg);
+      let chapterPath = path.join(bookRoot, arg.bookTitle, arg.volumeNumber, arg.chapterNumber);
+      await writeMetaJson(chapterPath, {...arg.metaJson, updateTime: new Date().getTime()});
+      event.reply('update-chapter-meta', {success: true});
+    } catch (error) {
+      console.log(error);
+      event.reply('update-chapter-meta', {success: false, reason: '更新失败'});
+    }
+  });
+
   // remove chapter directory in volume directory
   // arg: {bookTitle: '', volumeNumber: '', chapterNumber: '', chapterTitle: ''}
   ipcMain.on('remove-chapter', async (event, arg) => {
