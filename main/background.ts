@@ -6,6 +6,8 @@ import { writeMetaJson, listSubdirectories, ensureDirectoryExists } from './help
 import { initBookApi } from './apis/book'
 import { initThemeApi } from './apis/theme'
 import { initVolumeApi } from './apis/volume'
+import { initChapterApi } from './apis/chapter'
+import { initCardApi } from './apis/card'
 
 const fs = require('fs').promises;
 
@@ -57,4 +59,8 @@ initBookApi(bookRoot);
 initThemeApi();
 
 initVolumeApi(bookRoot);
+
+initChapterApi(bookRoot);
+
+initCardApi(bookRoot);
 
