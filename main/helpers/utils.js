@@ -10,6 +10,24 @@ export async function readMetaJson(metaJsonPath) {
   return JSON.parse(metaJson);
 }
 
+export async function writeContentJson(contentJsonPath, contentJson) {
+  await fs.writeFile(path.join(contentJsonPath, 'content.json'), JSON.stringify(contentJson), 'utf-8');
+}
+
+export async function readContentJson(contentJsonPath) {
+  let contentJson = await fs.readFile(path.join(contentJsonPath, 'content.json'), 'utf-8');
+  return JSON.parse(contentJson);
+}
+
+export async function writeDetailOutlineJson(detailOutlineJsonPath, detailOutlineJson) {
+  await fs.writeFile(path.join(detailOutlineJsonPath, 'detail-outline.json'), JSON.stringify(detailOutlineJson), 'utf-8');
+}
+
+export async function readDetailOutlineJson(detailOutlineJsonPath) {
+  let detailOutlineJson = await fs.readFile(path.join(detailOutlineJsonPath, 'detail-outline.json'), 'utf-8');
+  return JSON.parse(detailOutlineJson);
+}
+
 export async function ensureDirectoryExists(directoryPath) {
   try {
     await fs.access(directoryPath);
