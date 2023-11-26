@@ -1,6 +1,14 @@
 import path from 'path'
 import { ipcMain } from 'electron'
-import { readMetaJson, writeMetaJson, listSubdirectories, ensureDirectoryExists, removeDirectory } from '../helpers'
+import { 
+  readMetaJson, 
+  writeMetaJson, 
+  listSubdirectories, 
+  ensureDirectoryExists, 
+  removeDirectory,
+  writeContentJson,
+  readContentJson,
+} from '../helpers'
 
 export function initChapterApi(bookRoot) {
   // list chapters in volume directory
@@ -94,6 +102,34 @@ export function initChapterApi(bookRoot) {
     } catch (error) {
       console.log(error);
       event.reply('update-chapter-meta', {success: false, reason: '更新失败'});
+    }
+  });
+
+  // save chapter content JSON file in chapter directory
+  // arg: {bookTitle: '', volumeNumber: '', chapterNumber: '', content: {}}
+  ipcMain.on('save-chapter-content', async (event, arg) => {
+    try {
+      console.log('save-chapter-content', arg);
+      let chapterPath = path.join(bookRoot, arg.bookTitle, arg.volumeNumber, arg.chapterNumber);
+      await writeContentJson(chapterPath, arg.content);
+      event.reply('save-chapter-content', {success: true});
+    } catch (error) {
+      console.log(error);
+      event.reply('save-chapter-content', {success: false, reason: '保存失败'});
+    }
+  });
+
+  // load chapter content JSON file in chapter directory
+  // arg: {bookTitle: '', volumeNumber: '', chapterNumber: ''}
+  ipcMain.on('load-chapter-content', async (event, arg) => {
+    try {
+      console.log('load-chapter-content', arg);
+      let chapterPath = path.join(bookRoot, arg.bookTitle, arg.volumeNumber, arg.chapterNumber);
+      let content = await readContentJson(chapterPath);
+      event.reply('load-chapter-content', {success: true, data: content});
+    } catch (error) {
+      console.log(error);
+      event.reply('load-chapter-content', {success: false, reason: '加载失败'});
     }
   });
 
