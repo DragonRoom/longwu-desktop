@@ -133,6 +133,34 @@ export function initChapterApi(bookRoot) {
     }
   });
 
+  // save chapter detail outline JSON file in chapter directory
+  // arg: {bookTitle: '', volumeNumber: '', chapterNumber: '', detailOutline: {}}
+  ipcMain.on('save-chapter-detail-outline', async (event, arg) => {
+    try {
+      console.log('save-chapter-detail-outline', arg);
+      let chapterPath = path.join(bookRoot, arg.bookTitle, arg.volumeNumber, arg.chapterNumber);
+      await writeDetailOutlineJson(chapterPath, arg.detailOutline);
+      event.reply('save-chapter-detail-outline', {success: true});
+    } catch (error) {
+      console.log(error);
+      event.reply('save-chapter-detail-outline', {success: false, reason: '保存失败'});
+    }
+  });
+
+  // load chapter detail outline JSON file in chapter directory
+  // arg: {bookTitle: '', volumeNumber: '', chapterNumber: ''}
+  ipcMain.on('load-chapter-detail-outline', async (event, arg) => {
+    try {
+      console.log('load-chapter-detail-outline', arg);
+      let chapterPath = path.join(bookRoot, arg.bookTitle, arg.volumeNumber, arg.chapterNumber);
+      let detailOutline = await readDetailOutlineJson(chapterPath);
+      event.reply('load-chapter-detail-outline', {success: true, data: detailOutline});
+    } catch (error) {
+      console.log(error);
+      event.reply('load-chapter-detail-outline', {success: false, reason: '加载失败'});
+    }
+  });
+
   // remove chapter directory in volume directory
   // arg: {bookTitle: '', volumeNumber: '', chapterNumber: '', chapterTitle: ''}
   ipcMain.on('remove-chapter', async (event, arg) => {
