@@ -37,6 +37,15 @@ export async function readOutlineJson(outlineJsonPath) {
   return JSON.parse(outlineJson);
 }
 
+export async function writeCardJson(cardJsonPathName, cardJson) {
+  await fs.writeFile(cardJsonPathName, JSON.stringify(cardJson), 'utf-8');
+}
+
+export async function readCardJson(cardJsonPathName) {
+  let cardJson = await fs.readFile(cardJsonPathName, 'utf-8');
+  return JSON.parse(cardJson);
+}
+
 export async function ensureDirectoryExists(directoryPath) {
   try {
     await fs.access(directoryPath);
@@ -76,6 +85,14 @@ export function listSubdirectories(directoryPath) {
 export async function removeDirectory(directoryPath) {
   try {
     await fs.rmdir(directoryPath, { recursive: true });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function removeFile(filePath) {
+  try {
+    await fs.rm(filePath);
   } catch (error) {
     console.log(error);
   }
