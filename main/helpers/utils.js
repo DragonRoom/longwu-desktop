@@ -28,6 +28,15 @@ export async function readDetailOutlineJson(detailOutlineJsonPath) {
   return JSON.parse(detailOutlineJson);
 }
 
+export async function writeOutlineJson(outlineJsonPath, outlineJson) {
+  await fs.writeFile(path.join(outlineJsonPath, 'outline.json'), JSON.stringify(outlineJson), 'utf-8');
+}
+
+export async function readOutlineJson(outlineJsonPath) {
+  let outlineJson = await fs.readFile(path.join(outlineJsonPath, 'outline.json'), 'utf-8');
+  return JSON.parse(outlineJson);
+}
+
 export async function ensureDirectoryExists(directoryPath) {
   try {
     await fs.access(directoryPath);
