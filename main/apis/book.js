@@ -1,6 +1,16 @@
 import path from 'path'
 import { ipcMain } from 'electron'
-import { listSubdirectories, checkDirectoryExists, ensureDirectoryExists, removeDirectory, readMetaJson, packDirectory, unpackDirectory } from '../helpers'
+import { 
+  listSubdirectories, 
+  checkDirectoryExists, 
+  ensureDirectoryExists, 
+  removeDirectory, 
+  readMetaJson, 
+  packDirectory, 
+  unpackDirectory,
+  writeOutlineJson,
+  readOutlineJson,
+} from '../helpers'
 
 const fs = require('fs').promises;
 
@@ -121,6 +131,34 @@ export function initBookApi(bookRoot) {
     } catch (error) {
       console.log(error);
       event.reply('import-book', {success: false, reason: '导入失败'});
+    }
+  });
+
+  // save book outline JSON file in book directory
+  // arg: {title: '', outline: {}}
+  ipcMain.on('save-book-outline', async (event, arg) => {
+    try {
+      console.log('save-book-outline', arg);
+      let bookPath = path.join(bookRoot, arg.title);
+      await writeOutlineJson(bookPath, arg.outline);
+      event.reply('save-book-outline', {success: true});
+    } catch (error) {
+      console.log(error);
+      event.reply('save-book-outline', {success: false, reason: '保存失败'});
+    }
+  });
+
+  // load book outline JSON file in book directory
+  // arg: {title: ''}
+  ipcMain.on('load-book-outline', async (event, arg) => {
+    try {
+      console.log('load-book-outline', arg);
+      let bookPath = path.join(bookRoot, arg);
+      let outline = await readOutlineJson(bookPath);
+      event.reply('load-book-outline', {success: true, data: outline});
+    } catch (error) {
+      console.log(error);
+      event.reply('load-book-outline', {success: false, reason: '加载失败'});
     }
   });
 }
