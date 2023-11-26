@@ -8,6 +8,8 @@ import {
   removeDirectory,
   writeContentJson,
   readContentJson,
+  writeDetailOutlineJson,
+  readDetailOutlineJson,
 } from '../helpers'
 
 export function initChapterApi(bookRoot) {
