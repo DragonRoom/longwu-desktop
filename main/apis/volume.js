@@ -55,10 +55,10 @@ export function initVolumeApi(bookRoot) {
   });
 
   // get volume list
-  ipcMain.on('get-volume-list', async (event, arg) => {
+  ipcMain.on('get-volume-list', async (event, title) => {
     try {
-      console.log('get-volume-list', arg);
-      let bookPath = path.join(bookRoot, arg);
+      console.log('get-volume-list', title);
+      let bookPath = path.join(bookRoot, title);
       let volumes = await listSubdirectories(bookPath);
       volumes = volumes.filter((item) => {
         let volumeName = path.basename(item);
@@ -113,11 +113,11 @@ export function initVolumeApi(bookRoot) {
       let bookPath = path.join(bookRoot, arg.title);
       let volumePath = path.join(bookPath, arg.volume);
       let json = await readMetaJson(volumePath);
-      if (json.title !== arg.volumeTitle) {
-        event.reply('update-volume-meta-json', {success: false, reason: '卷名不匹配'});
-        return;
-      }
-      await writeMetaJson(volumePath, arg.metaJson);
+      
+      await writeMetaJson(volumePath, {
+        title: arg.volumeTitle,
+        createTime: Date.now(),
+      });
       event.reply('update-volume-meta-json', {success: true});
     } catch (error) {
       console.log(error);
