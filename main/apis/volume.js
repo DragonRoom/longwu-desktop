@@ -112,7 +112,7 @@ export function initVolumeApi(bookRoot) {
       console.log('update-volume-meta-json', arg);
       let bookPath = path.join(bookRoot, arg.title);
       let volumePath = path.join(bookPath, arg.volume);
-      let json = await readMetaJson(volumePath);
+      console.log('volumePath', volumePath, arg.volumeTitle);
       
       await writeMetaJson(volumePath, {
         title: arg.volumeTitle,

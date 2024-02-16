@@ -26,7 +26,9 @@ import {
 } from 'local-font';
 
 import LexicalEditor from '../LexicalEditor';
-import { formatNumber } from "./utils";
+import { formatNumber, promisify } from "./utils";
+
+import ContentTree from './ContentTree';
 
 if (typeof window !== 'undefined' && window.document) {
   setSashSize(5);
@@ -34,60 +36,13 @@ if (typeof window !== 'undefined' && window.document) {
 
 const iconStyle = ({ selected }) => (selected ? <img src="/images/openChapter.svg" width={22} alt="章" /> : <img src="/images/chapter.svg" width={22} alt="章" />);
 
-const treeData = [
-  {
-    title: '第1卷 风起萧墙',
-    key: '0-0',
-    icon: <img src="/images/volume.svg" width={22} alt="卷" />,
-    words: 41245,
-    children: [
-      {
-        title: '第1章 苏醒',
-        key: '0-0-0',
-        icon:  iconStyle,
-        words: 3245,
-      },
-      {
-        title: '第2章 重生',
-        key: '0-0-1',
-        icon: iconStyle,
-        words: 3015,
-      },
-      {
-        title: '第3章 冲突',
-        key: '0-0-2',
-        icon: iconStyle,
-        words: 3515,
-      },
-      {
-        title: '第4章 反转',
-        key: '0-0-3',
-        icon: iconStyle,
-        words: 2015,
-      },
-      {
-        title: '第5章 横行',
-        key: '0-0-4',
-        icon: iconStyle,
-        words: 5015,
-      },
-      {
-        title: '第6章 结局',
-        key: '0-0-5',
-        icon: iconStyle,
-        words: 4015,
-      },
-    ],
-  },
-];
-
 export default function BookEditor(props) {
   const router = useRouter();
   const { title } = props.title;
   const [showContent, setShowContent] = useState(true);
-  const [showTree, setShowTree] = useState(true);
-  const [showText, setShowText] = useState(true);
-  const [showCard, setShowCard] = useState(true);
+  const [showTree, setShowTree] = useState(false);
+  const [showText, setShowText] = useState(false);
+  const [showCard, setShowCard] = useState(false);
   const [color1, setColor1] = useState('#c0d4d7'); // bg color
   const [color2, setColor2] = useState('#e8e8e8'); // bg color
   const [colorFont, setColorFont] = useState('#000'); // font color
@@ -103,32 +58,54 @@ export default function BookEditor(props) {
   const [showNewChapterPanel, setShowNewChapterPanel] = useState(false);
   const [contentTree, setContentTree] = useState([]);
   const [treeUpdater, setTreeUpdater] = useState(0);
+  const [currentVolume, setCurrentVolume] = useState(0);
+  const [currentChapter, setCurrentChapter] = useState(0);
 
   useEffect(() => {
-    if (window.ipc) {
-      window.ipc.send('get-volume-list', title);
-      window.ipc.on('get-volume-list', (arg) => {
-        console.log('get-volume-list', arg);
-        if (arg.success) {
-          let _contentTree = [];
-          let volumeTitles = Object.values(arg.data).map(v=>v.title);
-          console.log('volumeTitles', volumeTitles);
-          for (let i=0; i<volumeTitles.length; i++) {
-            _contentTree.push({
-              title: volumeTitles[i],
-              volume: (i + 1).toString(),
-              key: i.toString(),
-              icon: <img src="/images/volume.svg" width={22} alt="卷" />,
-              words: 0,
-              children: [],
-            });
-          }
-
-          console.log('contentTree', _contentTree);
-          setContentTree(_contentTree);
-        }
-      });
+    if (!window.ipc) {
+      return;
     }
+
+    const func = async () => {
+      window.ipc.send('get-volume-list', title);
+      let arg = await promisify(window.ipc.on, 'get-volume-list');
+      console.log('get-volume-list', arg);
+      let _contentTree = [];
+      let volumeTitles = Object.values(arg.data).map(v=>v.title);
+      console.log('volumeTitles', volumeTitles);
+      for (let i=0; i<volumeTitles.length; i++) {
+        _contentTree.push({
+          title: volumeTitles[i],
+          volume: (i + 1).toString(),
+          key: i.toString(),
+          icon: <img src="/images/volume.svg" width={22} alt="卷" />,
+          words: 0,
+          children: [],
+        });
+
+        window.ipc.send('list-chapters', {bookTitle: title, volumeNumber: (i + 1).toString()});
+        let arg2 = await promisify(window.ipc.on, 'list-chapters');
+        console.log('list-chapters', arg2);
+        let chapterTitles = Object.values(arg2.data).map(v=>v.title);
+        console.log('chapterTitles', chapterTitles);
+        for (let j=0; j<chapterTitles.length; j++) {
+          _contentTree[i].children.push({
+            title: chapterTitles[j],
+            volume: (i + 1).toString(),
+            chapter: (j + 1).toString(),
+            key: i.toString() + '-' + j.toString(),
+            icon: iconStyle,
+            words: 0,
+          });
+        }
+      }
+
+      console.log('contentTree', _contentTree);
+      setContentTree(_contentTree);
+    }
+
+    func().then(console.log('update contentTree finish')).catch(console.error);
+
   }, [treeUpdater, title]);
 
   useEffect(()=>{
@@ -251,6 +228,7 @@ export default function BookEditor(props) {
               // setCustomThemes(arg.data);
               setShowNewVolumePanel(false);
               setNewVolumeName('');
+              setTreeUpdater(Date.now());
             }
           });
           }}>确定</Button>
@@ -264,17 +242,18 @@ export default function BookEditor(props) {
         <div className="mr-0">章节名称：</div>
         <input type="text" className=" border mr-3" value={newChapterName} onChange={e=>setNewChapterName(e.target.value)} />
         <Button type='primary' className="bg-blue-500" size="small" onClick={async ()=>{
-          console.log('添加分卷');
+          console.log('添加章节');
           if (!window.ipc) return;
-          window.ipc.send('add-volume-directory', {title, volumeTitle: newVolumeName});
-          window.ipc.on('add-volume-directory', (arg) => {
-            console.log('add-volume-directory', arg);
+          window.ipc.send('create-chapter', {bookTitle: title, volumeNumber: currentVolume, chapterTitle: newChapterName});
+          window.ipc.on('create-chapter', (arg) => {
+            console.log('create-chapter', arg);
             // arg is an array of themes
             if (arg.success) {
-              console.log('volumes', arg.data);
+              console.log('chapters', arg.data);
               // setCustomThemes(arg.data);
-              setShowNewVolumePanel(false);
-              setNewVolumeName('');
+              setShowNewChapterPanel(false);
+              setNewChapterName('');
+              setTreeUpdater(Date.now());
             }
           });
           }}>确定</Button>
@@ -403,7 +382,7 @@ export default function BookEditor(props) {
               </div>
               <div className="h-full w-full overflow-scroll text-left">
                 <div className="h-full p-2 inline-block whitespace-nowrap">
-                  <ContentTree contentTree={contentTree} setTreeUpdater={setTreeUpdater} />
+                  <ContentTree title={title} contentTree={contentTree} setTreeUpdater={setTreeUpdater} setCurrentChapter={setCurrentChapter} setCurrentVolume={setCurrentVolume} />
                 </div>
               </div>
             </div>
@@ -503,69 +482,6 @@ export default function BookEditor(props) {
   );
 }
 
-
-function ContentTree(props) {
-  const [showRenamePanel, setShowRenamePanel] = useState({});
-  const [newName, setNewName] = useState('');
-
-  const RenamePanel = (
-    <div>
-      <div className="flex justify-start items-center mb-5">
-        <div className="mr-0">新名称：</div>
-        <input type="text" className=" border mr-3" value={newName} onChange={e=>setNewName(e.target.value)} />
-        <Button type='primary' className="bg-blue-500" size="small" onClick={async ()=>{
-          console.log('修改分卷名称');
-          if (!window.ipc) return;
-          window.ipc.send('update-volume-meta-json', {title, volume: '', volumeTitle: newVolumeName});
-          window.ipc.on('update-volume-meta-json', (arg) => {
-            console.log('update-volume-meta-json', arg);
-            // arg is an array of themes
-            if (arg.success) {
-              console.log('volumes', arg.data);
-              // setCustomThemes(arg.data);
-              setShowRenamePanel(false);
-              setNewName('');
-              props.setTreeUpdater(Date.now());
-            }
-          });
-          }}>确定</Button>
-      </div>
-    </div>
-  );
-
-  return <Tree
-      showIcon
-      defaultExpandAll
-      defaultSelectedKeys={['0-0-0']}
-      switcherIcon={<DownOutlined />}
-      treeData={props.contentTree}
-      onSelect={(selectedKeys, info) => {
-        console.log('selected', selectedKeys, info);
-      }}
-      showLine
-      titleRender={(nodeData) => {
-        return (
-          <span className="relative group">
-            <span>{nodeData.title}</span>
-            <Popover placement="left" title={'修改名称'} open={showRenamePanel[nodeData.key]} onOpenChange={(v)=>{
-              setNewName(nodeData.title);
-              setShowRenamePanel((pre)=>({...pre, [nodeData.key]:v}));
-            }} content={RenamePanel} trigger="click">
-            <button className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out" 
-              onClick={()=>{
-                console.log('编辑章节');
-              }}
-            >
-              <FormOutlined />
-            </button>
-            </Popover>
-            
-            <span className="text-gray-400 ml-1 text-xs">{formatNumber(nodeData.words)}</span>
-          </span>
-        );
-      }}
-    />
-}
 
 // 在外部初始化style元素，以便复用
 let textStyle;
