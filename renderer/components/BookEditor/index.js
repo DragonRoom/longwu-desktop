@@ -40,7 +40,7 @@ export default function BookEditor(props) {
   const router = useRouter();
   const { title } = props.title;
   const [showContent, setShowContent] = useState(true);
-  const [showTree, setShowTree] = useState(false);
+  const [showTree, setShowTree] = useState(true);
   const [showText, setShowText] = useState(false);
   const [showCard, setShowCard] = useState(false);
   const [color1, setColor1] = useState('#c0d4d7'); // bg color
@@ -60,6 +60,12 @@ export default function BookEditor(props) {
   const [treeUpdater, setTreeUpdater] = useState(0);
   const [currentVolume, setCurrentVolume] = useState(0);
   const [currentChapter, setCurrentChapter] = useState(0);
+
+  const showEditors = () => {
+    // setShowCard(true);
+    // setShowTree(true);
+    setShowText(true);
+  }
 
   useEffect(() => {
     if (!window.ipc) {
@@ -228,6 +234,7 @@ export default function BookEditor(props) {
               // setCustomThemes(arg.data);
               setShowNewVolumePanel(false);
               setNewVolumeName('');
+              setCurrentVolume(arg.data.length.toString());
               setTreeUpdater(Date.now());
             }
           });
@@ -253,6 +260,8 @@ export default function BookEditor(props) {
               // setCustomThemes(arg.data);
               setShowNewChapterPanel(false);
               setNewChapterName('');
+              setCurrentChapter(arg.data.length.toString());
+              showEditors();
               setTreeUpdater(Date.now());
             }
           });
@@ -381,9 +390,21 @@ export default function BookEditor(props) {
                 </Popover>
               </div>
               <div className="h-full w-full overflow-scroll text-left">
+                {
+                  contentTree.length === 0 && <div className="h-full w-full flex items-center justify-center">
+                    <pre className="bg-gray-200 text-gray-500 rounded-3xl text-sm p-4 whitespace-pre-wrap m-4">温馨提示: <br/>1)点击左上角[+]添加新卷; <br/>2)点击右上角[+]添加章节; <br/>3)点击章节, 开始写作 :)</pre>
+                  </div>
+                }
                 <div className="h-full p-2 inline-block whitespace-nowrap">
-                  <ContentTree title={title} contentTree={contentTree} setTreeUpdater={setTreeUpdater} setCurrentChapter={setCurrentChapter} setCurrentVolume={setCurrentVolume} />
+                  <ContentTree title={title}
+                    contentTree={contentTree} 
+                    setTreeUpdater={setTreeUpdater} 
+                    setCurrentChapter={setCurrentChapter} 
+                    setCurrentVolume={setCurrentVolume} 
+                    showEditors={showEditors}
+                  />
                 </div>
+                
               </div>
             </div>
           </Allotment.Pane>

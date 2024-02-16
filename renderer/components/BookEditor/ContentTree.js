@@ -109,42 +109,48 @@ export default function ContentTree(props) {
     </div>
   );
 
-  return <Tree
-    showIcon
-    defaultExpandAll
-    // defaultSelectedKeys={['0-0']}
-    switcherIcon={<DownOutlined />}
-    treeData={props.contentTree}
-    onSelect={(selectedKeys, info) => {
-      console.log('selected', selectedKeys, info);
-      props.setCurrentVolume(info.node.volume);
-      if (info.node.key.includes('-')) {
-        props.setCurrentChapter(info.node.key);
-      }
-    }}
-    showLine
-    titleRender={(nodeData) => {
-      return (
-        <span className="relative group">
-          <span>{nodeData.title}</span>
-          <Popover placement="left" title={'修改名称'} open={showRenamePanel[nodeData.key]} onOpenChange={(v)=>{
-            setNewName(nodeData.title);
-            setVolume(nodeData.volume);
-            setChapter(nodeData.chapter);
-            setShowRenamePanel((pre)=>({...pre, [nodeData.key]:v}));
-          }} content={RenamePanel} trigger="click">
-          <button className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out" 
-            onClick={()=>{
-              console.log('编辑章节');
-            }}
-          >
-            <FormOutlined />
-          </button>
-          </Popover>
-          
-          <span className="text-gray-400 ml-1 text-xs">{formatNumber(nodeData.words)}</span>
-        </span>
-      );
-    }}
-  />
+  return <>
+    {
+      props.contentTree.length > 0 && <Tree
+        showIcon
+        defaultExpandAll={true}
+        autoExpandParent={true}
+        // defaultSelectedKeys={['0-0']}
+        switcherIcon={<DownOutlined />}
+        treeData={props.contentTree}
+        onSelect={(selectedKeys, info) => {
+          console.log('selected', selectedKeys, info);
+          props.setCurrentVolume(info.node.volume);
+          if (info.node.key.includes('-')) {
+            props.setCurrentChapter(info.node.chapter);
+            props.showEditors();
+          }
+        }}
+        showLine
+        titleRender={(nodeData) => {
+          return (
+            <span className="relative group">
+              <span>{nodeData.title}</span>
+              <Popover placement="left" title={'修改名称'} open={showRenamePanel[nodeData.key]} onOpenChange={(v)=>{
+                setNewName(nodeData.title);
+                setVolume(nodeData.volume);
+                setChapter(nodeData.chapter);
+                setShowRenamePanel((pre)=>({...pre, [nodeData.key]:v}));
+              }} content={RenamePanel} trigger="click">
+              <button className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out" 
+                onClick={()=>{
+                  console.log('编辑章节');
+                }}
+              >
+                <FormOutlined />
+              </button>
+              </Popover>
+              
+              <span className="text-gray-400 ml-1 text-xs">{formatNumber(nodeData.words)}</span>
+            </span>
+          );
+        }}
+      />
+    }
+  </>
 }
