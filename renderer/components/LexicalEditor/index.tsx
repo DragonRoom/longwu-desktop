@@ -27,6 +27,7 @@ import TestRecorderPlugin from './plugins/TestRecorderPlugin';
 import TypingPerfPlugin from './plugins/TypingPerfPlugin';
 import Settings from './Settings';
 import PlaygroundEditorTheme from './themes/PlaygroundEditorTheme';
+import SerializeOnEnterPlugin from './plugins/SerializeOnEnterPlugin';
 
 console.warn(
   'If you are profiling the playground app, please ensure you turn off the debug view. You can disable it by pressing on the settings control in the bottom-left of your screen and toggling the debug view setting.',
@@ -112,7 +113,7 @@ function prepopulatedRichText() {
   }
 }
 
-export default function LexicalEditor(): JSX.Element {
+export default function LexicalEditor(props: {namespace: string}): JSX.Element {
   const {
     settings: {isCollab, emptyEditor, measureTypingPerf},
   } = useSettings();
@@ -123,7 +124,7 @@ export default function LexicalEditor(): JSX.Element {
       : emptyEditor
       ? undefined
       : prepopulatedRichText,
-    namespace: 'Playground',
+    namespace: props.namespace,
     nodes: [...PlaygroundNodes],
     onError: (error: Error) => {
       throw error;
@@ -145,6 +146,7 @@ export default function LexicalEditor(): JSX.Element {
             {/* {isDevPlayground ? <TestRecorderPlugin /> : null} */}
 
             {measureTypingPerf ? <TypingPerfPlugin /> : null}
+            <SerializeOnEnterPlugin />
           </SharedAutocompleteContext>
         </TableContext>
       </SharedHistoryContext>

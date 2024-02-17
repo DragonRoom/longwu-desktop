@@ -429,7 +429,7 @@ export default function BookEditor(props) {
                     </Button>
                   </div>
                   <div className="h-full w-full">
-                    <LexicalEditor />
+                    <LexicalEditor namespace="MainOutline" />
                   </div>
                 </div>
               </Allotment.Pane>
@@ -447,7 +447,7 @@ export default function BookEditor(props) {
                     </Button>
                   </div>
                   <div className="h-full w-full">
-                    <LexicalEditor />
+                    <LexicalEditor namespace="DetailOutline" />
                   </div>
                 </div>
               </Allotment.Pane>
@@ -472,7 +472,7 @@ export default function BookEditor(props) {
                 </Button>
               </div>
               <div className="h-full w-full relative">
-                <LexicalEditor />
+                <LexicalEditor namespace="TextContent" />
               </div>
             </div>
           </Allotment.Pane>
