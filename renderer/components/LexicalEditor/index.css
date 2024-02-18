@@ -395,6 +395,10 @@ i.clear {
   background-image: url(images/icons/trash.svg);
 }
 
+i.save {
+  background-image: url(images/icons/save.svg);
+}
+
 i.code {
   background-image: url(images/icons/code.svg);
 }

@@ -273,7 +273,7 @@ export default function BookEditor(props) {
   return (
     <React.Fragment>
       <Head>
-        <title>{title} → 第1卷 风起云涌 | 第2章 苏醒</title>
+        <title>{title} → {contentTree.find(v=>v.volume === currentVolume)?.title} | {contentTree.find(v=>v.volume === currentVolume)?.children.find(v=>v.chapter === currentChapter)?.title}</title>
       </Head>
       <div 
         style={{ 
@@ -429,7 +429,7 @@ export default function BookEditor(props) {
                     </Button>
                   </div>
                   <div className="h-full w-full">
-                    <LexicalEditor namespace="MainOutline" />
+                    <LexicalEditor namespace="MainOutline" title={title} volume={currentVolume} chapter={currentChapter} />
                   </div>
                 </div>
               </Allotment.Pane>
@@ -447,7 +447,7 @@ export default function BookEditor(props) {
                     </Button>
                   </div>
                   <div className="h-full w-full">
-                    <LexicalEditor namespace="DetailOutline" />
+                    <LexicalEditor namespace="DetailOutline" title={title} volume={currentVolume} chapter={currentChapter} />
                   </div>
                 </div>
               </Allotment.Pane>
@@ -472,7 +472,7 @@ export default function BookEditor(props) {
                 </Button>
               </div>
               <div className="h-full w-full relative">
-                <LexicalEditor namespace="TextContent" />
+                <LexicalEditor namespace="TextContent" title={title} volume={currentVolume} chapter={currentChapter} />
               </div>
             </div>
           </Allotment.Pane>

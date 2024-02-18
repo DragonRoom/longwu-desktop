@@ -1,23 +1,44 @@
 import { useEffect } from 'react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { parseEditorState } from 'lexical';
 
 // 假设你有一个序列化的编辑器状态字符串
 const serializedEditorState = '{"blocks":[{"type":"paragraph","children":[{"text":"Hello, world!"}]}]}';
 
-const LoadSerializedStatePlugin = () => {
+const LoadSerializedStatePlugin = (props) => {
   const [editor] = useLexicalComposerContext();
 
-  useEffect(() => {
-    // 反序列化JSON字符串
-    const editorStateJSON = JSON.parse(serializedEditorState);
+  const { title, namespace, volume, chapter } = props;
 
-    editor.update(() => {
-      // 解析编辑器状态并应用
-      const editorState = parseEditorState(editorStateJSON);
-      editor.setEditorState(editorState);
-    });
-  }, [editor]);
+  useEffect(() => {
+    if (!window.ipc) {
+      console.log('ipc not found');
+      return;
+    }
+    if (!namespace) {
+      console.log('namespace not found');
+      return;
+    }
+
+    if (namespace === 'MainOutline') {
+      if (!title) {
+        console.log('title not found');
+        return;
+      }
+      window.ipc.send('load-book-outline', {title});
+      window.ipc.on('load-book-outline', (arg) => {
+        console.log('load-book-outline', arg);
+        if (arg.success) {
+          editor.update(() => {
+            // 解析编辑器状态并应用
+            const editorState = editor.parseEditorState(arg.data);
+            editor.setEditorState(editorState);
+          });
+        }
+      });
+    }
+
+    
+  }, [editor, title, namespace, volume, chapter]);
 
   return null;
 };

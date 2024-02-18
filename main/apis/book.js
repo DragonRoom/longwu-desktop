@@ -153,7 +153,7 @@ export function initBookApi(bookRoot) {
   ipcMain.on('load-book-outline', async (event, arg) => {
     try {
       console.log('load-book-outline', arg);
-      let bookPath = path.join(bookRoot, arg);
+      let bookPath = path.join(bookRoot, arg.title);
       let outline = await readOutlineJson(bookPath);
       event.reply('load-book-outline', {success: true, data: outline});
     } catch (error) {

@@ -177,6 +177,16 @@ export default function ActionsPlugin({
         </button>
       )} */}
       <button
+        className="action-button save"
+        disabled={isEditorEmpty}
+        onClick={() => {
+          console.log('save');
+        }}
+        title="保存（按[回车]键自动保存）"
+        aria-label="保存（按[回车]键自动保存）">
+        <i className="save" />
+      </button>
+      <button
         className="action-button import"
         onClick={() => importFile(editor)}
         title="导入"
@@ -185,6 +195,7 @@ export default function ActionsPlugin({
       </button>
       <button
         className="action-button export"
+        disabled={isEditorEmpty}
         onClick={() =>
           exportFile(editor, {
             fileName: `龙屋_${new Date().toISOString()}`,
