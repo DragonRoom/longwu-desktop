@@ -60,6 +60,10 @@ export default function BookEditor(props) {
   const [treeUpdater, setTreeUpdater] = useState(0);
   const [currentVolume, setCurrentVolume] = useState(0);
   const [currentChapter, setCurrentChapter] = useState(0);
+  const [outlineWordCount, setOutlineWordCount] = useState(0);
+  const [detailOutlineWordCount, setDetailOutlineWordCount] = useState(0);
+  const [textWordCount, setTextWordCount] = useState(0);
+
 
   const showEditors = () => {
     // setShowCard(true);
@@ -163,6 +167,18 @@ export default function BookEditor(props) {
       });
     }
   }, []);
+
+  window.addEventListener('wordCountUpdated', (e) => {
+    if (e.detail.MainOutline) {
+      setOutlineWordCount(e.detail.MainOutline);
+    }
+    if (e.detail.DetailOutline) {
+      setDetailOutlineWordCount(e.detail.DetailOutline);
+    }
+    if (e.detail.TextContent) {
+      setTextWordCount(e.detail.TextContent);
+    }
+  });
 
   const StylePanel = (
     <div>
@@ -423,7 +439,7 @@ export default function BookEditor(props) {
                   <div style={{
                     backgroundColor: `${colorTitle}`,
                   }} className=" rounded-lg m-1">
-                    大纲 <span className="text-gray-500">{formatNumber(3245)}</span>
+                    大纲 <span className="text-gray-500">{formatNumber(outlineWordCount)}</span>
                     <Button onClick={()=>setShowTree(!showTree)} size="small" className="absolute right-[1px] border-none top-[1px]" >
                       <CloseOutlined />
                     </Button>
@@ -441,7 +457,7 @@ export default function BookEditor(props) {
                   <div style={{
                     backgroundColor: `${colorTitle}`,
                   }} className=" rounded-lg m-1">
-                    细纲 / 章纲 <span className="text-gray-500">{formatNumber(3245)}</span>
+                    细纲 / 章纲 <span className="text-gray-500">{formatNumber(detailOutlineWordCount)}</span>
                     <Button  onClick={()=>setShowTree(!showTree)} size="small" className="absolute right-[1px] border-none top-[1px]" >
                       <CloseOutlined />
                     </Button>
@@ -466,7 +482,7 @@ export default function BookEditor(props) {
               <div style={{
                 backgroundColor: `${colorTitle}`,
               }} className=" rounded-lg m-1">
-                正文 <span className="text-gray-500">{formatNumber(3245)}</span>
+                正文 <span className="text-gray-500">{formatNumber(textWordCount)}</span>
                 <Button onClick={()=>setShowText(!showText)} size="small" className="absolute right-[1px] border-none top-[1px]" >
                   <CloseOutlined />
                 </Button>

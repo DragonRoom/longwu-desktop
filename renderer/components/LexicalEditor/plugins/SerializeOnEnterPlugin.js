@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $getRoot, $getSelection, createCommand, KEY_DOWN_COMMAND, COMMAND_PRIORITY_NORMAL } from 'lexical';
+import { createCommand, KEY_DOWN_COMMAND, COMMAND_PRIORITY_NORMAL, RootNode } from 'lexical';
 
 // 创建一个命令，用于执行序列化逻辑
 export const SERIALIZE_COMMAND = createCommand();
@@ -28,14 +28,21 @@ const SerializeOnEnterPlugin = (props) => {
       COMMAND_PRIORITY_NORMAL
     );
 
+    const removeNodeTransformListener = editor.registerNodeTransform(RootNode, (rootNode) => {
+      const textContentSize = rootNode.getTextContentSize();
+
+      const event = new CustomEvent('wordCountUpdated', { detail: { [namespace]: textContentSize } });
+      window.dispatchEvent(event);
+    });
+
     // 注册一个命令处理器，用于处理序列化命令
     const removeSerializeCommandListener = editor.registerCommand(
       SERIALIZE_COMMAND,
       () => {
         editor.update(() => {
           const editorState = editor.getEditorState();
-          const serializedState = JSON.stringify(editorState.toJSON());
-          console.log(namespace, 'serializedState:', serializedState); // 执行序列化逻辑，例如打印到控制台或存储
+          // const serializedState = JSON.stringify(editorState.toJSON());
+          // console.log(namespace, 'serializedState:', serializedState); // 执行序列化逻辑，例如打印到控制台或存储
           if (!window.ipc) {
             console.log('ipc not found');
             return;
@@ -50,8 +57,8 @@ const SerializeOnEnterPlugin = (props) => {
               console.log('save-book-outline', arg);
             });
           }
-
         });
+
         return true; // 表示命令已处理
       },
       COMMAND_PRIORITY_NORMAL
@@ -61,6 +68,7 @@ const SerializeOnEnterPlugin = (props) => {
     return () => {
       removeKeyDownCommandListener();
       removeSerializeCommandListener();
+      removeNodeTransformListener();
     };
   }, [editor, namespace, title]);
 

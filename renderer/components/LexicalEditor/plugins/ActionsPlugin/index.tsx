@@ -36,6 +36,10 @@ import {
   SUPPORT_SPEECH_RECOGNITION,
 } from '../SpeechToTextPlugin';
 
+import {
+  SERIALIZE_COMMAND
+} from '../SerializeOnEnterPlugin';
+
 async function sendEditorState(editor: LexicalEditor): Promise<void> {
   const stringifiedEditorState = JSON.stringify(editor.getEditorState());
   try {
@@ -181,6 +185,7 @@ export default function ActionsPlugin({
         disabled={isEditorEmpty}
         onClick={() => {
           console.log('save');
+          editor.dispatchCommand(SERIALIZE_COMMAND, null);
         }}
         title="保存（按[回车]键自动保存）"
         aria-label="保存（按[回车]键自动保存）">
