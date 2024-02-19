@@ -11,6 +11,7 @@ import {
   writeOutlineJson,
   readOutlineJson,
 } from '../helpers'
+import prompt from 'electron-prompt';
 
 const fs = require('fs').promises;
 
@@ -88,13 +89,27 @@ export function initBookApi(bookRoot) {
   ipcMain.on('remove-book', async (event, arg) => {
     try {
       console.log('remove-book', arg);
-      let bookPath = path.join(bookRoot, arg);
-      // compare book title
-      let bookJson = await readMetaJson(bookPath);
-      if (bookJson.title !== arg) {
+      let title = await prompt({
+        title: '删除书籍',
+        label: '请输入完整书名确认删除操作：',
+        value: '',
+        inputAttrs: {
+          type: 'text'
+        },
+        type: 'input'
+      });
+
+      if (!title) {
+        event.reply('remove-book', {success: false});
+        return;
+      }
+
+      if (title !== arg) {
         event.reply('remove-book', {success: false, reason: '书名不匹配'});
         return;
       }
+
+      let bookPath = path.join(bookRoot, arg);
 
       await removeDirectory(bookPath);
       event.reply('remove-book', {success: true});

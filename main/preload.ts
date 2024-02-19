@@ -7,12 +7,13 @@ const handler = {
   on(channel: string, callback: (...args: unknown[]) => void) {
     const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>
       callback(...args)
+    ipcRenderer.removeAllListeners(channel)
     ipcRenderer.on(channel, subscription)
 
     return () => {
       ipcRenderer.removeListener(channel, subscription)
     }
-  },
+  }
 }
 
 contextBridge.exposeInMainWorld('ipc', handler)

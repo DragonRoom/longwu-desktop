@@ -120,8 +120,15 @@ export default function ContentTree(props) {
         treeData={props.contentTree}
         onSelect={(selectedKeys, info) => {
           console.log('selected', selectedKeys, info);
+          if (!info.selected) {
+            props.setCurrentVolume('');
+            props.setCurrentChapter('');
+            props.showEditors(true);
+            return;
+          }
           props.setCurrentVolume(info.node.volume);
           if (info.node.key.includes('-')) {
+            props.setCurrentVolume(info.node.volume);
             props.setCurrentChapter(info.node.chapter);
             props.showEditors();
           }

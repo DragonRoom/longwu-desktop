@@ -136,6 +136,20 @@ export default function BookInfo(props) {
           }}>开始创作</Button>
           <Button className='bg-[#c49af1] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' disabled>作品导出</Button>
           <Button className='bg-[#6bbbbc] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' disabled>自动备份</Button>
+          <Button className='bg-[#c57f7f] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' onClick={()=>{
+            if (!window.ipc) return;
+            window.ipc.send('remove-book', title);
+            window.ipc.on('remove-book', (arg) => {
+              console.log(arg);
+              if (arg.success) {
+                router.push('/home');
+              } else {
+                if (arg.reason) {
+                  alert(arg.reason);
+                }
+              }
+            });
+          }} >删除作品</Button>
           <Button className='bg-[#049cd8] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' onClick={()=>{
             router.push('/home');
           }}>返回书库</Button>

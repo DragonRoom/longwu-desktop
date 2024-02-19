@@ -58,17 +58,21 @@ export default function BookEditor(props) {
   const [showNewChapterPanel, setShowNewChapterPanel] = useState(false);
   const [contentTree, setContentTree] = useState([]);
   const [treeUpdater, setTreeUpdater] = useState(0);
-  const [currentVolume, setCurrentVolume] = useState(0);
-  const [currentChapter, setCurrentChapter] = useState(0);
+  const [currentVolume, setCurrentVolume] = useState('');
+  const [currentChapter, setCurrentChapter] = useState('');
   const [outlineWordCount, setOutlineWordCount] = useState(0);
   const [detailOutlineWordCount, setDetailOutlineWordCount] = useState(0);
   const [textWordCount, setTextWordCount] = useState(0);
 
 
-  const showEditors = () => {
+  const showEditors = (hide) => {
     // setShowCard(true);
     // setShowTree(true);
-    setShowText(true);
+    if (hide) {
+      setShowText(false);
+    } else {
+      setShowText(true);
+    }
   }
 
   useEffect(() => {
@@ -445,11 +449,14 @@ export default function BookEditor(props) {
                     </Button>
                   </div>
                   <div className="h-full w-full">
-                    <LexicalEditor namespace="MainOutline" title={title} volume={currentVolume} chapter={currentChapter} />
+                    {
+                      title && <LexicalEditor namespace="MainOutline" title={title} />
+                    }
                   </div>
                 </div>
               </Allotment.Pane>
-              <Allotment.Pane>
+              {
+                currentChapter && <Allotment.Pane>
                 <div
                   style={{
                     backgroundColor: `${colorPanel}`,
@@ -463,10 +470,14 @@ export default function BookEditor(props) {
                     </Button>
                   </div>
                   <div className="h-full w-full">
-                    <LexicalEditor namespace="DetailOutline" title={title} volume={currentVolume} chapter={currentChapter} />
+                    {
+                      title && currentVolume && currentChapter && <LexicalEditor namespace="DetailOutline" title={title} volume={currentVolume} chapter={currentChapter} />
+                    }
                   </div>
                 </div>
               </Allotment.Pane>
+              }
+              
             </Allotment>
             
           </Allotment.Pane>
@@ -488,7 +499,9 @@ export default function BookEditor(props) {
                 </Button>
               </div>
               <div className="h-full w-full relative">
-                <LexicalEditor namespace="TextContent" title={title} volume={currentVolume} chapter={currentChapter} />
+                {
+                  title && currentVolume && currentChapter && <LexicalEditor namespace="TextContent" title={title} volume={currentVolume} chapter={currentChapter} />
+                }
               </div>
             </div>
           </Allotment.Pane>

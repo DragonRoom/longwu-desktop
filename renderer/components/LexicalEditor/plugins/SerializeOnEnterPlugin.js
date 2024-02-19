@@ -8,7 +8,7 @@ export const SERIALIZE_COMMAND = createCommand();
 const SerializeOnEnterPlugin = (props) => {
   const [editor] = useLexicalComposerContext();
   const namespace = props.namespace;
-  const title = props.title;
+  const {title, volume, chapter} = props;
   useEffect(() => {
     // 注册一个命令来监听按键事件
     const removeKeyDownCommandListener = editor.registerCommand(
@@ -57,6 +57,30 @@ const SerializeOnEnterPlugin = (props) => {
               console.log('save-book-outline', arg);
             });
           }
+
+          if(namespace === 'DetailOutline') {
+            console.log('DetailOutline', title, volume, chapter);
+            if (!title || !volume || !chapter) {
+              console.log('title / volume / chapter not found', title, volume, chapter);
+              return;
+            }
+            window.ipc.send('save-chapter-detail-outline', {bookTitle: title, volumeNumber: volume, chapterNumber: chapter, detailOutline: editorState.toJSON()});
+            window.ipc.on('save-chapter-detail-outline', (arg) => {
+              console.log('save-chapter-detail-outline', arg);
+            });
+          }
+
+          if(namespace === 'TextContent') {
+            console.log('TextContent', title, volume, chapter);
+            if (!title || !volume || !chapter) {
+              console.log('title / volume / chapter not found', title, volume, chapter);
+              return;
+            }
+            window.ipc.send('save-chapter-content', {bookTitle: title, volumeNumber: volume, chapterNumber: chapter, content: editorState.toJSON()});
+            window.ipc.on('save-chapter-content', (arg) => {
+              console.log('save-chapter-content', arg);
+            });
+          }
         });
 
         return true; // 表示命令已处理
@@ -70,7 +94,7 @@ const SerializeOnEnterPlugin = (props) => {
       removeSerializeCommandListener();
       removeNodeTransformListener();
     };
-  }, [editor, namespace, title]);
+  }, [editor, namespace, title, volume, chapter]);
 
   return null; // 插件不渲染任何UI组件
 };
