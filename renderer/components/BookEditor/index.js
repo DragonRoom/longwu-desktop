@@ -177,19 +177,25 @@ export default function BookEditor(props) {
         }
       });
     }
+
+    const updateWordCount = (e) => {
+      if (e.detail.MainOutline) {
+        setOutlineWordCount(e.detail.MainOutline);
+      }
+      if (e.detail.DetailOutline) {
+        setDetailOutlineWordCount(e.detail.DetailOutline);
+      }
+      if (e.detail.TextContent) {
+        setTextWordCount(e.detail.TextContent);
+      }
+    }
+
+    window.addEventListener('wordCountUpdated', updateWordCount);
+    return () => {
+      window.removeEventListener('wordCountUpdated', updateWordCount);
+    }
   }, []);
 
-  window.addEventListener('wordCountUpdated', (e) => {
-    if (e.detail.MainOutline) {
-      setOutlineWordCount(e.detail.MainOutline);
-    }
-    if (e.detail.DetailOutline) {
-      setDetailOutlineWordCount(e.detail.DetailOutline);
-    }
-    if (e.detail.TextContent) {
-      setTextWordCount(e.detail.TextContent);
-    }
-  });
 
   const StylePanel = (
     <div>
@@ -290,6 +296,8 @@ export default function BookEditor(props) {
               setCurrentChapter(arg.data.length.toString());
               showEditors();
               setTreeUpdater(Date.now());
+
+              window.dispatchEvent(new CustomEvent('changeSelectedKeys', {detail: {volume: currentVolume, chapter: arg.data.length.toString()}}));
             }
           });
           }}>确定</Button>
@@ -425,6 +433,7 @@ export default function BookEditor(props) {
                 <div className="h-full p-2 inline-block whitespace-nowrap">
                   <ContentTree title={title}
                     contentTree={contentTree} 
+                    selectedKeys={currentVolume && currentChapter ? [(Number(currentVolume) - 1) + '-' + (Number(currentChapter) - 1)]:[]}
                     setTreeUpdater={setTreeUpdater} 
                     setCurrentChapter={setCurrentChapter} 
                     setCurrentVolume={setCurrentVolume} 

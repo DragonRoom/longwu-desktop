@@ -23,6 +23,19 @@ const SerializeOnEnterPlugin = (props) => {
           editor.dispatchCommand(SERIALIZE_COMMAND, null);
           return true; // 表示命令已处理
         }
+
+        // check Cmd + S 
+        if (keyboardEvent.metaKey && keyboardEvent.key === 's') {
+          editor.dispatchCommand(SERIALIZE_COMMAND, null);
+          return true;
+        }
+
+        // check Ctrl + S
+        if (keyboardEvent.ctrlKey && keyboardEvent.key === 's') {
+          editor.dispatchCommand(SERIALIZE_COMMAND, null);
+          return true;
+        }
+        
         return false; // 表示命令未处理，允许其他命令处理器运行
       },
       COMMAND_PRIORITY_NORMAL

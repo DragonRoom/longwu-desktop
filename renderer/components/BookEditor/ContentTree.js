@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Popover, Tree } from "antd";
 import {
   FormOutlined,
@@ -60,6 +60,29 @@ export default function ContentTree(props) {
   const [newName, setNewName] = useState('');
   const [volume, setVolume] = useState('');
   const [chapter, setChapter] = useState('');
+  const [selectedKeys, setSelectedKeys] = useState([]);
+
+  useEffect(() => {
+    const changeKeys = (e) => {
+      console.log('changeKeys', e);
+      const { volume, chapter } = e.detail;
+      const key = [Number(volume) + '-' + Number(chapter)];
+      setSelectedKeys([key]);
+    }
+
+    window.addEventListener('changeSelectedKeys', changeKeys);
+    
+    return () => {
+      window.removeEventListener('changeSelectedKeys', changeKeys);
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log('selectedKeys', props.selectedKeys);
+    if (props.selectedKeys && props.selectedKeys.length > 0) {
+      setSelectedKeys(props.selectedKeys);
+    }
+  }, [props.selectedKeys])
 
   const title = props.title;
   const RenamePanel = (
@@ -118,8 +141,10 @@ export default function ContentTree(props) {
         // defaultSelectedKeys={['0-0']}
         switcherIcon={<DownOutlined />}
         treeData={props.contentTree}
-        onSelect={(selectedKeys, info) => {
-          console.log('selected', selectedKeys, info);
+        selectedKeys={selectedKeys}
+        onSelect={(selectedKeysValue, info) => {
+          console.log('selected', selectedKeysValue, info);
+          setSelectedKeys(selectedKeysValue);
           if (!info.selected) {
             props.setCurrentVolume('');
             props.setCurrentChapter('');
