@@ -25,7 +25,14 @@ import {
   queryFontList,
 } from 'local-font';
 
-import LexicalEditor from '../LexicalEditor';
+import dynamic from "next/dynamic";
+const LexicalEditor = dynamic(
+  () => {
+    return import("../LexicalEditor");
+  },
+  { ssr: false }
+);
+
 import { formatNumber, promisify } from "./utils";
 
 import ContentTree from './ContentTree';
@@ -535,15 +542,17 @@ export default function BookEditor(props) {
 
 // 在外部初始化style元素，以便复用
 let textStyle;
-if (typeof window !== 'undefined' && window.document) {
+if (typeof window !== 'undefined') {
   textStyle = document.createElement('style');
   document.head.appendChild(textStyle); // 将style元素添加到head中，而不是body
 }
 
 function updateFontFamily(fontName) {
-  // 只更新style元素的textContent来更改字体
-  textStyle.textContent = `@font-face {font-family: "dynamic-font"; src: local("${fontName}");}`;
-  document.body.style.fontFamily = "dynamic-font";
+  if (typeof window !== 'undefined') {
+    // 只更新style元素的textContent来更改字体
+    textStyle.textContent = `@font-face {font-family: "dynamic-font"; src: local("${fontName}");}`;
+    document.body.style.fontFamily = "dynamic-font";
+  }
 }
 
 function containsChinese(text) {

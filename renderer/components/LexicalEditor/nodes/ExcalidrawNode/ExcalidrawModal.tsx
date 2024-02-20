@@ -9,6 +9,7 @@
 // import './ExcalidrawModal.css';
 
 import {Excalidraw} from '@excalidraw/excalidraw';
+import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
 import {
   AppState,
   BinaryFiles,
@@ -215,8 +216,9 @@ export default function ExcalidrawModal({
   // This is a hacky work-around for Excalidraw + Vite.
   // In DEV, Vite pulls this in fine, in prod it doesn't. It seems
   // like a module resolution issue with ESM vs CJS?
-  const _Excalidraw =
-    Excalidraw.$$typeof != null ? Excalidraw : Excalidraw.default;
+  // const _Excalidraw = Excalidraw.$$typeof ? Excalidraw : Excalidraw.default || Excalidraw;
+
+  const _Excalidraw = Excalidraw;
 
   return createPortal(
     <div className="ExcalidrawModal__overlay" role="dialog">
@@ -231,7 +233,7 @@ export default function ExcalidrawModal({
             ref={excaliDrawSceneRef}
             initialData={{
               appState: initialAppState || {isLoading: false},
-              elements: initialElements,
+              elements: initialElements as readonly ExcalidrawElement[],
               files: initialFiles,
             }}
           />

@@ -1,32 +1,30 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-import {debounce} from 'lodash-es';
-import {useMemo, useRef} from 'react';
+import { debounce } from 'lodash-es';
+import { useCallback, useRef } from 'react';
 
 export function useDebounce<T extends (...args: never[]) => void>(
   fn: T,
   ms: number,
   maxWait?: number,
 ) {
+  // 使用 useRef 来存储最新的 fn 引用
   const funcRef = useRef<T | null>(null);
+
+  // 每当 fn 改变时，更新 ref
   funcRef.current = fn;
 
-  return useMemo(
-    () =>
-      debounce(
-        (...args: Parameters<T>) => {
-          if (funcRef.current) {
-            funcRef.current(...args);
-          }
-        },
-        ms,
-        {maxWait},
-      ),
+  // 使用 useCallback 来缓存防抖函数
+  return useCallback(
+    debounce(
+      (...args: Parameters<T>) => {
+        // 在防抖函数内部调用最新的 fn
+        if (funcRef.current) {
+          funcRef.current(...args);
+        }
+      },
+      ms,
+      { maxWait },
+    ),
+    // 当 ms 或 maxWait 改变时，重新创建防抖函数
     [ms, maxWait],
   );
 }

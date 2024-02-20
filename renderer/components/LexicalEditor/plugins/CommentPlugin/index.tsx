@@ -755,7 +755,7 @@ export default function CommentPlugin({
           // Do async to avoid causing a React infinite loop
           setTimeout(() => {
             editor.update(() => {
-              for (const key of markNodeKeys) {
+              for (const key of Array.from(markNodeKeys)) {
                 const node: null | MarkNode = $getNodeByKey(key);
                 if ($isMarkNode(node)) {
                   node.deleteID(id);
@@ -802,7 +802,7 @@ export default function CommentPlugin({
       const id = activeIDs[i];
       const keys = markNodeMap.get(id);
       if (keys !== undefined) {
-        for (const key of keys) {
+        for (const key of Array.from(keys)) {
           const elem = editor.getElementByKey(key);
           if (elem !== null) {
             elem.classList.add('selected');
@@ -840,7 +840,7 @@ export default function CommentPlugin({
       ),
       editor.registerMutationListener(MarkNode, (mutations) => {
         editor.getEditorState().read(() => {
-          for (const [key, mutation] of mutations) {
+          mutations.forEach((mutation, key) => {
             const node: null | MarkNode = $getNodeByKey(key);
             let ids: NodeKey[] = [];
 
@@ -872,7 +872,7 @@ export default function CommentPlugin({
                 }
               }
             }
-          }
+          });
         });
       }),
       editor.registerUpdateListener(({editorState, tags}) => {

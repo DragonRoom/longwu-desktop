@@ -111,7 +111,7 @@ function CodeActionMenuContainer({
 
   editor.registerMutationListener(CodeNode, (mutations) => {
     editor.getEditorState().read(() => {
-      for (const [key, type] of mutations) {
+      mutations.forEach((type, key) => {
         switch (type) {
           case 'created':
             codeSetRef.current.add(key);
@@ -126,7 +126,7 @@ function CodeActionMenuContainer({
           default:
             break;
         }
-      }
+      });
     });
   });
   const normalizedLang = normalizeCodeLang(lang);

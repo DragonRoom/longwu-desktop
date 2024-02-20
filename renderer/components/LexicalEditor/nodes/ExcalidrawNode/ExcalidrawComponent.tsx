@@ -164,11 +164,17 @@ export default function ExcalidrawComponent({
     setModalOpen(true);
   }, []);
 
+  interface ParseResult {
+    elements: any;
+    files: any;
+    appState: any;
+  }
+
   const {
     elements = [],
     files = {},
     appState = {},
-  } = useMemo(() => JSON.parse(data), [data]);
+  } = useMemo<ParseResult>(() => JSON.parse(data), [data]);
 
   return (
     <>

@@ -14,6 +14,7 @@ export type SettingName =
   | 'isCharLimit'
   | 'isMaxLength'
   | 'isCharLimitUtf8'
+  | 'isDevPlayground'
   | 'isAutocomplete'
   | 'shouldUseLexicalContextMenu'
   | 'showTreeView'
@@ -31,6 +32,7 @@ export const DEFAULT_SETTINGS: Settings = {
   isAutocomplete: false,
   isCharLimit: false,
   isCharLimitUtf8: false,
+  isDevPlayground: false,
   isCollab: false,
   isMaxLength: false,
   isRichText: true,

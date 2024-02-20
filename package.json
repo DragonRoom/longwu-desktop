@@ -18,6 +18,7 @@
   "dependencies": {
     "@excalidraw/excalidraw": "^0.16.1",
     "@lexical/file": "^0.12.2",
+    "@lexical/headless": "^0.13.1",
     "@lexical/markdown": "^0.12.2",
     "@lexical/plain-text": "^0.12.2",
     "@lexical/react": "^0.12.2",
@@ -35,7 +36,7 @@
     "lexical": "^0.12.2",
     "local-font": "^0.1.1",
     "lodash-es": "^4.17.21",
-    "prettier": "^3.0.3",
+    "prettier": "2.8.8",
     "spectron": "^19.0.0",
     "y-websocket": "^1.5.0",
     "yjs": "^13.6.8"

@@ -23,6 +23,5 @@ for (const param of Object.keys(DEFAULT_SETTINGS)) {
 }
 
 if (DEFAULT_SETTINGS.disableBeforeInput) {
-  // @ts-expect-error
   delete window.InputEvent.prototype.getTargetRanges;
 }

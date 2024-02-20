@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-
+let __DEV__ = true;
 export default function warnOnlyOnce(message: string) {
   if (!__DEV__) {
     return;

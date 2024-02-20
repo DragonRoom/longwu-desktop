@@ -1,8 +1,16 @@
+'use client';
 import { useRouter } from 'next/router';
-import React, { useState, useRef, useMemo, useEffect } from 'react'
+import React, { useState, useRef, useMemo, useEffect, useCallback } from 'react'
 import Head from 'next/head'
 import { Button, Input, Statistic } from 'antd';
 import { UserOutlined, CrownOutlined, BulbOutlined, EditOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import dynamic from "next/dynamic";
+const ClientButton = dynamic(
+  () => {
+    return import("../../components/ClientButton");
+  },
+  { ssr: false }
+);
 
 const { TextArea } = Input;
 
@@ -13,6 +21,7 @@ const data = [
   { date: '今日', value: '3321' },
   // ...其他数据
 ];
+
 
 export default function BookInfo(props) {
   const router = useRouter();
@@ -114,11 +123,16 @@ export default function BookInfo(props) {
               }}>
                 更换封面 <EditOutlined className='cursor-pointer opacity-50' />
               </div>
-              <div className='bg-gray-100 bg-opacity-80 drop-shadow-2xl shadow-lg p-2 rounded-2xl mt-2 z-10 cursor-pointer text-center' onClick={()=>{
-                saveCoverImage(cover, title);
+              <ClientButton>
+                保存封面图片 <EditOutlined className='cursor-pointer opacity-50' />
+              </ClientButton>
+              {/* <div className='bg-gray-100 bg-opacity-80 drop-shadow-2xl shadow-lg p-2 rounded-2xl mt-2 z-10 cursor-pointer text-center' onClick={()=>{
+                if (typeof window !== 'undefined') {
+                  saveCoverImage(cover, title);
+                }
               }}>
                 保存封面图片 <EditOutlined className='cursor-pointer opacity-50' />
-              </div>
+              </div> */}
             </div>
             
             <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} ref={inputFileRef}/>
@@ -232,42 +246,5 @@ function formatNumberWithCommas(num) {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-const saveCoverImage = (imageSrc, title='') => {
-  const isBase64 = (str) => {
-      try {
-          return btoa(atob(str)) === str;
-      } catch (err) {
-          return false;
-      }
-  };
 
-  // 创建一个a标签用于下载
-  const link = document.createElement("a");
-
-  if (isBase64(imageSrc)) {
-      // 处理Base64编码的图片
-      const byteCharacters = atob(imageSrc.split(',')[1]);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type: 'image/jpeg' }); // 设定为'image/jpeg'，您也可以根据实际情况进行修改
-      link.href = URL.createObjectURL(blob);
-  } else {
-      // 直接使用URL
-      link.href = imageSrc;
-  }
-
-  // 设置下载的文件名，可根据需要进行修改
-  link.download = title + "cover-image.jpg";
-
-  // 触发下载
-  link.click();
-
-  // 清除创建的元素
-  link.remove();
-
-  console.log("保存封面图片");
-};
 
