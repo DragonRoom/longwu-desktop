@@ -8,6 +8,8 @@
  */
 
 .Placeholder__root {
+  text-indent: 2em;
+  padding-top: 1em;
   font-size: 15px;
   color: #999;
   overflow: hidden;

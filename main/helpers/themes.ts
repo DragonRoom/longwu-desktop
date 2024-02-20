@@ -1,106 +1,102 @@
 export const defaultThemes = [
-  // 浅色调
   {
-    title: '晨曦微露',
-    bgColor1: '#F0F0F0',
-    bgColor2: '#F5F5F5',
-    bgImg: null,
-    panelColor: 'rgba(255, 255, 255, 0.086)',
-    panelTitle: 'rgba(0, 0, 0, 0.086)',
-    fontColor: '#333333',
-    fontName: null
+    "title": "晨曦微光",
+    "bgColor1": "#FFFBEA",
+    "bgColor2": "#EFF7FF",
+    "bgImg": null,
+    "panelColor": "#ffffff16", 
+    "panelTitle": "#00000016",
+    "fontColor": "#000000",
+    "fontName": null
   },
   {
-    title: '雾霭朦胧',
-    bgColor1: '#FAFAFA',
-    bgColor2: '#FEFEFE',
-    bgImg: null,
-    panelColor: 'rgba(250, 250, 250, 0.9)',
-    panelTitle: 'rgba(70, 70, 70, 0.086)',
-    fontColor: '#474747',
-    fontName: null
+    "title": "春水初生",
+    "bgColor1": "#F0FFF4",
+    "bgColor2": "#E6FFFA",
+    "bgImg": null,
+    "panelColor": "#ffffff16", 
+    "panelTitle": "#00000016", 
+    "fontColor": "#000000",
+    "fontName": null
   },
   {
-    title: '云水谣',
-    bgColor1: '#EFEFEF',
-    bgColor2: '#E8E8E8',
-    bgImg: null,
-    panelColor: 'rgba(239, 239, 239, 0.85)',
-    panelTitle: 'rgba(80, 80, 80, 0.086)',
-    fontColor: '#505050',
-    fontName: null
-  },
-  // 深色调
-  {
-    title: '夜幕降临',
-    bgColor1: '#252525',
-    bgColor2: '#1E1E1E',
-    bgImg: null,
-    panelColor: 'rgba(37, 37, 37, 0.85)',
-    panelTitle: 'rgba(200, 200, 200, 0.086)',
-    fontColor: '#C8C8C8',
-    fontName: null
+    "title": "夏云轻盖",
+    "bgColor1": "#FEF9E7",
+    "bgColor2": "#FEF5E7",
+    "bgImg": null,
+    "panelColor": "#ffffff16", 
+    "panelTitle": "#00000016", 
+    "fontColor": "#000000",
+    "fontName": null
   },
   {
-    title: '静谧星河',
-    bgColor1: '#2D2D2D',
-    bgColor2: '#242424',
-    bgImg: null,
-    panelColor: 'rgba(45, 45, 45, 0.9)',
-    panelTitle: 'rgba(215, 215, 215, 0.086)',
-    fontColor: '#D7D7D7',
-    fontName: null
-  },
-  // 另类风格
-  {
-    title: '潮流涂鸦',
-    bgColor1: '#FFD700',
-    bgColor2: '#FF6347',
-    bgImg: null,
-    panelColor: 'rgba(255, 215, 0, 0.086)',
-    panelTitle: 'rgba(0, 0, 0, 0.086)',
-    fontColor: '#000000',
-    fontName: null
+    "title": "秋风扫叶",
+    "bgColor1": "#FFF8E1",
+    "bgColor2": "#FFFDE7",
+    "bgImg": null,
+    "panelColor": "#ffffff16", 
+    "panelTitle": "#00000016", 
+    "fontColor": "#000000",
+    "fontName": null
   },
   {
-    title: '极光幻想',
-    bgColor1: '#00FF00',
-    bgColor2: '#00CED1',
-    bgImg: null,
-    panelColor: 'rgba(0, 255, 0, 0.086)',
-    panelTitle: 'rgba(0, 0, 0, 0.086)',
-    fontColor: '#000000',
-    fontName: null
-  },
-  // 多彩风格
-  {
-    title: '彩虹桥',
-    bgColor1: '#FF69B4',
-    bgColor2: '#FFD700',
-    bgImg: null,
-    panelColor: 'rgba(255, 105, 180, 0.086)',
-    panelTitle: 'rgba(255, 255, 255, 0.086)',
-    fontColor: '#FFFFFF',
-    fontName: null
+    "title": "寒光照铁",
+    "bgColor1": "#ECEFF1",
+    "bgColor2": "#CFD8DC",
+    "bgImg": null,
+    "panelColor": "#ffffff59", 
+    "panelTitle": "#00000059", 
+    "fontColor": "#000000",
+    "fontName": null
   },
   {
-    title: '花间一壶酒',
-    bgColor1: '#EE82EE',
-    bgColor2: '#98FB98',
-    bgImg: null,
-    panelColor: 'rgba(238, 130, 238, 0.086)',
-    panelTitle: 'rgba(255, 255, 255, 0.086)',
-    fontColor: '#FFFFFF',
-    fontName: null
+    "title": "月下迷途",
+    "bgColor1": "#263238",
+    "bgColor2": "#37474F",
+    "bgImg": null,
+    "panelColor": "#00000080", 
+    "panelTitle": "#ffffff80",
+    "fontColor": "#ECEFF1",
+    "fontName": null
   },
   {
-    title: '翡翠羽',
-    bgColor1: '#7FFFD4',
-    bgColor2: '#FF4500',
-    bgImg: null,
-    panelColor: 'rgba(127, 255, 212, 0.086)',
-    panelTitle: 'rgba(255, 255, 255, 0.086)',
-    fontColor: '#FFFFFF',
-    fontName: null
+    "title": "星河滚烫",
+    "bgColor1": "#1A237E",
+    "bgColor2": "#283593",
+    "bgImg": null,
+    "panelColor": "#0000007A", 
+    "panelTitle": "#ffffff7A", 
+    "fontColor": "#B0BEC5",
+    "fontName": null
+  },
+  {
+    "title": "夜阑珊",
+    "bgColor1": "#0D47A1",
+    "bgColor2": "#1565C0",
+    "bgImg": null,
+    "panelColor": "#00000073", 
+    "panelTitle": "#ffffff73", 
+    "fontColor": "#90A4AE",
+    "fontName": null
+  },
+  {
+    "title": "彩虹瀑布",
+    "bgColor1": "#6A1B9A",
+    "bgColor2": "#7B1FA2",
+    "bgImg": null,
+    "panelColor": "#ffffff50", 
+    "panelTitle": "#00000050", 
+    "fontColor": "#FFFFFF",
+    "fontName": null
+  },
+  {
+    "title": "翠柳阵阵",
+    "bgColor1": "#33691E",
+    "bgColor2": "#2E7D32",
+    "bgImg": null,
+    "panelColor": "#ffffff4D", 
+    "panelTitle": "#0000004D", 
+    "fontColor": "#F1F8E9",
+    "fontName": null
   }
 ]
