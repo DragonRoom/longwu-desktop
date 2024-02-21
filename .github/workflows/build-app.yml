@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, macos-latest]
+        os: [macos-latest]
     steps:
     - uses: actions/checkout@v2
 
@@ -36,8 +36,5 @@ jobs:
         name: ${{ runner.os }}-app
         # 仅包括指定类型的文件
         path: |
-          ./dist/*.zip
           ./dist/*.dmg
-          ./dist/*.exe
-          ./dist/*.msi
-
+        retention-days: 10
