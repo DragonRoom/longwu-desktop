@@ -74,7 +74,7 @@ export default function NewBook() {
               window.ipc.on('create-book', (arg: any) => {
                 console.log('create-book', arg);  // 打印来自主进程的消息
                 if (arg.success) {
-                  router.push('/home');
+                  router.push('/book/' + title);
                 } else {
                   alert(arg.reason);
                 }

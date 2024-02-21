@@ -37,6 +37,15 @@ export async function readOutlineJson(outlineJsonPath) {
   return JSON.parse(outlineJson);
 }
 
+export async function writeWordCountJson(wordCountJsonPath, wordCountJson) {
+  await fs.writeFile(path.join(wordCountJsonPath, 'word-count.json'), JSON.stringify(wordCountJson), 'utf-8');
+}
+
+export async function readWordCountJson(wordCountJsonPath) {
+  let wordCountJson = await fs.readFile(path.join(wordCountJsonPath, 'word-count.json'), 'utf-8');
+  return JSON.parse(wordCountJson);
+}
+
 export async function writeCardJson(cardJsonPathName, cardJson) {
   await fs.writeFile(cardJsonPathName, JSON.stringify(cardJson), 'utf-8');
 }

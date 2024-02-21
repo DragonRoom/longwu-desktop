@@ -1,5 +1,6 @@
 // 输入数字，返回格式： XX 万 XXXX 字
 export function formatNumber(num) {
+  if (num === undefined) return '0 字';
   if (num < 10000) {
     return formatNumberWithCommas(num) + ' 字';
   } else {

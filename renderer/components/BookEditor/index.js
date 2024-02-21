@@ -70,6 +70,7 @@ export default function BookEditor(props) {
   const [outlineWordCount, setOutlineWordCount] = useState(0);
   const [detailOutlineWordCount, setDetailOutlineWordCount] = useState(0);
   const [textWordCount, setTextWordCount] = useState(0);
+  const [wordCountObj, setWordCountObj] = useState({});
 
 
   const showEditors = (hide) => {
@@ -127,7 +128,73 @@ export default function BookEditor(props) {
 
     func().then(console.log('update contentTree finish')).catch(console.error);
 
+    let funcWordCountUpdater = () => {
+      console.log('funcWordCountUpdater', title);
+      if (window.ipc && title) {
+        // load wordCountMemoryDb every 5 seconds
+        window.ipc.send('get-book-word-count', {title});
+        window.ipc.on('get-book-word-count', (arg) => {
+          if (arg.success) {
+            console.log('get-book-word-count', arg.data);
+            setWordCountObj(arg.data);
+          }
+        });
+      }
+    }
+
+    funcWordCountUpdater();
+
+    let timer = setInterval(()=>{
+      funcWordCountUpdater
+    }, 5000);
+
+    return () => {
+      clearInterval(timer);
+    }
+
   }, [treeUpdater, title]);
+
+  useEffect(()=>{
+    if (wordCountObj.title) {
+      setOutlineWordCount((pre) => {
+        return !pre ? wordCountObj.outline : pre;
+      });
+      setDetailOutlineWordCount((pre) => {
+        return !pre && wordCountObj[currentVolume + '-' + currentChapter] ? wordCountObj[currentVolume + '-' + currentChapter].DetailOutline : pre;
+      });
+      setTextWordCount((pre) => {
+        return !pre && wordCountObj[currentVolume + '-' + currentChapter] ? wordCountObj[currentVolume + '-' + currentChapter].TextContent : pre;
+      });
+    }
+  }, [wordCountObj, currentChapter, currentVolume]);
+
+  useEffect(()=>{
+    const updateWordCount = (e) => {
+      if (e.detail.MainOutline) {
+        setOutlineWordCount(e.detail.MainOutline);
+        if (window.ipc) {
+          window.ipc.send('update-book-word-count', {title, volume: currentVolume, chapter: currentChapter, change: { type: 'MainOutline', value: e.detail.MainOutline}});
+        }
+      }
+      if (e.detail.DetailOutline) {
+        setDetailOutlineWordCount(e.detail.DetailOutline);
+        if (window.ipc) {
+          window.ipc.send('update-book-word-count', {title, volume: currentVolume, chapter: currentChapter, change: { type: 'DetailOutline', value: e.detail.DetailOutline}});
+        }
+      }
+      if (e.detail.TextContent) {
+        setTextWordCount(e.detail.TextContent);
+        if (window.ipc) {
+          window.ipc.send('update-book-word-count', {title, volume: currentVolume, chapter: currentChapter, change: { type: 'TextContent', value: e.detail.TextContent}});
+        }
+      }
+    }
+
+    window.addEventListener('wordCountUpdated', updateWordCount);
+    return () => {
+      window.removeEventListener('wordCountUpdated', updateWordCount);
+    }
+  }, [title, currentVolume, currentChapter]);
 
   useEffect(()=>{
     setColor1(customThemes[currentTheme]?.bgColor1 || '#c0d4d7');
@@ -176,23 +243,6 @@ export default function BookEditor(props) {
           setCustomThemes(arg.data);
         }
       });
-    }
-
-    const updateWordCount = (e) => {
-      if (e.detail.MainOutline) {
-        setOutlineWordCount(e.detail.MainOutline);
-      }
-      if (e.detail.DetailOutline) {
-        setDetailOutlineWordCount(e.detail.DetailOutline);
-      }
-      if (e.detail.TextContent) {
-        setTextWordCount(e.detail.TextContent);
-      }
-    }
-
-    window.addEventListener('wordCountUpdated', updateWordCount);
-    return () => {
-      window.removeEventListener('wordCountUpdated', updateWordCount);
     }
   }, []);
 
@@ -254,7 +304,7 @@ export default function BookEditor(props) {
     <div>
       <div className="flex justify-start items-center mb-5">
         <div className="mr-0">分卷名称：</div>
-        <input type="text" className=" border mr-3" value={newVolumeName} onChange={e=>setNewVolumeName(e.target.value)} />
+        <input type="text" placeholder="第?卷 分卷名称" className=" border mr-3" value={newVolumeName} onChange={e=>setNewVolumeName(e.target.value)} />
         <Button type='primary' className="bg-blue-500" size="small" onClick={async ()=>{
           console.log('添加分卷');
           if (!window.ipc) return;
@@ -280,7 +330,7 @@ export default function BookEditor(props) {
     <div>
       <div className="flex justify-start items-center mb-5">
         <div className="mr-0">章节名称：</div>
-        <input type="text" className=" border mr-3" value={newChapterName} onChange={e=>setNewChapterName(e.target.value)} />
+        <input type="text" placeholder="第?章 章节名称" className=" border mr-3" value={newChapterName} onChange={e=>setNewChapterName(e.target.value)} />
         <Button type='primary' className="bg-blue-500" size="small" onClick={async ()=>{
           console.log('添加章节');
           if (!window.ipc) return;
@@ -421,12 +471,14 @@ export default function BookEditor(props) {
                     <span className="absolute top-[1px] left-[15px]">添加分卷</span>
                   </Button>
                 </Popover>
-                <Popover placement="bottomLeft" title={'添加章节'} open={showNewChapterPanel} onOpenChange={v=>setShowNewChapterPanel(v)} content={NewChapterPanel} trigger="click">
-                  <Button size='small' className="p-0 bg-gray-200 hover:bg-blue-200 rounded-full border-none relative w-[24px] overflow-hidden hover:w-[84px]">
-                    <PlusCircleOutlined className="absolute top-[5px] left-[5px]" />
-                    <span className="absolute top-[1px] left-[15px]">添加章节</span>
-                  </Button>
-                </Popover>
+                {
+                  currentVolume && <Popover placement="bottomLeft" title={'添加章节'} open={showNewChapterPanel} onOpenChange={v=>setShowNewChapterPanel(v)} content={NewChapterPanel} trigger="click">
+                    <Button size='small' className="p-0 bg-gray-200 hover:bg-blue-200 rounded-full border-none relative w-[24px] overflow-hidden hover:w-[84px]">
+                      <PlusCircleOutlined className="absolute top-[5px] left-[5px]" />
+                      <span className="absolute top-[1px] left-[15px]">添加章节</span>
+                    </Button>
+                  </Popover>
+                }
               </div>
               <div className="h-full w-full overflow-scroll text-left">
                 {
@@ -438,6 +490,7 @@ export default function BookEditor(props) {
                   <ContentTree title={title}
                     contentTree={contentTree} 
                     selectedKeys={selectedKeys}
+                    wordCountObj={wordCountObj}
                     setTreeUpdater={setTreeUpdater} 
                     setCurrentChapter={setCurrentChapter} 
                     setCurrentVolume={setCurrentVolume} 

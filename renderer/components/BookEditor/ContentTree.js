@@ -177,8 +177,10 @@ export default function ContentTree(props) {
                 <FormOutlined />
               </button>
               </Popover>
-              
-              <span className="text-gray-400 ml-1 text-xs">{formatNumber(nodeData.words)}</span>
+              {
+                console.log('nodeData', nodeData, props.wordCountObj.chapter, nodeData.volume + '-' + nodeData.chapter, props.wordCountObj.chapter[nodeData.volume + '-' + nodeData.chapter])
+              }
+              <span className="text-gray-400 ml-1 text-xs">{props.wordCountObj && props.wordCountObj.chapter && props.wordCountObj.chapter[nodeData.volume + '-' + nodeData.chapter] && formatNumber(props.wordCountObj.chapter[nodeData.volume + '-' + nodeData.chapter].textContent)}</span>
             </span>
           );
         }}
