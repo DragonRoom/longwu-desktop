@@ -1,0 +1,14 @@
+/* 隐藏滚动条但仍可滚动 */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* 在Windows中使滚动条透明 */
+}
+
+/* 可选：调整滚动条样式以改善滚动体验 */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}

@@ -36,6 +36,9 @@ import '../components/LexicalEditor/themes/CommentEditorTheme.css'
 import '../components/LexicalEditor/themes/PlaygroundEditorTheme.css'
 import '../components/LexicalEditor/themes/StickyEditorTheme.css'
 
+if (process.platform === 'win32') {
+  require("../styles/custom-scrollbar.css");
+}
 
 function MyApp({ Component, pageProps }: AppProps) {
   return <Component {...pageProps} />
