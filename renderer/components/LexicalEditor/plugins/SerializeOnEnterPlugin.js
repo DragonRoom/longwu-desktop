@@ -101,11 +101,17 @@ const SerializeOnEnterPlugin = (props) => {
       COMMAND_PRIORITY_NORMAL
     );
 
+    // 每隔30秒自动保存一次
+    const interval = setInterval(() => {
+      editor.dispatchCommand(SERIALIZE_COMMAND, null);
+    }, 30000);
+
     // 组件卸载时移除监听器
     return () => {
       removeKeyDownCommandListener();
       removeSerializeCommandListener();
       removeNodeTransformListener();
+      clearInterval(interval);
     };
   }, [editor, namespace, title, volume, chapter]);
 
