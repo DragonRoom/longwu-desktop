@@ -1,0 +1,43 @@
+name: Build Electron App
+
+on:
+  push:
+    branches:
+      - main # 或者您希望自动化构建的任何分支
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18' # 更新为Node.js 18版本
+
+    - name: Install Yarn
+      run: npm install -g yarn
+
+    - name: Install Dependencies
+      run: yarn install
+
+    - name: Build
+      run: yarn build
+      env:
+        CI: true
+
+    - name: Archive Production Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ runner.os }}-app
+        # 仅包括指定类型的文件
+        path: |
+          ./dist/*.zip
+          ./dist/*.dmg
+          ./dist/*.exe
+          ./dist/*.msi
+
