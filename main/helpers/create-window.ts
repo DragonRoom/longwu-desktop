@@ -3,6 +3,7 @@ import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
   Rectangle,
+  Menu,
 } from 'electron'
 import Store from 'electron-store'
 
@@ -81,6 +82,10 @@ export const createWindow = (
   })
 
   win.on('close', saveState)
+
+  if (process.platform === 'win32') {
+    Menu.setApplicationMenu(null)
+  }
 
   return win
 }
