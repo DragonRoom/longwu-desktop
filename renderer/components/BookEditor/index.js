@@ -304,6 +304,10 @@ export default function BookEditor(props) {
       </div>
     </div>
   );
+
+  const selectedKeys = useMemo(()=>{
+    return currentVolume && currentChapter ? [(Number(currentVolume) - 1) + '-' + (Number(currentChapter) - 1)]:[];
+  }, [currentVolume, currentChapter]);
   
   return (
     <React.Fragment>
@@ -433,7 +437,7 @@ export default function BookEditor(props) {
                 <div className="h-full p-2 inline-block whitespace-nowrap">
                   <ContentTree title={title}
                     contentTree={contentTree} 
-                    selectedKeys={currentVolume && currentChapter ? [(Number(currentVolume) - 1) + '-' + (Number(currentChapter) - 1)]:[]}
+                    selectedKeys={selectedKeys}
                     setTreeUpdater={setTreeUpdater} 
                     setCurrentChapter={setCurrentChapter} 
                     setCurrentVolume={setCurrentVolume} 
