@@ -1,6 +1,7 @@
 /* 隐藏滚动条但仍可滚动 */
 ::-webkit-scrollbar {
   width: 0px;
+  height: 0px;
   background: transparent; /* 在Windows中使滚动条透明 */
 }
 
