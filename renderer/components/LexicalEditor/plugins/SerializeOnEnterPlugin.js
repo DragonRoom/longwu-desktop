@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { createCommand, KEY_DOWN_COMMAND, COMMAND_PRIORITY_NORMAL, RootNode } from 'lexical';
 
+import { useWordCnt } from '../../../hooks/useWordCnt';
+
 // 创建一个命令，用于执行序列化逻辑
 export const SERIALIZE_COMMAND = createCommand();
 
@@ -9,6 +11,9 @@ const SerializeOnEnterPlugin = (props) => {
   const [editor] = useLexicalComposerContext();
   const namespace = props.namespace;
   const {title, volume, chapter} = props;
+
+  const { updateWordCnt } = useWordCnt();
+
   useEffect(() => {
     // 注册一个命令来监听按键事件
     const removeKeyDownCommandListener = editor.registerCommand(
@@ -43,9 +48,7 @@ const SerializeOnEnterPlugin = (props) => {
 
     const removeNodeTransformListener = editor.registerNodeTransform(RootNode, (rootNode) => {
       const textContentSize = rootNode.getTextContentSize();
-
-      const event = new CustomEvent('wordCountUpdated', { detail: { [namespace]: textContentSize } });
-      window.dispatchEvent(event);
+      updateWordCnt(namespace, textContentSize, volume, chapter);
     });
 
     // 注册一个命令处理器，用于处理序列化命令

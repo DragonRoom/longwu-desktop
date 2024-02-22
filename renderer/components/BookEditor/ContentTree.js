@@ -5,86 +5,21 @@ import {
   DownOutlined,
 } from "@ant-design/icons";
 import { formatNumber } from "./utils";
+import { useBase } from "../../hooks/useBase";
+import { useCurrent } from "../../hooks/useCurrent";
+import { useWordCnt } from "../../hooks/useWordCnt";
 
-const iconStyle = ({ selected }) => (selected ? <img src="/images/openChapter.svg" width={22} alt="章" /> : <img src="/images/chapter.svg" width={22} alt="章" />);
 
-const treeData = [
-  {
-    title: '第1卷 风起萧墙',
-    key: '0-0',
-    icon: <img src="/images/volume.svg" width={22} alt="卷" />,
-    words: 41245,
-    children: [
-      {
-        title: '第1章 苏醒',
-        key: '0-0-0',
-        icon:  iconStyle,
-        words: 3245,
-      },
-      {
-        title: '第2章 重生',
-        key: '0-0-1',
-        icon: iconStyle,
-        words: 3015,
-      },
-      {
-        title: '第3章 冲突',
-        key: '0-0-2',
-        icon: iconStyle,
-        words: 3515,
-      },
-      {
-        title: '第4章 反转',
-        key: '0-0-3',
-        icon: iconStyle,
-        words: 2015,
-      },
-      {
-        title: '第5章 横行',
-        key: '0-0-4',
-        icon: iconStyle,
-        words: 5015,
-      },
-      {
-        title: '第6章 结局',
-        key: '0-0-5',
-        icon: iconStyle,
-        words: 4015,
-      },
-    ],
-  },
-];
-
-export default function ContentTree(props) {
+export default function ContentTree() {
   const [showRenamePanel, setShowRenamePanel] = useState({});
   const [newName, setNewName] = useState('');
   const [volume, setVolume] = useState('');
   const [chapter, setChapter] = useState('');
-  const [selectedKeys, setSelectedKeys] = useState([]);
+  const { contentTree, title, setShowText } = useBase();
+  const { setCurrentVolume, setCurrentChapter, selectedKeys } = useCurrent();
+  const { chapters } = useWordCnt();
 
-  useEffect(() => {
-    const changeKeys = (e) => {
-      console.log('changeKeys', e);
-      const { volume, chapter } = e.detail;
-      const key = [Number(volume) + '-' + Number(chapter)];
-      setSelectedKeys([key]);
-    }
 
-    window.addEventListener('changeSelectedKeys', changeKeys);
-    
-    return () => {
-      window.removeEventListener('changeSelectedKeys', changeKeys);
-    }
-  }, []);
-
-  useEffect(() => {
-    console.log('selectedKeys', props.selectedKeys);
-    if (props.selectedKeys && props.selectedKeys.length > 0) {
-      setSelectedKeys(props.selectedKeys);
-    }
-  }, [props.selectedKeys])
-
-  const title = props.title;
   const RenamePanel = (
     <div>
       <div className="flex justify-start items-center mb-5">
@@ -134,28 +69,30 @@ export default function ContentTree(props) {
 
   return <>
     {
-      props.contentTree.length > 0 && <Tree
+      contentTree.length > 0 && <Tree
         showIcon
         defaultExpandAll={true}
         autoExpandParent={true}
         // defaultSelectedKeys={['0-0']}
         switcherIcon={<DownOutlined />}
-        treeData={props.contentTree}
+        treeData={contentTree}
         selectedKeys={selectedKeys}
         onSelect={(selectedKeysValue, info) => {
           console.log('selected', selectedKeysValue, info);
-          setSelectedKeys(selectedKeysValue);
           if (!info.selected) {
-            props.setCurrentVolume('');
-            props.setCurrentChapter('');
-            props.showEditors(true);
+            console.log('set current 0');
+            setCurrentVolume(0);
+            setCurrentChapter(0);
+            setShowText(false);
             return;
           }
-          props.setCurrentVolume(info.node.volume);
           if (info.node.key.includes('-')) {
-            props.setCurrentVolume(info.node.volume);
-            props.setCurrentChapter(info.node.chapter);
-            props.showEditors();
+            console.log('set current', info.node.volume, info.node.chapter);
+            setCurrentVolume(info.node.volume);
+            setCurrentChapter(info.node.chapter);
+            setShowText(true);
+          } else {
+            setCurrentVolume(info.node.volume);
           }
         }}
         showLine
@@ -177,10 +114,7 @@ export default function ContentTree(props) {
                 <FormOutlined />
               </button>
               </Popover>
-              {
-                console.log('nodeData', nodeData, props.wordCountObj.chapter, nodeData.volume + '-' + nodeData.chapter, props.wordCountObj.chapter[nodeData.volume + '-' + nodeData.chapter])
-              }
-              <span className="text-gray-400 ml-1 text-xs">{props.wordCountObj && props.wordCountObj.chapter && props.wordCountObj.chapter[nodeData.volume + '-' + nodeData.chapter] && formatNumber(props.wordCountObj.chapter[nodeData.volume + '-' + nodeData.chapter].textContent)}</span>
+              <span className="text-gray-400 ml-1 text-xs">{formatNumber(chapters[nodeData.volume + '-' + nodeData.chapter]?.textContent)}</span>
             </span>
           );
         }}
