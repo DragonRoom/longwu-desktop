@@ -81,15 +81,15 @@ export default function ContentTree() {
           console.log('selected', selectedKeysValue, info);
           if (!info.selected) {
             console.log('set current 0');
-            setCurrentVolume(0);
-            setCurrentChapter(0);
+            setCurrentVolume(()=>0);
+            setCurrentChapter(()=>0);
             setShowText(false);
             return;
           }
           if (info.node.key.includes('-')) {
             console.log('set current', info.node.volume, info.node.chapter);
-            setCurrentVolume(info.node.volume);
-            setCurrentChapter(info.node.chapter);
+            setCurrentVolume(()=>info.node.volume);
+            setCurrentChapter(()=>info.node.chapter);
             setShowText(true);
           } else {
             setCurrentVolume(info.node.volume);

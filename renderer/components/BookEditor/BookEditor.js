@@ -83,7 +83,7 @@ export default function BookEditor(props) {
 
   useEffect(()=>{
     if (title) {
-      setTitle(title);
+      setTitle(()=>title);
     }
   }, [title]);
 
