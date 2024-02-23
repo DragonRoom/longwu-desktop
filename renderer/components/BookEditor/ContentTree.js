@@ -58,6 +58,10 @@ export default function ContentTree() {
         }
       }
 
+      if (_contentTree.length > 0) {
+        setCurrentVolume(()=>_contentTree.length.toString());
+      }
+
       console.log('contentTree', _contentTree);
       setContentTree(() => _contentTree);
     }

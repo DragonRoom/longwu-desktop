@@ -33,6 +33,22 @@ export default function BookInfo(props) {
   const [intro, setIntro] = useState('');
   const [cover, setCover] = useState('/images/cover.png');
   const [memo, setMemo] = useState('');
+  const [wordCnt, setWordCnt] = useState({});
+
+  const dateCnt = useMemo(()=>{
+    if (!wordCnt.date) return [];
+    let result = [];
+    for (let key in wordCnt.date) {
+      result.push({date: key, value: wordCnt.date[key]});
+    }
+    // sort by date desc 
+    result.sort((a, b)=>{
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+    // get last 7 days
+    result = result.slice(0, 7);
+    return result;
+  }, [wordCnt])
 
   const inputFileRef = useRef(null)
   const handleImageChange = (event) => {
@@ -56,13 +72,20 @@ export default function BookInfo(props) {
       window.ipc.on('get-book-info', (arg) => {
         console.log(arg);
         if (!arg) return;
-
         setMainCharacter(arg.data.mainCharacter);
         setType(arg.data.type);
         setAuthor(arg.data.author);
         setIntro(arg.data.intro);
         setCover(arg.data.cover);
         setMemo(arg.data.memo);
+      });
+
+      window.ipc.send('get-book-word-count', {title});
+      window.ipc.on('get-book-word-count', (arg) => {
+        console.log(arg);
+        if (arg.success) {
+          setWordCnt(arg.data);
+        }
       });
     }
   }, []);
@@ -126,13 +149,6 @@ export default function BookInfo(props) {
               <ClientButton>
                 保存封面图片 <EditOutlined className='cursor-pointer opacity-50' />
               </ClientButton>
-              {/* <div className='bg-gray-100 bg-opacity-80 drop-shadow-2xl shadow-lg p-2 rounded-2xl mt-2 z-10 cursor-pointer text-center' onClick={()=>{
-                if (typeof window !== 'undefined') {
-                  saveCoverImage(cover, title);
-                }
-              }}>
-                保存封面图片 <EditOutlined className='cursor-pointer opacity-50' />
-              </div> */}
             </div>
             
             <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} ref={inputFileRef}/>
@@ -141,8 +157,8 @@ export default function BookInfo(props) {
       </div>
       <div className='rounded-l-2xl p-8 pt-0'>
         <div className='border rounded-2xl p-5 mr-5 w-full shadow-lg mb-5 text-gray-600'>
-          <div className='mb-2 text-lg'>总字数:&nbsp; <span className='font-bold'>{formatNumber(123456)}</span> </div>
-          <TimeLine data={data} />
+          <div className='mb-2 text-lg'>总字数:&nbsp; <span className='font-bold'>{formatNumber(wordCnt.total)}</span> </div>
+          <TimeLine data={dateCnt} />
         </div>
         <div className='flex justify-around'>
           <Button className='bg-[#04D8B2] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' onClick={()=>{
@@ -221,7 +237,7 @@ function TimeLine(props) {
     {
       data.map((item, index)=>{
         return <div className='flex flex-col items-center' key={index}>
-        <div className='w-[80px] text-center mb-0'>{item.date}</div>
+        <div className='w-[100px] text-center mb-0'>{item.date}</div>
         <EnvironmentOutlined />
         <div className='w-[80px] text-center'>{formatNumber(item.value)}</div>
       </div>

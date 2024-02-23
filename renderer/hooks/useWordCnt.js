@@ -64,7 +64,7 @@ function _useWordCnt() {
         let _prev = {...prev};
         // get day string of today
         let today = new Date();
-        let todayString = today.toISOString().split('T')[0];
+        let todayString = today.toLocaleDateString().split('/').join('-');
         if (!_prev[todayString]) {
           _prev[todayString] = 0;
         }
