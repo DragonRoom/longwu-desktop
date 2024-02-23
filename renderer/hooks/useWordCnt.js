@@ -4,40 +4,18 @@ import { useCallback, useEffect, useState } from 'react';
 import { useBase } from './useBase';
 
 function _useWordCnt() {
-  const {title} = useBase();
   const [total, setTotal] = useState(0);
   const [outline, setOutline] = useState(0);
   const [dates, setDates] = useState({});
   const [volume, setVolume] = useState({});
   const [chapters, setChapters] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    console.log('title', title);
-    if (!title) {
+  const updateWordCnt = useCallback((namespace, newCnt, volume, chapter) => {
+    console.log('updateWordCnt', namespace, newCnt, loading);
+    if (loading) {
       return;
     }
-
-    // load first time from file 
-    window.ipc.send('get-book-word-count', {title});
-    window.ipc.on('get-book-word-count', (arg) => {
-      if (arg.success) {
-        console.log('get-book-word-count', arg.data);
-        setTotal(arg.data.total);
-        setOutline(arg.data.outline);
-        setDates(arg.data.date);
-        setVolume(arg.data.volume);
-        setChapters(arg.data.chapter);
-        setLoading(false);
-      } else {
-        console.error('get-book-word-count', arg);
-      }
-    });
-  }, [title]);
-
-  const updateWordCnt = (namespace, newCnt, volume, chapter) => {
-    console.log('updateWordCnt', namespace, newCnt);
-    return;
     try {
       let additional = 0;
       let old = 0;
@@ -95,14 +73,21 @@ function _useWordCnt() {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [loading]);
 
   return {
     total,
+    setTotal,
     outline,
+    setOutline,
     dates,
+    setDates,
     volume,
+    setVolume,
     chapters,
+    setChapters,
+
+    setLoading,
 
     updateWordCnt,
   }

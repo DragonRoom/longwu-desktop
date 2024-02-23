@@ -16,7 +16,7 @@ export default function ContentTree() {
   const [newName, setNewName] = useState('');
   const [volume, setVolume] = useState('');
   const [chapter, setChapter] = useState('');
-  const { contentTree, title, setShowText, treeUpdater, setContentTree, iconStyle } = useBase();
+  const { contentTree, title, setShowText, treeUpdater, setContentTree, iconStyle, setTreeUpdater } = useBase();
   const { setCurrentVolume, setCurrentChapter, selectedKeys } = useCurrent();
   const { chapters } = useWordCnt();
 
@@ -86,7 +86,7 @@ export default function ContentTree() {
                 // setCustomThemes(arg.data);
                 setShowRenamePanel(false);
                 setNewName('');
-                props.setTreeUpdater(Date.now());
+                setTreeUpdater(Date.now());
               }
             });
           } else {
@@ -102,7 +102,7 @@ export default function ContentTree() {
                 // setCustomThemes(arg.data);
                 setShowRenamePanel(false);
                 setNewName('');
-                props.setTreeUpdater(Date.now());
+                setTreeUpdater(Date.now());
               }
             });
           }

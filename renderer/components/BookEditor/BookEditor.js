@@ -39,6 +39,7 @@ import NewChapterPanel from "./NewChapterPanel";
 import NewVolumePanel from "./NewVolumePanel";
 import StylePanel from "./StylePanel";
 import { useThemeEffect } from "../../hooks/useThemeEffect";
+import { useWordCntEffect } from "../../hooks/useWordCntEffect";
 
 if (typeof window !== 'undefined' && window.document) {
   setSashSize(5);
@@ -49,6 +50,7 @@ export default function BookEditor(props) {
   const { title } = props.title;
 
   useThemeEffect();
+  useWordCntEffect();
 
 
   const { 
@@ -203,7 +205,7 @@ export default function BookEditor(props) {
                   </Button>
                 </Popover>
                 {
-                  currentVolume && <Popover placement="bottomLeft" title={'添加章节'} open={showNewChapterPanel} onOpenChange={v=>setShowNewChapterPanel(v)} content={NewChapterPanel} trigger="click">
+                  !!currentVolume && <Popover placement="bottomLeft" title={'添加章节'} open={showNewChapterPanel} onOpenChange={v=>setShowNewChapterPanel(v)} content={NewChapterPanel} trigger="click">
                     <Button size='small' className="p-0 bg-gray-200 hover:bg-blue-200 rounded-full border-none relative w-[24px] overflow-hidden hover:w-[84px]">
                       <PlusCircleOutlined className="absolute top-[5px] left-[5px]" />
                       <span className="absolute top-[1px] left-[15px]">添加章节</span>

@@ -1,10 +1,11 @@
 import { Button } from "antd";
 import { useCurrent } from "../../hooks/useCurrent";
 import { useBase } from "../../hooks/useBase";
+import { useState } from "react";
 
 export default function NewChapterPanel(props) {
   const { setCurrentChapter, currentVolume } = useCurrent();
-  const { title, setShowNewChapterPanel, setShowText } = useBase();
+  const { title, setShowNewChapterPanel, setShowText, setTreeUpdater } = useBase();
   const [newChapterName, setNewChapterName] = useState("");
 
   return (
@@ -35,7 +36,7 @@ export default function NewChapterPanel(props) {
                 console.log("chapters", arg.data);
                 setShowNewChapterPanel(false);
                 setNewChapterName("");
-                setCurrentChapter(arg.data.length.toString());
+                setCurrentChapter(()=>arg.data.length.toString());
                 setShowText(true);
                 setTreeUpdater(Date.now());
               } else {

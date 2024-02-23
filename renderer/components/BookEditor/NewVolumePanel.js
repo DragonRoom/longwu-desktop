@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { Button } from "antd";
 import { useCurrent } from "../../hooks/useCurrent";
 import { useBase } from "../../hooks/useBase";
 
 export default function NewVolumePanel(props) {
   const { setCurrentVolume } = useCurrent();
-  const { title, setShowNewVolumePanel } = useBase();
+  const { title, setShowNewVolumePanel, setTreeUpdater } = useBase();
   const [newVolumeName, setNewVolumeName] = useState("");
 
   return (
@@ -21,7 +22,7 @@ export default function NewVolumePanel(props) {
               console.log('volumes', arg.data);
               setShowNewVolumePanel(false);
               setNewVolumeName('');
-              setCurrentVolume(arg.data.length.toString());
+              setCurrentVolume(()=>arg.data.length.toString());
               setTreeUpdater(Date.now());
             }
           });

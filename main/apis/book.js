@@ -17,15 +17,6 @@ import prompt from 'electron-prompt';
 
 const fs = require('fs').promises;
 
-let wordCountMemoryDb = {
-  title: '',
-  total: 0,
-  outline: 0,
-  date: {},
-  volume: {},
-  chapter: {},
-};
-
 export function initBookApi(bookRoot) {
   ipcMain.on('list-books', async (event, arg) => {
     await ensureDirectoryExists(bookRoot);
@@ -192,80 +183,25 @@ export function initBookApi(bookRoot) {
   ipcMain.on('get-book-word-count', async (event, arg) => {
     try {
       console.log('get-book-word-count', arg);
-      if (arg.title !== wordCountMemoryDb.title) {
-        let bookPath = path.join(bookRoot, arg.title);
-        let wordCount = await readWordCountJson(bookPath);
-        wordCountMemoryDb = wordCount;
-        event.reply('get-book-word-count', {success: true, data: wordCount});
-      } else {
-        event.reply('get-book-word-count', {success: true, data: wordCountMemoryDb});
-      }
+      let bookPath = path.join(bookRoot, arg.title);
+      let wordCount = await readWordCountJson(bookPath);
+      event.reply('get-book-word-count', {success: true, data: wordCount});
     } catch (error) {
       console.log(error);
-      wordCountMemoryDb.title = arg.title;
-      event.reply('get-book-word-count', {success: true, data: wordCountMemoryDb});
+      event.reply('get-book-word-count', {success: true, data: {total: 0, outline: 0, date: {}, volume: {}, chapter: {}}});
     }
   });
   
-  // update book word count info {title: '', volume, chapter, change: { type: 'MainOutline/DetailOutline/TextContent', value: 0}}
+  // update book word count info {title: '', data: {}}
   ipcMain.on('update-book-word-count', async (event, arg) => {
     try {
       console.log('update-book-word-count', arg);
-      const { volume, chapter } = arg;
-      if (arg.title !== wordCountMemoryDb.title) {
-        let bookPath = path.join(bookRoot, arg.title);
-        let wordCount = await readWordCountJson(bookPath);
-        wordCountMemoryDb = wordCount;
-      }
-      let change = arg.change;
-      let additional = 0;
-      let old = 0;
-      if (change.type === 'MainOutline') {
-        old = wordCountMemoryDb.outline;
-        wordCountMemoryDb.outline = change.value;
-      } else if (change.type === 'DetailOutline') {
-        if (!wordCountMemoryDb.chapter[volume + '-' + chapter]) {
-          wordCountMemoryDb.chapter[volume + '-' + chapter] = {detailOutline: 0, textContent: 0};
-        }
-        old = wordCountMemoryDb.chapter[volume + '-' + chapter].detailOutline;
-        wordCountMemoryDb.chapter[volume + '-' + chapter].detailOutline = change.value;
-      } else if (change.type === 'TextContent') {
-        if (!wordCountMemoryDb.chapter[volume + '-' + chapter]) {
-          wordCountMemoryDb.chapter[volume + '-' + chapter] = {detailOutline: 0, textContent: 0};
-        }
-        old = wordCountMemoryDb.chapter[volume + '-' + chapter].textContent;
-        wordCountMemoryDb.chapter[volume + '-' + chapter].textContent = change.value;
-      }
-
-      additional = change.value - old;
-      wordCountMemoryDb.total += additional;
-      // get day string of today
-      let today = new Date();
-      let todayString = today.toISOString().split('T')[0];
-      if (!wordCountMemoryDb.date[todayString]) {
-        wordCountMemoryDb.date[todayString] = 0;
-      }
-      wordCountMemoryDb.date[todayString] += additional;
-
-      if (!wordCountMemoryDb.volume[volume]) {
-        wordCountMemoryDb.volume[volume] = 0;
-      }
-      wordCountMemoryDb.volume[volume] += additional;
+      let bookPath = path.join(bookRoot, arg.title);
+      await writeWordCountJson(bookPath, arg.data);
       event.reply('update-book-word-count', {success: true});
     } catch (error) {
       console.log(error);
       event.reply('update-book-word-count', {success: false, reason: '更新失败'});
     }
   });
-
-  // save wordCountMemoryDb to word count JSON file in book directory every 5 seconds
-  const saveWordCount = async () => {
-    console.log('save wordCountMemoryDb 0', wordCountMemoryDb);
-    if (wordCountMemoryDb.title) {
-      let bookPath = path.join(bookRoot, wordCountMemoryDb.title);
-      await writeWordCountJson(bookPath, wordCountMemoryDb);
-    }
-  }
-
-  setInterval(saveWordCount, 5000);
 }
