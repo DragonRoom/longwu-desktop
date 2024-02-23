@@ -1,3 +1,5 @@
+import React, { useRef } from "react";
+
 import { useTheme } from "../../hooks/useTheme";
 
 import { Button, ColorPicker} from "antd";
@@ -5,15 +7,24 @@ import { Button, ColorPicker} from "antd";
 export default function StylePanel() {
   const {
     color1,
+    setColor1,
     color2,
+    setColor2,
     colorFont,
+    setColorFont,
     colorPanel,
+    setColorPanel,
     colorTitle,
+    setColorTitle,
     bgImage,
+    setBgImage,
     fonts,
+    setFonts,
     customThemes,
+    setCustomThemes,
     currentTheme,
     setCurrentTheme,
+    
     updateFontFamily,
   } = useTheme();
 

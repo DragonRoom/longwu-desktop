@@ -38,6 +38,7 @@ import { useTheme } from "../../hooks/useTheme";
 import NewChapterPanel from "./NewChapterPanel";
 import NewVolumePanel from "./NewVolumePanel";
 import StylePanel from "./StylePanel";
+import { useThemeEffect } from "../../hooks/useThemeEffect";
 
 if (typeof window !== 'undefined' && window.document) {
   setSashSize(5);
@@ -47,6 +48,7 @@ export default function BookEditor(props) {
   const router = useRouter();
   const { title } = props.title;
 
+  useThemeEffect();
 
 
   const { 

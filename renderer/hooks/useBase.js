@@ -15,8 +15,6 @@ function _useBase() {
   const [treeUpdater, setTreeUpdater] = useState(0);
   const [contentTree, setContentTree] = useState([]);
 
-
-
   return {
     title,
     setTitle,
