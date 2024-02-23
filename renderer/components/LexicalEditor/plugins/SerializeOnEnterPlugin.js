@@ -46,8 +46,9 @@ const SerializeOnEnterPlugin = (props) => {
       COMMAND_PRIORITY_NORMAL
     );
 
-    const removeNodeTransformListener = editor.registerNodeTransform(RootNode, (rootNode) => {
-      const textContentSize = rootNode.getTextContentSize();
+    const removeTextContentListener = editor.registerTextContentListener((textContent) => {
+      const textContentSize = textContent.length;
+      console.log('textContentSize', textContentSize, namespace, volume, chapter);
       updateWordCnt(namespace, textContentSize, volume, chapter);
     });
 
@@ -113,7 +114,7 @@ const SerializeOnEnterPlugin = (props) => {
     return () => {
       removeKeyDownCommandListener();
       removeSerializeCommandListener();
-      removeNodeTransformListener();
+      removeTextContentListener();
       clearInterval(interval);
     };
   }, [editor, namespace, title, volume, chapter]);

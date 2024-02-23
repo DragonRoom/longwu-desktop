@@ -12,7 +12,7 @@ function _useWordCnt() {
   const [loading, setLoading] = useState(false);
 
   const updateWordCnt = useCallback((namespace, newCnt, volume, chapter) => {
-    console.log('updateWordCnt', namespace, newCnt, loading);
+    console.log('Real Time updateWordCnt', namespace, newCnt, volume, chapter, loading);
     if (loading) {
       return;
     }
