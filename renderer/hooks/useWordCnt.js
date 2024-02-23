@@ -45,9 +45,19 @@ function _useWordCnt() {
           _prev[volume + '-' + chapter].textContent = newCnt;
           return _prev;
         });
+        
+        setVolume((prev) => {
+          let _prev = {...prev};
+          if (!_prev[volume]) {
+            _prev[volume] = 0;
+          }
+          _prev[volume] += newCnt - old;
+          return _prev;
+        });
       }
-  
+
       additional = newCnt - old;
+  
       setTotal((prev) => prev + additional);
   
       setDates((prev) => {
@@ -62,14 +72,7 @@ function _useWordCnt() {
         return _prev;
       });
       
-      setVolume((prev) => {
-        let _prev = {...prev};
-        if (!_prev[volume]) {
-          _prev[volume] = 0;
-        }
-        _prev[volume] += additional;
-        return _prev;
-      });
+      
     } catch (error) {
       console.error(error);
     }

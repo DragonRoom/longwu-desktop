@@ -18,7 +18,7 @@ export default function ContentTree() {
   const [chapter, setChapter] = useState('');
   const { contentTree, title, setShowText, treeUpdater, setContentTree, iconStyle, setTreeUpdater } = useBase();
   const { setCurrentVolume, setCurrentChapter, selectedKeys } = useCurrent();
-  const { chapters } = useWordCnt();
+  const { chapters, volume: volumeWordCnt } = useWordCnt();
 
   useEffect(() => {
     if (!title) return;
@@ -160,7 +160,11 @@ export default function ContentTree() {
                 <FormOutlined />
               </button>
               </Popover>
-              <span className="text-gray-400 ml-1 text-xs">{formatNumber(chapters[nodeData.volume + '-' + nodeData.chapter]?.textContent)}</span>
+              {
+                nodeData.key.includes('-') 
+                  ? <span className="text-gray-400 ml-1 text-xs">{formatNumber(chapters[nodeData.volume + '-' + nodeData.chapter]?.textContent)}</span> 
+                  : <span className="text-gray-400 ml-1 text-xs">{formatNumber(volumeWordCnt[nodeData.volume])}</span> 
+              }
             </span>
           );
         }}
