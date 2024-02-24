@@ -2,7 +2,7 @@
 import { useRouter } from 'next/router';
 import React, { useState, useRef, useMemo, useEffect, useCallback } from 'react'
 import Head from 'next/head'
-import { Button, Input, Statistic } from 'antd';
+import { Button, Input, Statistic, Popover } from 'antd';
 import { UserOutlined, CrownOutlined, BulbOutlined, EditOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import dynamic from "next/dynamic";
 const ClientButton = dynamic(
@@ -87,6 +87,8 @@ export default function BookInfo(props) {
           setWordCnt(arg.data);
         }
       });
+
+      window.bookTitle = title;
     }
   }, []);
 
@@ -164,7 +166,9 @@ export default function BookInfo(props) {
           <Button className='bg-[#04D8B2] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' onClick={()=>{
             router.push('/book/edit/' + title);
           }}>开始创作</Button>
-          <Button className='bg-[#c49af1] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' disabled>作品导出</Button>
+          <Popover content={ExportPanel} title={<div className='w-[100%] text-center'>导出作品<br/><div className='text-sm'>注: .zip是完整数据打包，其余只包含文本内容</div><div className='text-sm'>如需导入，可在新建作品页选从文件导入</div></div>}>
+            <Button className='bg-[#c49af1] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' >导出作品</Button>
+          </Popover>
           <Button className='bg-[#6bbbbc] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' disabled>自动备份</Button>
           <Button className='bg-[#c57f7f] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' onClick={()=>{
             if (!window.ipc) return;
@@ -264,3 +268,26 @@ function formatNumberWithCommas(num) {
 
 
 
+function ExportPanel() {
+  return <div className='flex flex-col'>
+    <div className='flex flex-wrap justify-center gap-2 w-[300px] text-center items-center'>
+      <Button className='bg-[#233a6e] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' onClick={async ()=>{
+        if (!window.ipc) return;
+        window.ipc.send('export-book', {title: window.bookTitle});
+        window.ipc.on('export-book', (arg) => {
+          console.log(arg);
+          if (arg.success) {
+            alert('导出成功');
+          } else {
+            if (arg.reason) {
+              alert(arg.reason);
+            }
+          }
+        });
+      }} >导出.zip</Button>
+      <Button className='bg-[#4a79e8] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' >导出.txt</Button>
+      <Button className='bg-[#287c6d] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' >导出.docx</Button>
+      <Button className='bg-[#4c8029] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' >导出.pdf</Button>
+    </div>
+  </div>
+}

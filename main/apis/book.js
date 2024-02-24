@@ -1,5 +1,5 @@
 import path from 'path'
-import { ipcMain } from 'electron'
+import { ipcMain, dialog } from 'electron'
 import { 
   listSubdirectories, 
   checkDirectoryExists, 
@@ -122,13 +122,24 @@ export function initBookApi(bookRoot) {
   });
   
   // export book directory to zip file 
-  // arg: {title: '', zipFilePath: ''}
+  // arg: {title: ''}
   ipcMain.on('export-book', async (event, arg) => {
     try {
+      let savePath = await dialog.showSaveDialog({
+        title: '导出书籍', 
+        defaultPath: arg.title + '.zip',
+        buttonLabel: '导出',
+        filters: [{name: 'Zip', extensions: ['zip']}]
+      });
+      if (savePath.canceled) {
+        event.reply('export-book', {success: false, reason: '取消导出'});
+        return;
+      }
+
       console.log('export-book', arg);
       let bookPath = path.join(bookRoot, arg.title);
       // export book directory to zip file
-      await packDirectory(bookPath, arg.zipFilePath);
+      await packDirectory(bookPath, savePath.filePath);
       event.reply('export-book', {success: true});
     } catch (error) {
       console.log(error);
@@ -140,10 +151,21 @@ export function initBookApi(bookRoot) {
   // arg: {zipFilePath: ''}
   ipcMain.on('import-book', async (event, arg) => {
     try {
+      let result = await dialog.showOpenDialog({
+        title: '导入书籍', 
+        buttonLabel: '导入',
+        filters: [{name: 'Zip', extensions: ['zip']}],
+        properties: ['openFile']
+      });
+      if (result.canceled) {
+        event.reply('import-book', {success: false, reason: '取消导入'});
+        return;
+      }
       console.log('import-book', arg);
-      let bookPath = path.join(bookRoot, arg.title);
       // import book directory from zip file
-      await unpackDirectory(arg.zipFilePath, bookPath);
+      for (let i=0; i<result.filePaths.length; i++) {
+        await unpackDirectory(result.filePaths[i], bookRoot);
+      }
       event.reply('import-book', {success: true});
     } catch (error) {
       console.log(error);

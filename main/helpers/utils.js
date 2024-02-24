@@ -110,6 +110,7 @@ export async function removeFile(filePath) {
 // pack directory to zip file
 export async function packDirectory(directoryPath, zipFilePath) {
   const archiver = require('archiver');
+  const fs = require('fs');
   const output = fs.createWriteStream(zipFilePath);
   const archive = archiver('zip', {
     zlib: { level: 9 } // Sets the compression level.
