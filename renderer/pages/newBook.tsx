@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { Input } from 'antd';
 import { UserOutlined, CrownOutlined, BulbOutlined } from '@ant-design/icons';
+import Button from '../components/LexicalEditor/ui/Button'
 const { TextArea } = Input;
 
 export default function NewBook() {
@@ -48,6 +49,19 @@ export default function NewBook() {
             <Input size="large" placeholder="请输入作品类型" prefix={<BulbOutlined />} className='mt-5' value={type} onChange={e=>setType(e.target.value)} />
             <Input size="large" placeholder="请输入作者笔名" prefix={<img src='/images/Author.png' alt='author' width={16} />} className='mt-5' value={author} onChange={e=>setAuthor(e.target.value)} />
             <TextArea size="large" rows={7} placeholder="请输入剧情简介" className='mt-5' value={intro} onChange={e=>setIntro(e.target.value)} />
+            <button className='bg-[#add5d69c] text-sm font-normal mt-[16px] pt-2 pb-2 pl-5 pr-5 float-right rounded-xl shadow-lg hover:bg-[#eea298]' onClick={async ()=>{
+              if(!window.ipc) return;
+              window.ipc.send('import-book', {});
+              window.ipc.on('import-book', (arg: any) => {
+                console.log('import-book', arg);  // 打印来自主进程的消息
+                if (arg.success) {
+                  alert('导入成功');
+                  router.push('/home');
+                } else {
+                  alert(arg.reason);
+                }
+              });
+            }}>从文件导入...</button>
           </div>
           <div className="w-[50%] p-8" >
             <div className={`border-2 rounded-xl h-[90%] shadow bg-[#def2f9c6] flex flex-col items-center justify-center cursor-pointer relative`} onClick={()=>{

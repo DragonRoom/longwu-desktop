@@ -164,7 +164,8 @@ export function initBookApi(bookRoot) {
       console.log('import-book', arg);
       // import book directory from zip file
       for (let i=0; i<result.filePaths.length; i++) {
-        await unpackDirectory(result.filePaths[i], bookRoot);
+        let title = path.basename(result.filePaths[i], '.zip');
+        await unpackDirectory(result.filePaths[i], path.join(bookRoot, title));
       }
       event.reply('import-book', {success: true});
     } catch (error) {
