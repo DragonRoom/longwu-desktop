@@ -313,7 +313,7 @@ function ExportPanel() {
           }
         });
       }} >导出.docx</Button>
-      <Button className='bg-[#4c8029] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' >导出.pdf</Button>
+      <Button className='bg-[#4c8029] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow cursor-not-allowed' disabled >导出.pdf</Button>
     </div>
   </div>
 }
