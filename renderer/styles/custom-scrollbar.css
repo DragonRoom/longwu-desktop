@@ -1,15 +1,31 @@
-/* 隐藏滚动条但仍可滚动 */
+/* 针对所有滚动条 */
+::-webkit-scrollbar {
+  width: 5px; /* 或根据需要调整宽度 */
+  height: 5px; /* 用于水平滚动条 */
+}
+
+/* 滚动条轨道 */
+::-webkit-scrollbar-track {
+  background: transparent; /* 轨道透明 */
+}
+
+/* 滚动条手柄 */
+::-webkit-scrollbar-thumb {
+  background: #888; /* 手柄颜色 */
+}
+
+/* 当用户悬停时，改变滚动条手柄的颜色 */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* 当不滚动时隐藏滚动条 */
 ::-webkit-scrollbar {
   width: 0px;
-  height: 0px;
-  background: transparent; /* 在Windows中使滚动条透明 */
+  background: transparent;
 }
 
-/* 可选：调整滚动条样式以改善滚动体验 */
-::-webkit-scrollbar-thumb {
-  background: #888; 
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+/* 滚动时显示滚动条 */
+element:hover::-webkit-scrollbar {
+  width: 5px; /* 恢复显示滚动条 */
 }
