@@ -13,6 +13,7 @@ import {
   writeWordCountJson,
   readWordCountJson,
   packToTxtFile,
+  importTxtFile,
 } from '../helpers'
 import prompt from 'electron-prompt';
 
@@ -155,7 +156,9 @@ export function initBookApi(bookRoot) {
       let result = await dialog.showOpenDialog({
         title: '导入书籍', 
         buttonLabel: '导入',
-        filters: [{name: 'Zip', extensions: ['zip']}],
+        filters: [
+          {name: 'All', extensions: ['zip', 'txt']}
+        ],
         properties: ['openFile']
       });
       if (result.canceled) {
@@ -165,8 +168,17 @@ export function initBookApi(bookRoot) {
       console.log('import-book', arg);
       // import book directory from zip file
       for (let i=0; i<result.filePaths.length; i++) {
-        let title = path.basename(result.filePaths[i], '.zip');
-        await unpackDirectory(result.filePaths[i], path.join(bookRoot, title));
+        let ext = path.extname(result.filePaths[i]);
+        console.log('ext', ext);
+        let title = path.basename(result.filePaths[i], ext);
+        if (ext === '.zip') {
+          await unpackDirectory(result.filePaths[i], path.join(bookRoot, title));
+        } else if (ext === '.txt') {
+          await importTxtFile(title, bookRoot, result.filePaths[i]);
+        } else {
+          console.log('unknown file type', ext);
+          throw new Error('未知文件类型');
+        }
       }
       event.reply('import-book', {success: true});
     } catch (error) {

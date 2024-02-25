@@ -196,3 +196,145 @@ function extractText(node) {
 
   return textContent;
 }
+
+async function getPathNonExists(filePath) {
+  try {
+    console.log('1');
+    await fs.access(filePath, fs.constants.F_OK);
+    let dir = path.dirname(filePath);
+    let ext = path.extname(filePath);
+    let name = path.basename(filePath, ext);
+    let i = 1;
+    let newPath = path.join(dir, name + `(${i})` + ext);
+    console.log('2');
+
+    while (true) {
+      try {
+        await fs.access(newPath, fs.constants.F_OK);
+        i++;
+        newPath = path.join(dir, name + `(${i})` + ext);
+        console.log('4');
+
+      } catch (err) {
+        console.log('5');
+
+        return newPath;
+      }
+    }
+  } catch (err) {
+    console.log('3');
+
+    return filePath;
+  }
+}
+
+export async function importTxtFile(title, rootPath, txtPath) {
+  let bookPath = await getPathNonExists(path.join(rootPath, title));
+  title = path.basename(bookPath, path.extname(bookPath));
+  console.log('bookPath:', bookPath);
+  // make dir for bookPath 
+  await fs.mkdir(bookPath);
+  // create meta.json to place book title
+  let meta = {
+    "title": title,
+    "mainCharacter": "",
+    "type": "",
+    "author": "",
+    "intro": "",
+    "cover": "/images/cover.png",
+    "createTime": Date.now(),
+    "updateTime": Date.now(),
+  };
+  await fs.writeFile(path.join(bookPath, 'meta.json'), JSON.stringify(meta));
+  // read each line of txt file to an array
+  let txt = await fs.readFile(txtPath, 'utf-8');
+  let lines = txt.split('\n');
+  // filter empty lines
+  lines = lines.filter(line => line.trim() !== '');
+  // get all volume lines match with "第x卷xxxx"
+  let volumes = [];
+  lines.forEach((line, index) => {
+    if (line.match(/第\d+卷/)) {
+      // push line text into volumes array
+      volumes.push({title: line, lineNumber: index});
+    }
+  });
+
+  console.log('volumes:', volumes);
+
+  // make dir for each volume from 1 to volumes.length
+  for(let i=0; i<volumes.length; i++) {
+    let volume = volumes[i].title;
+    let volumeTitle = volume;
+    let volumePath = path.join(bookPath, i+1 + '');
+    await fs.mkdir(volumePath);
+    // create meta.json to place volume title
+    let meta = {
+      "title": volumeTitle,
+      "createTime": Date.now()
+    };
+    await fs.writeFile(path.join(volumePath, 'meta.json'), JSON.stringify(meta));
+
+    // find chapters for current volume from volumes[i].lineNumber to volumes[i+1].lineNumber
+    let start = volumes[i].lineNumber;
+    let end = i === volumes.length - 1 ? lines.length : volumes[i+1].lineNumber;
+    let chapterLines = lines.slice(start, end);
+    let chapters = [];
+    chapterLines.forEach((line, index) => {
+      if (line.match(/第\d+章/)) {
+        chapters.push({title: line, lineNumber: index + start});
+      }
+    });
+    console.log('chapters:', chapters);
+    // make dir for each chapter from 1 to chapters.length
+    for(let j=0; j<chapters.length; j++) {
+      let chapter = chapters[j].title;
+      let chapterTitle = chapter;
+      let chapterPath = path.join(volumePath, j+1 + '');
+      await fs.mkdir(chapterPath);
+      // create meta.json to place chapter title
+      let meta = {
+        "title": chapterTitle,
+        "createTime": Date.now()
+      };
+      await fs.writeFile(path.join(chapterPath, 'meta.json'), JSON.stringify(meta));
+      // create content.json to place chapter content
+      let content = {
+        "root": {
+          "children": [],
+          "direction": "ltr",
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1
+        }
+      };
+      // fill each line of chapter content into content.json as children:[] from chapters[j].lineNumber to chapters[j+1].lineNumber
+      let start = chapters[j].lineNumber;
+      let end = j === chapters.length - 1 ? lines.length : chapters[j+1].lineNumber;
+      let chapterContent = lines.slice(start, end);
+      chapterContent.forEach(line => {
+        content.root.children.push({
+          "children": [
+            {
+              "detail": 0,
+              "format": 0,
+              "mode": "normal",
+              "style": "",
+              "text": line,
+              "type": "text",
+              "version": 1
+            }
+          ],
+          "direction": "ltr",
+          "format": "",
+          "indent": 0,
+          "type": "paragraph",
+          "version": 1
+        });
+      });
+      await fs.writeFile(path.join(chapterPath, 'content.json'), JSON.stringify(content));
+    }
+  }
+}
+
