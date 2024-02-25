@@ -40,20 +40,22 @@ import {
   SERIALIZE_COMMAND
 } from '../SerializeOnEnterPlugin';
 
+import copy from 'copy-to-clipboard';
+
 async function sendEditorState(editor: LexicalEditor): Promise<void> {
-  const stringifiedEditorState = JSON.stringify(editor.getEditorState());
-  try {
-    await fetch('http://localhost:1235/setEditorState', {
-      body: stringifiedEditorState,
-      headers: {
-        Accept: 'application/json',
-        'Content-type': 'application/json',
-      },
-      method: 'POST',
-    });
-  } catch {
-    // NO-OP
-  }
+  // const stringifiedEditorState = JSON.stringify(editor.getEditorState());
+  // try {
+  //   await fetch('http://localhost:1235/setEditorState', {
+  //     body: stringifiedEditorState,
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-type': 'application/json',
+  //     },
+  //     method: 'POST',
+  //   });
+  // } catch {
+  //   // NO-OP
+  // }
 }
 
 async function validateEditorState(editor: LexicalEditor): Promise<void> {
@@ -191,25 +193,28 @@ export default function ActionsPlugin({
         aria-label="保存（按[回车]键自动保存）">
         <i className="save" />
       </button>
-      <button
+      {/* <button
         className="action-button import"
         onClick={() => importFile(editor)}
         title="导入"
         aria-label="Import editor state from JSON">
         <i className="import" />
-      </button>
+      </button> */}
       <button
-        className="action-button export"
+        className="action-button copy"
         disabled={isEditorEmpty}
         onClick={() =>
-          exportFile(editor, {
-            fileName: `龙屋_${new Date().toISOString()}`,
-            source: '龙屋',
+          editor.getEditorState().read(() => {
+            // copy pure text to clipboard
+            const root = $getRoot();
+            const children = root.getChildren();
+            const text = children.map((child) => child.getTextContent()).join('\n\n');
+            copy(text);
           })
         }
-        title="导出"
-        aria-label="Export editor state to JSON">
-        <i className="export" />
+        title="拷贝"
+        aria-label="Copy to Clipboard">
+        <i className="copy" />
       </button>
       {/* <button
         className="action-button clear"
