@@ -210,7 +210,7 @@ export default function Editor(): JSX.Element {
               <ImagesPlugin captionsEnabled={false} />
               <LinkPlugin />
               <LexicalClickableLinkPlugin />
-              <FloatingTextFormatToolbarPlugin />
+              {/* <FloatingTextFormatToolbarPlugin /> */}
             </NewTablePlugin>
             <ImagesPlugin />
             <InlineImagePlugin />
@@ -241,9 +241,9 @@ export default function Editor(): JSX.Element {
                   anchorElem={floatingAnchorElem}
                   cellMerge={true}
                 />
-                <FloatingTextFormatToolbarPlugin
+                {/* <FloatingTextFormatToolbarPlugin
                   anchorElem={floatingAnchorElem}
-                />
+                /> */}
               </>
             )}
           </>
