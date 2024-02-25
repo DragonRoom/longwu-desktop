@@ -87,7 +87,6 @@ export default function ContentTree() {
               // arg is an array of themes
               if (arg.success) {
                 console.log('volumes', arg.data);
-                // setCustomThemes(arg.data);
                 setShowRenamePanel(false);
                 setNewName('');
                 setTreeUpdater(Date.now());
@@ -103,7 +102,6 @@ export default function ContentTree() {
               // arg is an array of themes
               if (arg.success) {
                 console.log('chapters', arg.data);
-                // setCustomThemes(arg.data);
                 setShowRenamePanel(false);
                 setNewName('');
                 setTreeUpdater(Date.now());

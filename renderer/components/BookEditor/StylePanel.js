@@ -137,7 +137,26 @@ export default function StylePanel() {
           type="primary"
           className="bg-blue-500 mr-3"
           size="small"
-          onClick={() => {}}
+          onClick={() => {
+            console.log("保存为模板", customThemes.length);
+            let userTheme = {
+              title: "自定义主题" + customThemes.length,
+              bgColor1: color1,
+              bgColor2: color2,
+              panelColor: colorPanel,
+              panelTitle: colorTitle,
+              fontColor: colorFont,
+              bgImg: bgImage,
+              fontName: null,
+            };
+            window.ipc.send('save-themes-list', [...customThemes, userTheme]);
+            window.ipc.on('save-themes-list', (arg) => {
+              console.log('save-themes-list', arg);
+            });
+            console.log('保存为模板', userTheme);
+            setCustomThemes((pre)=>[...pre, userTheme]);
+            setCurrentTheme(customThemes.length);
+          }}
         >
           保存为模板
         </Button>
