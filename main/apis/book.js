@@ -12,6 +12,7 @@ import {
   readOutlineJson,
   writeWordCountJson,
   readWordCountJson,
+  packToTxtFile,
 } from '../helpers'
 import prompt from 'electron-prompt';
 
@@ -171,6 +172,32 @@ export function initBookApi(bookRoot) {
     } catch (error) {
       console.log(error);
       event.reply('import-book', {success: false, reason: '导入失败'});
+    }
+  });
+
+  // export book to a txt file
+  // arg: {title: ''}
+  ipcMain.on('export-book-txt', async (event, arg) => {
+    try {
+      let savePath = await dialog.showSaveDialog({
+        title: '导出书籍', 
+        defaultPath: arg.title + '.txt',
+        buttonLabel: '导出',
+        filters: [{name: 'Txt', extensions: ['txt']}]
+      });
+      if (savePath.canceled) {
+        event.reply('export-book', {success: false, reason: '取消导出'});
+        return;
+      }
+
+      console.log('export-book-txt', arg);
+      let bookPath = path.join(bookRoot, arg.title);
+      // export book directory to zip file
+      await packToTxtFile(bookPath, savePath.filePath);
+      event.reply('export-book-txt', {success: true});
+    } catch (error) {
+      console.log(error);
+      event.reply('export-book', {success: false, reason: '导出失败'});
     }
   });
 

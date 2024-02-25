@@ -125,3 +125,74 @@ export async function unpackDirectory(zipFilePath, directoryPath) {
   const decompress = require('decompress');
   await decompress(zipFilePath, directoryPath);
 }
+
+export async function packToTxtFile(bookPath, txtPath) {
+  // get title from meta.json
+  let meta = await fs.readFile(bookPath + '/meta.json');
+  meta = JSON.parse(meta);
+  let lines = [];
+
+  let title = meta.title;
+  lines.push(title);
+  lines.push('\n\n');
+  console.log('title:', title);
+  const MAX = 1000000;
+  // for each volume
+  for(let i=1; i<MAX; i++) {
+    let volumePath = bookPath + '/' + i;
+    let volumeExists = await checkDirectoryExists(volumePath);
+    if (!volumeExists) {
+      break;
+    }
+    // read volume title from meta.json
+    let volumeMeta = await fs.readFile(volumePath + '/meta.json');
+    volumeMeta = JSON.parse(volumeMeta);
+    let volumeTitle = volumeMeta.title;
+    console.log('volumeTitle:', volumeTitle);
+    lines.push('\n\n');
+    lines.push(volumeTitle);
+    lines.push('\n\n');
+
+    // for each chapter
+    for(let j=1; j<MAX; j++) {
+      let chapterPath = volumePath + '/' + j;
+      let chapterExists = await checkDirectoryExists(chapterPath);
+      if (!chapterExists) {
+        break;
+      }
+      // read chapter title from meta.json
+      let chapterMeta = await fs.readFile(chapterPath + '/meta.json');
+      chapterMeta = JSON.parse(chapterMeta);
+      let chapterTitle = chapterMeta.title;
+      console.log('chapterTitle:', chapterTitle);
+      lines.push('\n\n');
+      lines.push(chapterTitle);
+      lines.push('\n\n');
+
+      let chapterContent = await fs.readFile(chapterPath + '/content.json');
+      chapterContent = JSON.parse(chapterContent);
+      let text = extractText(chapterContent.root);
+      lines.push(text);
+    }
+  }
+  let txt = lines.join('');
+  await fs.writeFile(txtPath, txt);
+  console.log('done');
+}
+
+function extractText(node) {
+  let textContent = '';
+
+  if (node.type === 'text') {
+    // 如果是文本节点，直接返回文本内容
+    return node.text;
+  } else if (node.children && node.children.length) {
+    // 如果节点有子节点，递归处理每个子节点
+    node.children.forEach(child => {
+      textContent += extractText(child);
+      textContent += "\n";
+    });
+  }
+
+  return textContent;
+}
