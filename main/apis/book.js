@@ -14,6 +14,7 @@ import {
   readWordCountJson,
   packToTxtFile,
   importTxtFile,
+  packToDocxFile,
 } from '../helpers'
 import prompt from 'electron-prompt';
 
@@ -198,7 +199,7 @@ export function initBookApi(bookRoot) {
         filters: [{name: 'Txt', extensions: ['txt']}]
       });
       if (savePath.canceled) {
-        event.reply('export-book', {success: false, reason: '取消导出'});
+        event.reply('export-book-txt', {success: false, reason: '取消导出'});
         return;
       }
 
@@ -209,7 +210,33 @@ export function initBookApi(bookRoot) {
       event.reply('export-book-txt', {success: true});
     } catch (error) {
       console.log(error);
-      event.reply('export-book', {success: false, reason: '导出失败'});
+      event.reply('export-book-txt', {success: false, reason: '导出失败'});
+    }
+  });
+
+  // export book to a docx file
+  // arg: {title: ''}
+  ipcMain.on('export-book-docx', async (event, arg) => {
+    try {
+      let savePath = await dialog.showSaveDialog({
+        title: '导出书籍', 
+        defaultPath: arg.title + '.docx',
+        buttonLabel: '导出',
+        filters: [{name: 'Docx', extensions: ['docx']}]
+      });
+      if (savePath.canceled) {
+        event.reply('export-book-docx', {success: false, reason: '取消导出'});
+        return;
+      }
+
+      console.log('export-book-docx', arg);
+      let bookPath = path.join(bookRoot, arg.title);
+      // export book directory to zip file
+      await packToDocxFile(bookPath, savePath.filePath);
+      event.reply('export-book-docx', {success: true});
+    } catch (error) {
+      console.log(error);
+      event.reply('export-book-docx', {success: false, reason: '导出失败'});
     }
   });
 

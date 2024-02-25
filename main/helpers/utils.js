@@ -1,5 +1,6 @@
 const fs = require('fs').promises;
 import path from 'path'
+const { Document, Packer, Paragraph, TextRun } = require('docx');
 
 export async function writeMetaJson(metaJsonPath, metaJson) {
   await fs.writeFile(path.join(metaJsonPath, 'meta.json'), JSON.stringify(metaJson), 'utf-8');
@@ -336,5 +337,98 @@ export async function importTxtFile(title, rootPath, txtPath) {
       await fs.writeFile(path.join(chapterPath, 'content.json'), JSON.stringify(content));
     }
   }
+}
+
+export async function packToDocxFile(bookPath, docxPath) {
+  // get title from meta.json
+  let meta = await fs.readFile(bookPath + '/meta.json');
+  meta = JSON.parse(meta);
+  let lines = [];
+
+  let title = meta.title;
+  lines.push(title);
+  lines.push('\n\n');
+  console.log('title:', title);
+  const MAX = 1000000;
+  // for each volume
+  for(let i=1; i<MAX; i++) {
+    let volumePath = bookPath + '/' + i;
+    let volumeExists = await checkDirectoryExists(volumePath);
+    if (!volumeExists) {
+      break;
+    }
+    // read volume title from meta.json
+    let volumeMeta = await fs.readFile(volumePath + '/meta.json');
+    volumeMeta = JSON.parse(volumeMeta);
+    let volumeTitle = volumeMeta.title;
+    console.log('volumeTitle:', volumeTitle);
+    lines.push('\n\n');
+    lines.push(volumeTitle);
+    lines.push('\n\n');
+
+    // for each chapter
+    for(let j=1; j<MAX; j++) {
+      let chapterPath = volumePath + '/' + j;
+      let chapterExists = await checkDirectoryExists(chapterPath);
+      if (!chapterExists) {
+        break;
+      }
+      // read chapter title from meta.json
+      let chapterMeta = await fs.readFile(chapterPath + '/meta.json');
+      chapterMeta = JSON.parse(chapterMeta);
+      let chapterTitle = chapterMeta.title;
+      console.log('chapterTitle:', chapterTitle);
+      lines.push('\n\n');
+      lines.push(chapterTitle);
+      lines.push('\n\n');
+
+      let chapterContent = await fs.readFile(chapterPath + '/content.json');
+      chapterContent = JSON.parse(chapterContent);
+      let text = extractText(chapterContent.root);
+      lines.push(text);
+    }
+  }
+
+  // check each line if contain \n then split to multiple lines
+  let newLines = [];
+  lines.forEach(line => {
+    if (line.match(/\n/)) {
+      let parts = line.split('\n');
+      parts.forEach(part => {
+        newLines.push(part);
+      });
+    } else {
+      newLines.push(line);
+    }
+  });
+
+  // clean more than two line breaks
+  let cleanLines = [];
+  newLines.forEach((line, index) => {
+    if (line === '' && newLines[index-1] === '') {
+      return;
+    }
+    cleanLines.push(line);
+  });
+
+  const doc = new Document({
+    sections: [{
+        properties: {},
+        children: cleanLines.map(line => {
+          return new Paragraph({
+            children: [
+                new TextRun(line),
+            ],
+            indent: {
+                firstLine: 400,
+            },
+          });
+        }),
+      }],
+  });
+
+  let buffer = await Packer.toBuffer(doc);
+  await fs.writeFile(docxPath, buffer);
+  console.log(`Document created successfully at ${docxPath}`);
 }
 

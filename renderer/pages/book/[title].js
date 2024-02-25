@@ -243,7 +243,7 @@ function TimeLine(props) {
         return <div className='flex flex-col items-center' key={index}>
         <div className='w-[100px] text-center mb-0'>{item.date}</div>
         <EnvironmentOutlined />
-        <div className='w-[80px] text-center'>{formatNumber(item.value)}</div>
+        <div className='w-[180px] text-center'>{formatNumber(item.value)}</div>
       </div>
       })
     }
@@ -299,7 +299,20 @@ function ExportPanel() {
           }
         });
       }} >导出.txt</Button>
-      <Button className='bg-[#287c6d] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' >导出.docx</Button>
+      <Button className='bg-[#287c6d] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' onClick={async ()=>{
+        if (!window.ipc) return;
+        window.ipc.send('export-book-docx', {title: window.bookTitle});
+        window.ipc.on('export-book-docx', (arg) => {
+          console.log(arg);
+          if (arg.success) {
+            alert('导出成功');
+          } else {
+            if (arg.reason) {
+              alert(arg.reason);
+            }
+          }
+        });
+      }} >导出.docx</Button>
       <Button className='bg-[#4c8029] text-white font-bold rounded-full border-none h-[40px] w-[140px] shadow' >导出.pdf</Button>
     </div>
   </div>
