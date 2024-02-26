@@ -48,7 +48,6 @@ const SerializeOnEnterPlugin = (props) => {
 
     const removeTextContentListener = editor.registerTextContentListener((textContent) => {
       const textContentSize = textContent.length;
-      console.log('textContentSize', textContentSize, namespace, volume, chapter);
       updateWordCnt(namespace, textContentSize, volume, chapter);
     });
 

@@ -21,8 +21,6 @@ function _useCurrent() {
     return currentVolume && currentChapter ? [(Number(currentVolume) - 1) + '-' + (Number(currentChapter) - 1)]:[];
   }, [currentVolume, currentChapter]);
 
-  console.log('currentChapter', currentChapter);
-
   return {
     currentVolume,
     setCurrentVolume,

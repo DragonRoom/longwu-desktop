@@ -18,4 +18,16 @@ const handler = {
 
 contextBridge.exposeInMainWorld('ipc', handler)
 
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'F8') {
+    console.log('F8 pressed');
+    // 在这里执行F8按下时的逻辑
+    window.dispatchEvent(new CustomEvent('new-volume-keydown'));
+  } else if (event.key === 'F9') {
+    console.log('F9 pressed');
+    // 在这里执行F9按下时的逻辑
+    window.dispatchEvent(new CustomEvent('new-chapter-keydown'));
+  }
+});
+
 export type IpcHandler = typeof handler
