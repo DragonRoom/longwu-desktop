@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Button, Popover, Tree } from "antd";
+import { Button, Popover, Tree, Popconfirm } from "antd";
 import {
   FormOutlined,
   DownOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import { formatNumber } from "./utils";
 import { useBase } from "../../hooks/useBase";
@@ -171,6 +172,26 @@ export default function ContentTree() {
               </button>
               </Popover>
               {
+                getTileKeys(contentTree).includes(nodeData.key) && <Popconfirm
+                  title={"删除" + (nodeData.key.includes('-') ? "章节" : "分卷")}
+                  description="删除后不可恢复，是否确认删除？"
+                  onConfirm={()=>{}}
+                  onCancel={()=>{}}
+                  okText="确认"
+                  cancelText="取消"
+                  okButtonProps={{style: {background: 'red'}}}
+                >
+                <button className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out" 
+                  onClick={()=>{
+                    console.log('编辑章节');
+                  }}
+                >
+                  <CloseOutlined />
+                </button>
+                </Popconfirm>
+              }
+              
+              {
                 nodeData.key.includes('-') 
                   ? <span className="text-gray-400 ml-1 text-xs">{formatNumber(chapters[nodeData.volume + '-' + nodeData.chapter]?.textContent)}</span> 
                   : <span className="text-gray-400 ml-1 text-xs">{formatNumber(volumeWordCnt[nodeData.volume])}</span> 
@@ -181,4 +202,18 @@ export default function ContentTree() {
       />
     }
   </>
+}
+
+function getTileKeys(_tree) {
+  let keys = [];
+  keys.push(_tree[_tree.length - 1]?.key);
+  console.log('keys', _tree);
+  for (let i=0; i<_tree.length; i++) {
+    if (_tree[i].children.length === 0) {
+      continue;
+    };
+    keys.push(_tree[i].children[_tree[i].children.length - 1]?.key);
+    console.log('keys', keys);
+  }
+  return keys;
 }
