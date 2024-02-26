@@ -47,9 +47,8 @@ export const useKeydownEffect = () => {
       });
     }
 
-
-    window.addEventListener('new-chapter-keydown', newChapter);
     window.addEventListener('new-volume-keydown', newVolume);
+    window.addEventListener('new-chapter-keydown', newChapter);
 
     return () => {
       window.removeEventListener('new-chapter-keydown', newChapter);

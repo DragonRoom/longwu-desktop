@@ -31,6 +31,14 @@ export default function ContentTree() {
       let _contentTree = [];
       let volumeTitles = Object.values(arg.data).map(v=>v.title);
       console.log('volumeTitles', volumeTitles);
+      if (volumeTitles.length === 0) {
+        console.log('no volume');
+        window.dispatchEvent(new Event('new-volume-keydown'));
+        setTimeout(()=>{
+          window.dispatchEvent(new Event('new-chapter-keydown'));
+        }, 1000);        
+      }
+
       for (let i=0; i<volumeTitles.length; i++) {
         _contentTree.push({
           title: volumeTitles[i],
