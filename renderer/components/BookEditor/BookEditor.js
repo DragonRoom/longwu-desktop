@@ -217,16 +217,15 @@ export default function BookEditor(props) {
                   </Popover>
                 }
               </div>
-              <div className="h-full w-full overflow-scroll text-left">
+              <div style={{ height: 'calc(100% - 20px)' }} className="w-full overflow-scroll text-left">
                 {
                   contentTree.length === 0 && <div className="h-full w-full flex items-center justify-center">
                     <pre className="bg-gray-200 text-gray-500 rounded-3xl text-sm p-4 whitespace-pre-wrap m-4">温馨提示: <br/>1)点左上角[+]添加卷; <br/>2)点右上角[+]添加章; <br/>3)或使用快捷键F8,F9:)</pre>
                   </div>
                 }
-                <div className="h-full p-2 inline-block whitespace-nowrap">
-                  <ContentTree />
+                <div className="p-2 inline-block whitespace-nowrap">
+                <ContentTree />
                 </div>
-                
               </div>
             </div>
           </Allotment.Pane>
