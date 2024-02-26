@@ -24,6 +24,10 @@ export default function StylePanel() {
     setCustomThemes,
     currentTheme,
     setCurrentTheme,
+    paragraphHeight,
+    setParagraphHeight,
+    lineHeight,
+    setLineHeight,
     
     updateFontFamily,
   } = useTheme();
@@ -132,6 +136,29 @@ export default function StylePanel() {
           ))}
         </select>
       </div>
+      {/* 设置行间距和段间距 */}
+      <div className="flex justify-start items-center mb-5 gap-4">
+        <div className="mr-4">段间距：</div>
+        <input
+          className="w-[80px] text-center"
+          type="range" min="0" max="3" step="0.1"
+          value={paragraphHeight}
+          onChange={(e) => {
+            setParagraphHeight(Number(e.target.value));
+          }}
+        />
+        <div className="mr-4">行间距：</div>
+        <input
+          className="w-[80px] text-center"
+          type="range" min="1" max="3" step="0.1"
+          value={lineHeight}
+          onChange={(e) => {
+            setLineHeight(Number(e.target.value));
+          }}
+        />
+      </div>
+
+      
       <div className="flex justify-center items-center mb-2">
         <Button
           type="primary"
@@ -148,6 +175,8 @@ export default function StylePanel() {
               fontColor: colorFont,
               bgImg: bgImage,
               fontName: null,
+              paragraphHeight: paragraphHeight,
+              lineHeight: lineHeight,
             };
             window.ipc.send('save-themes-list', [...customThemes, userTheme]);
             window.ipc.on('save-themes-list', (arg) => {

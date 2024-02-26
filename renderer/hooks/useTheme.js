@@ -26,6 +26,8 @@ function _useTheme() {
   const [fonts, setFonts] = useState([]);
   const [customThemes, setCustomThemes] = useState([]);
   const [currentTheme, setCurrentTheme] = useState(0);
+  const [paragraphHeight, setParagraphHeight] = useState(1.0);
+  const [lineHeight, setLineHeight] = useState(1.8);
 
   return {
     color1,
@@ -46,6 +48,10 @@ function _useTheme() {
     setCustomThemes,
     currentTheme,
     setCurrentTheme,
+    paragraphHeight,
+    setParagraphHeight,
+    lineHeight,
+    setLineHeight,
 
     updateFontFamily,
   }

@@ -29,6 +29,10 @@ export const useThemeEffect = () => {
     setCustomThemes,
     currentTheme,
     setCurrentTheme,
+    paragraphHeight,
+    setParagraphHeight,
+    lineHeight,
+    setLineHeight,
     
     updateFontFamily,
   } = useTheme();
@@ -44,7 +48,33 @@ export const useThemeEffect = () => {
     if (customThemes[currentTheme]?.fontName) {
       updateFontFamily(customThemes[currentTheme]?.fontName);
     }
+    if (customThemes[currentTheme]?.paragraphHeight) {
+      setParagraphHeight(customThemes[currentTheme]?.paragraphHeight);
+    } else {
+      setParagraphHeight(1.0);
+    }
+    if (customThemes[currentTheme]?.lineHeight) {
+      setLineHeight(customThemes[currentTheme]?.lineHeight);
+    } else {
+      setLineHeight(1.8);
+    }
   }, [currentTheme, customThemes]);
+
+  useEffect(()=>{
+    if (Number(paragraphHeight) > 0) {
+      console.log('paragraphHeight', Number(paragraphHeight) + 'em');
+      document.querySelectorAll('.PlaygroundEditorTheme__paragraph').forEach(function(p) {
+        p.style.marginTop = Number(paragraphHeight) + 'em';
+      });
+    }
+
+    if (Number(lineHeight) > 0) {
+      console.log('lineHeight', Number(lineHeight) + 'em');
+      document.querySelectorAll('.PlaygroundEditorTheme__paragraph').forEach(function(p) {
+        p.style.lineHeight = Number(lineHeight) + 'em';
+      });
+    }
+  }, [paragraphHeight, lineHeight])
 
   useEffect(() => {
     if (isSupportQueryLocalFonts()) {

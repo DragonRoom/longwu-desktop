@@ -83,6 +83,8 @@ export default function BookEditor(props) {
     colorPanel,
     colorTitle,
     bgImage,
+    paragraphHeight,
+    lineHeight,
   } = useTheme();
 
   useEffect(()=>{
