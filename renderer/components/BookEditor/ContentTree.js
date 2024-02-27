@@ -175,8 +175,31 @@ export default function ContentTree() {
                 getTileKeys(contentTree).includes(nodeData.key) && <Popconfirm
                   title={"删除" + (nodeData.key.includes('-') ? "章节" : "分卷")}
                   description="删除后不可恢复，是否确认删除？"
-                  onConfirm={()=>{}}
-                  onCancel={()=>{}}
+                  onConfirm={()=>{
+                    let isChapter = nodeData.key.includes('-');
+                    if (isChapter) {
+                      window.ipc.send('remove-chapter', {bookTitle: title, volumeNumber: nodeData.volume, chapterNumber: nodeData.chapter, chapterTitle: nodeData.title});
+                      window.ipc.on('remove-chapter', (arg) => {
+                        console.log('remove-chapter', arg);
+                        if (arg.success) {
+                          console.log('chapters', arg.data);
+                          setTreeUpdater(Date.now());
+                        }
+                      });
+                    } else {
+                      window.ipc.send('remove-volume-directory', {title: title, volume: nodeData.volume, volumeTitle: nodeData.title});
+                      window.ipc.on('remove-volume-directory', (arg) => {
+                        console.log('remove-volume-directory', arg);
+                        if (arg.success) {
+                          console.log('volumes', arg.data);
+                          setTreeUpdater(Date.now());
+                        }
+                      });
+                    }
+                  }}
+                  onCancel={()=>{
+                    console.log('cancel', nodeData);
+                  }}
                   okText="确认"
                   cancelText="取消"
                   okButtonProps={{style: {background: 'red'}}}
@@ -207,13 +230,11 @@ export default function ContentTree() {
 function getTileKeys(_tree) {
   let keys = [];
   keys.push(_tree[_tree.length - 1]?.key);
-  console.log('keys', _tree);
   for (let i=0; i<_tree.length; i++) {
     if (_tree[i].children.length === 0) {
       continue;
     };
     keys.push(_tree[i].children[_tree[i].children.length - 1]?.key);
-    console.log('keys', keys);
   }
   return keys;
 }
