@@ -64,6 +64,7 @@ import {
   FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
   INDENT_CONTENT_COMMAND,
+  KEY_DOWN_COMMAND,
   KEY_MODIFIER_COMMAND,
   LexicalEditor,
   NodeKey,
@@ -71,6 +72,7 @@ import {
   REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
+  createCommand,
 } from 'lexical';
 import {Dispatch, useCallback, useEffect, useState} from 'react';
 import * as React from 'react';
@@ -538,6 +540,8 @@ function ElementFormatDropdown({
   );
 }
 
+export const SHOW_FIND_WINDOW_COMMAND = createCommand();
+
 export default function ToolbarPlugin({
   setIsLinkEditMode,
 }: {
@@ -670,6 +674,43 @@ export default function ToolbarPlugin({
     }
   }, [activeEditor]);
 
+  useEffect(()=>{
+    const removeShowCmd = editor.registerCommand(
+      SHOW_FIND_WINDOW_COMMAND,
+      (_payload) => {
+        editor.getEditorState().read(() => {
+          const selection = $getSelection();
+          console.log('show find window', _payload, selection);
+        });
+
+        showModal('查找 & 替换', (onClose) => {
+          return (
+            <div className='w-[400px]'>
+              <div className='flex justify-center items-center gap-1'>
+                <div>查找内容：</div>
+                <input type="text" className='bg-white border-blue-500 border rounded-lg' />
+                <button onClick={()=>{}} className='border bg-blue-100 w-[100px] pr-2 pl-2 rounded-lg'>查找全部</button>
+              </div>
+              <div className='h-4' />
+              <div className='flex justify-center items-center gap-1'>
+                <div>替换内容：</div>
+                <input type="text" className='bg-white border-blue-500 border rounded-lg' />
+                <button onClick={()=>{}} className='border bg-blue-100 w-[100px] pr-2 pl-2 rounded-lg'>替换</button>
+              </div>
+              <div className='h-4' />
+              <div>- 共找到15个匹配项，已经在正文中标黄。</div>
+            </div>
+        )});
+        return false;
+      },
+      COMMAND_PRIORITY_CRITICAL,
+    );
+
+    return () => {
+      removeShowCmd();
+    }
+  }, [editor]);
+
   useEffect(() => {
     return editor.registerCommand(
       SELECTION_CHANGE_COMMAND,
@@ -800,6 +841,7 @@ export default function ToolbarPlugin({
 
   const onBgColorSelect = useCallback(
     (value: string) => {
+      console.log('onBgColorSelect', value);
       applyStyleText({'background-color': value});
     },
     [applyStyleText],
@@ -853,6 +895,17 @@ export default function ToolbarPlugin({
         className="toolbar-item"
         aria-label="Redo">
         <i className="format redo" />
+      </button>
+      <Divider />
+      <button
+        onClick={() => {
+          activeEditor.dispatchCommand(SHOW_FIND_WINDOW_COMMAND, undefined);
+        }}
+        title={IS_APPLE ? "查找 & 替换 (⌘F)":"查找 & 替换 (Ctrl+F)"}
+        type="button"
+        className="toolbar-item spaced"
+        aria-label="Find & Replace">
+        <i className="format find" />
       </button>
       <Divider />
       {blockType in blockTypeToBlockName && activeEditor === editor && (

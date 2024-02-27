@@ -3,6 +3,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { createCommand, KEY_DOWN_COMMAND, COMMAND_PRIORITY_NORMAL, RootNode } from 'lexical';
 
 import { useWordCnt } from '../../../hooks/useWordCnt';
+import { SHOW_FIND_WINDOW_COMMAND } from './ToolbarPlugin';
 
 // 创建一个命令，用于执行序列化逻辑
 export const SERIALIZE_COMMAND = createCommand();
@@ -40,7 +41,14 @@ const SerializeOnEnterPlugin = (props) => {
           editor.dispatchCommand(SERIALIZE_COMMAND, null);
           return true;
         }
-        
+
+        // check Ctrl + F
+        if ((keyboardEvent.ctrlKey || keyboardEvent.metaKey) && keyboardEvent.key === 'f') {
+          console.log('Ctrl + F');
+          editor.dispatchCommand(SHOW_FIND_WINDOW_COMMAND, undefined);
+          return true;
+        }
+
         return false; // 表示命令未处理，允许其他命令处理器运行
       },
       COMMAND_PRIORITY_NORMAL

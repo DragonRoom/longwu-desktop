@@ -533,6 +533,10 @@ i.redo {
   background-image: url(images/icons/arrow-clockwise.svg);
 }
 
+i.find {
+  background-image: url(images/icons/find-replace.svg);
+}
+
 i.sticky {
   background-image: url(images/icons/sticky.svg);
 }
