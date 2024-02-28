@@ -562,7 +562,7 @@ function FindDialog(props) {
             const matches = text.match(reg);
             setFoundCnt(matches?.length || 0);
           });
-        }} className='border bg-blue-100 w-[100px] pr-2 pl-2 rounded-lg hover:bg-blue-400'>查找全部</button>
+        }} className='border bg-blue-100 w-[100px] pr-2 pl-2 rounded-lg hover:bg-blue-400 active:bg-blue-700 active:text-white'>查找全部</button>
       </div>
       <div className='h-4' />
       <div className='flex justify-center items-center gap-1'>
@@ -583,7 +583,7 @@ function FindDialog(props) {
           });
 
           message.success('替换成功');
-        }} className='border bg-blue-100 w-[100px] pr-2 pl-2 rounded-lg hover:bg-blue-400'>替换全部</button>
+        }} className='border bg-blue-100 w-[100px] pr-2 pl-2 rounded-lg hover:bg-blue-400 active:bg-blue-700 active:text-white'>替换全部</button>
       </div>
       <div className='h-4' />
       <div>- 共找到{foundCnt}个匹配项。</div>

@@ -41,6 +41,7 @@ import StylePanel from "./StylePanel";
 import { useThemeEffect } from "../../hooks/useThemeEffect";
 import { useWordCntEffect } from "../../hooks/useWordCntEffect";
 import { useKeydownEffect } from "../../hooks/useKeydownEffect";
+import Cards from "./Cards";
 
 if (typeof window !== 'undefined' && window.document) {
   setSashSize(5);
@@ -232,7 +233,7 @@ export default function BookEditor(props) {
           <Allotment.Pane
             visible={showTree}
             className={styles.rightPane}
-            minSize={180}
+            minSize={250}
           >
             <Allotment vertical separator={false}>
               <Allotment.Pane>
@@ -285,7 +286,8 @@ export default function BookEditor(props) {
           <Allotment.Pane
             visible={showText}
             className={styles.rightPane}
-            minSize={200}
+            minSize={400}
+            size={300}
           >
             <div
               style={{
@@ -310,7 +312,7 @@ export default function BookEditor(props) {
           <Allotment.Pane
             visible={showCard}
             className={styles.rightPane}
-            minSize={180}
+            minSize={150}
           >
             <div
               style={{
@@ -324,6 +326,7 @@ export default function BookEditor(props) {
                   <CloseOutlined />
                 </Button>
               </div>
+              <Cards />
             </div>
           </Allotment.Pane>
         </Allotment>
