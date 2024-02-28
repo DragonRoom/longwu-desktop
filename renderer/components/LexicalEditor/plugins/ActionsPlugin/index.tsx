@@ -41,6 +41,7 @@ import {
 } from '../SerializeOnEnterPlugin';
 
 import copy from 'copy-to-clipboard';
+import { message } from 'antd';
 
 async function sendEditorState(editor: LexicalEditor): Promise<void> {
   // const stringifiedEditorState = JSON.stringify(editor.getEditorState());
@@ -188,6 +189,7 @@ export default function ActionsPlugin({
         onClick={() => {
           console.log('save');
           editor.dispatchCommand(SERIALIZE_COMMAND, null);
+          message.success('已保存');
         }}
         title="保存（按[回车]键自动保存）"
         aria-label="保存（按[回车]键自动保存）">
@@ -210,6 +212,7 @@ export default function ActionsPlugin({
             const children = root.getChildren();
             const text = children.map((child) => child.getTextContent()).join('\n\n');
             copy(text);
+            message.success('已复制到剪贴板');
           })
         }
         title="拷贝"

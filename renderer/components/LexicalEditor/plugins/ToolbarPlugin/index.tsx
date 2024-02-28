@@ -99,6 +99,7 @@ import InsertLayoutDialog from '../LayoutPlugin/InsertLayoutDialog';
 import {INSERT_PAGE_BREAK} from '../PageBreakPlugin';
 import {InsertPollDialog} from '../PollPlugin';
 import {InsertNewTableDialog, InsertTableDialog} from '../TablePlugin';
+import { message } from 'antd';
 
 const blockTypeToBlockName = {
   bullet: 'Bulleted List',
@@ -542,6 +543,54 @@ function ElementFormatDropdown({
 
 export const SHOW_FIND_WINDOW_COMMAND = createCommand();
 
+function FindDialog(props) {
+  const [findText, setFindText] = useState('');
+  const [replaceText, setReplaceText] = useState('');
+  const [foundCnt, setFoundCnt] = useState(0);
+  const [editor] = useLexicalComposerContext();
+
+  return (
+    <div className='w-[400px]'>
+      <div className='flex justify-center items-center gap-1'>
+        <div>查找内容：</div>
+        <input type="text" className='bg-white border-blue-500 border rounded-lg' value={findText} onChange={e=>setFindText(e.target.value)} />
+        <button onClick={()=>{
+          editor.getEditorState().read(() => {
+            console.log('obj', $getRoot().exportJSON());
+            const text = $getRoot().getTextContent();
+            const reg = new RegExp(findText, 'g');
+            const matches = text.match(reg);
+            setFoundCnt(matches?.length || 0);
+          });
+        }} className='border bg-blue-100 w-[100px] pr-2 pl-2 rounded-lg hover:bg-blue-400'>查找全部</button>
+      </div>
+      <div className='h-4' />
+      <div className='flex justify-center items-center gap-1'>
+        <div>替换内容：</div>
+        <input type="text" className='bg-white border-blue-500 border rounded-lg' value={replaceText} onChange={e=>setReplaceText(e.target.value)} />
+        <button onClick={()=>{
+          editor.update(() => {
+            const editorState = editor.getEditorState();
+            const obj = editorState.toJSON();
+            obj.root.children.forEach((child, idx) => {
+              (child as any).children.forEach((item, idx) => {
+                if (item.text) {
+                  (item as any).text = (item as any).text.replace(new RegExp(findText, 'g'), replaceText);
+                }
+              });
+            });
+            editor.setEditorState(editor.parseEditorState(obj));
+          });
+
+          message.success('替换成功');
+        }} className='border bg-blue-100 w-[100px] pr-2 pl-2 rounded-lg hover:bg-blue-400'>替换全部</button>
+      </div>
+      <div className='h-4' />
+      <div>- 共找到{foundCnt}个匹配项。</div>
+    </div>
+  )
+}
+
 export default function ToolbarPlugin({
   setIsLinkEditMode,
 }: {
@@ -678,29 +727,9 @@ export default function ToolbarPlugin({
     const removeShowCmd = editor.registerCommand(
       SHOW_FIND_WINDOW_COMMAND,
       (_payload) => {
-        editor.getEditorState().read(() => {
-          const selection = $getSelection();
-          console.log('show find window', _payload, selection);
-        });
-
         showModal('查找 & 替换', (onClose) => {
-          return (
-            <div className='w-[400px]'>
-              <div className='flex justify-center items-center gap-1'>
-                <div>查找内容：</div>
-                <input type="text" className='bg-white border-blue-500 border rounded-lg' />
-                <button onClick={()=>{}} className='border bg-blue-100 w-[100px] pr-2 pl-2 rounded-lg'>查找全部</button>
-              </div>
-              <div className='h-4' />
-              <div className='flex justify-center items-center gap-1'>
-                <div>替换内容：</div>
-                <input type="text" className='bg-white border-blue-500 border rounded-lg' />
-                <button onClick={()=>{}} className='border bg-blue-100 w-[100px] pr-2 pl-2 rounded-lg'>替换</button>
-              </div>
-              <div className='h-4' />
-              <div>- 共找到15个匹配项，已经在正文中标黄。</div>
-            </div>
-        )});
+          return <FindDialog />
+        });
         return false;
       },
       COMMAND_PRIORITY_CRITICAL,
