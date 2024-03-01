@@ -1,6 +1,6 @@
-import { Tag, Modal } from "antd";
+import { Tag, Modal, Button, Input } from "antd";
 import { useState } from "react";
-
+import { Image } from 'antd';
 /*
 Card {
   id: string,
@@ -11,6 +11,15 @@ Card {
   updatedAt: Date,
 }
 */
+
+function CloseableImage(props) {
+  return <div className="relative">
+    <Image {...props} />
+    <div className="absolute top-0 right-0">
+      <button onClick={props.onClose} className="text-white rounded-full w-6 h-6 flex justify-center items-center opacity-0 hover:opacity-80 hover:bg-[#ff00ff]">x</button>
+    </div>
+  </div>
+}
 
 function NewCardModal(props) {
   const [selectedTags, setSelectedTags] = useState([]); // ['人物', '事件']
@@ -44,7 +53,21 @@ function NewCardModal(props) {
     </div>
     <textarea className="m-2 p-2 border rounded-lg" placeholder="内容" rows={5} />
     <input className="m-2 p-2 border rounded-lg" placeholder="引用：第X卷，第X章，第X段" />
-    <input className="m-2 p-2 border rounded-lg" placeholder="图片" />
+    <Input className="m-2 p-2 border rounded-lg w-[456px]" placeholder="卡片图片" readOnly prefix={
+      <div className="w-[450px]">
+        <Button>插入图片...</Button>
+        <div className="h-2" />
+        <div className="flex flex-wrap gap-1">
+        <CloseableImage width={140} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
+        <CloseableImage width={140} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
+        <CloseableImage width={140} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
+        <CloseableImage width={140} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
+        <CloseableImage width={140} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
+        <CloseableImage width={140} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
+        <CloseableImage width={140} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
+        </div>
+      </div>
+    } />
     </div>
     
   </Modal>
