@@ -2,7 +2,7 @@
 import { useRouter } from 'next/router';
 import React, { useState, useRef, useMemo, useEffect, useCallback } from 'react'
 import Head from 'next/head'
-import { Button, Input, Statistic, Popover } from 'antd';
+import { Button, Input, Statistic, Popover, message } from 'antd';
 import { UserOutlined, CrownOutlined, BulbOutlined, EditOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import dynamic from "next/dynamic";
 const ClientButton = dynamic(
@@ -179,7 +179,7 @@ export default function BookInfo(props) {
                 router.push('/home');
               } else {
                 if (arg.reason) {
-                  alert(arg.reason);
+                  message.error(arg.reason);
                 }
               }
             });
@@ -238,15 +238,18 @@ function EditableTextArea(props) {
 function TimeLine(props) {
   const data = props.data;
   return <div className='flex relative justify-around'>
+    <div className='flex w-[800px] overflow-hidden'>
     {
       data.map((item, index)=>{
         return <div className='flex flex-col items-center' key={index}>
         <div className='w-[100px] text-center mb-0'>{item.date}</div>
         <EnvironmentOutlined />
-        <div className='w-[180px] text-center'>{formatNumber(item.value)}</div>
+        <div className='w-[160px] text-center'>{formatNumber(item.value)}</div>
       </div>
       })
     }
+    </div>
+    
     <div className='absolute top-8 w-[800px] h-[1px] bg-gray-400'></div>
 
   </div>
@@ -277,10 +280,10 @@ function ExportPanel() {
         window.ipc.on('export-book', (arg) => {
           console.log(arg);
           if (arg.success) {
-            alert('导出成功');
+            message.success('导出成功');
           } else {
             if (arg.reason) {
-              alert(arg.reason);
+              message.error(arg.reason);
             }
           }
         });
@@ -291,10 +294,10 @@ function ExportPanel() {
         window.ipc.on('export-book-txt', (arg) => {
           console.log(arg);
           if (arg.success) {
-            alert('导出成功');
+            message.success('导出成功');
           } else {
             if (arg.reason) {
-              alert(arg.reason);
+              message.error(arg.reason);
             }
           }
         });
@@ -305,10 +308,10 @@ function ExportPanel() {
         window.ipc.on('export-book-docx', (arg) => {
           console.log(arg);
           if (arg.success) {
-            alert('导出成功');
+            message.success('导出成功');
           } else {
             if (arg.reason) {
-              alert(arg.reason);
+              message.error(arg.reason);
             }
           }
         });

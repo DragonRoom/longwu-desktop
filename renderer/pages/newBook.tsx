@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { Input } from 'antd';
+import { Input, message } from 'antd';
 import { UserOutlined, CrownOutlined, BulbOutlined } from '@ant-design/icons';
 import Button from '../components/LexicalEditor/ui/Button'
 const { TextArea } = Input;
@@ -55,10 +55,10 @@ export default function NewBook() {
               window.ipc.on('import-book', (arg: any) => {
                 console.log('import-book', arg);  // 打印来自主进程的消息
                 if (arg.success) {
-                  alert('导入成功');
+                  message.success('导入成功');
                   router.push('/home');
                 } else {
-                  alert(arg.reason);
+                  message.error(arg.reason);
                 }
               });
             }}>从文件导入...</button>
@@ -90,7 +90,7 @@ export default function NewBook() {
                 if (arg.success) {
                   router.push('/book/' + title);
                 } else {
-                  alert(arg.reason);
+                  message.error(arg.reason);
                 }
               });
             }}>确认</button>

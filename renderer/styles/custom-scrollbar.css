@@ -29,3 +29,7 @@
 element:hover::-webkit-scrollbar {
   width: 5px; /* 恢复显示滚动条 */
 }
+
+.toolbar {
+  overflow-x: hidden!important;
+}

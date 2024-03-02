@@ -48,7 +48,7 @@ export async function readWordCountJson(wordCountJsonPath) {
 }
 
 export async function writeCardJson(cardJsonPathName, cardJson) {
-  await fs.writeFile(cardJsonPathName, JSON.stringify(cardJson), 'utf-8');
+  await fs.writeFile(cardJsonPathName + '.json', JSON.stringify(cardJson), 'utf-8');
 }
 
 export async function readCardJson(cardJsonPathName) {
@@ -86,6 +86,23 @@ export function listSubdirectories(directoryPath) {
           .filter(entry => entry.isDirectory())
           .map(dir => path.join(directoryPath, dir.name));
         resolve(subdirectories);
+      }
+    });
+  });
+}
+
+export function listAllFiles(directoryPath) {
+  return new Promise((resolve, reject) => {
+    fs.readdir(directoryPath, { withFileTypes: true }, (error, entries) => {
+      if (error) {
+        reject(error);
+      } else {
+        // 使用 filter 筛选出是文件的条目，并获取它们的名称, 筛选掉隐藏文件
+        const files = entries
+          .filter(entry => entry.isFile())
+          .filter(file => !file.name.startsWith('.'))
+          .map(file => path.join(directoryPath, file.name));
+        resolve(files);
       }
     });
   });

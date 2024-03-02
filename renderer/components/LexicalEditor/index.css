@@ -1444,7 +1444,6 @@ button.action-button:disabled {
 }
 
 .toolbar {
-  overflow-x: hidden!important;
   display: flex;
   margin-bottom: 1px;
   background: #ffffffa7;

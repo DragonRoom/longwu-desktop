@@ -161,9 +161,9 @@ export default function Editor(): JSX.Element {
         <KeywordsPlugin />
         <SpeechToTextPlugin />
         <AutoLinkPlugin />
-        <CommentPlugin
+        {/* <CommentPlugin
           providerFactory={isCollab ? createWebsocketProvider : undefined}
-        />
+        /> */}
         {isRichText ? (
           <>
             {isCollab ? (

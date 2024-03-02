@@ -1,21 +1,25 @@
 import path from 'path'
 import { ipcMain } from 'electron'
-import { writeCardJson, readCardJson, listSubdirectories, ensureDirectoryExists, removeDirectory } from '../helpers'
+import { writeCardJson, readCardJson, listSubdirectories, ensureDirectoryExists, removeDirectory, listAllFiles, removeFile } from '../helpers'
 
 export function initCardApi(bookRoot) {
   // add new card sequencely in cards directory  
-  // arg: {bookTitle: '', cardClass: '', content: {}}
+  // arg: {bookTitle: '', content: {}}
   ipcMain.on('add-card', async (event, arg) => {
     try {
       console.log('add-card', arg);
       let bookPath = path.join(bookRoot, arg.bookTitle);
-      let cardsPath = path.join(bookPath, 'cards', arg.cardClass);
+      let cardsPath = path.join(bookPath, 'cards');
+      await ensureDirectoryExists(cardsPath);
 
-      let cards = await listSubdirectories(cardsPath);
+      let cards = await listAllFiles(cardsPath);
+      console.log('cards', cards);
       // get number array of cards
       let cardNameNumbers = [];
       for (let i=0; i<cards.length; i++) {
         let cardName = path.basename(cards[i]);
+        cardName = cardName.split('.')[0];
+        console.log('cardName', cardName);
         let cardNumber = Number(cardName);
         cardNameNumbers.push(cardNumber);
       }
@@ -38,30 +42,22 @@ export function initCardApi(bookRoot) {
   });
 
   // get all cards in cardClass directory 
-  // arg: {bookTitle: '', cardClass: ''}
+  // arg: {bookTitle: ''}
   ipcMain.on('list-cards', async (event, arg) => {
     try {
       console.log('list-cards', arg);
       let bookPath = path.join(bookRoot, arg.bookTitle);
-      let cardsPath = path.join(bookPath, 'cards', arg.cardClass);
+      let cardsPath = path.join(bookPath, 'cards');
 
-      let cards = await listSubdirectories(cardsPath);
+      let cards = await listAllFiles(cardsPath);
+      console.log('cards', cards);
       // get number array of cards
-      let cardNameNumbers = [];
+      let cardJsons = {};
       for (let i=0; i<cards.length; i++) {
         let cardName = path.basename(cards[i]);
-        let cardNumber = Number(cardName);
-        cardNameNumbers.push(cardNumber);
-      }
-      // sort number array
-      cardNameNumbers.sort((a, b) => a - b);
-
-      let cardJsons = {};
-      for (let i=0; i<cardNameNumbers.length; i++) {
-        let cardNumber = cardNameNumbers[i];
-        let cardPath = path.join(cardsPath, cardNumber.toString());
-        let cardJson = await readCardJson(cardPath);
-        cardJsons[cardNumber] = cardJson;
+        cardName = cardName.split('.')[0];
+        let cardJson = await readCardJson(cards[i]);
+        cardJsons[cardName] = cardJson;
       }
       event.reply('list-cards', {success: true, data: cardJsons});
     } catch (error) {
@@ -71,12 +67,12 @@ export function initCardApi(bookRoot) {
   });
 
   // update card json
-  // arg: {bookTitle: '', cardClass: '', cardNumber: 123, content: {}}
+  // arg: {bookTitle: '', cardNumber: 123, content: {}}
   ipcMain.on('update-card', async (event, arg) => {
     try {
       console.log('update-card', arg);
       let bookPath = path.join(bookRoot, arg.bookTitle);
-      let cardsPath = path.join(bookPath, 'cards', arg.cardClass);
+      let cardsPath = path.join(bookPath, 'cards');
       let cardPath = path.join(cardsPath, arg.cardNumber.toString());
       await writeCardJson(cardPath, arg.content);
       event.reply('update-card', {success: true});
@@ -87,14 +83,14 @@ export function initCardApi(bookRoot) {
   });
 
   // remove card json 
-  // arg: {bookTitle: '', cardClass: '', cardNumber: 123}
+  // arg: {bookTitle: '', cardNumber: 123}
   ipcMain.on('remove-card', async (event, arg) => {
     try {
       console.log('remove-card', arg);
       let bookPath = path.join(bookRoot, arg.bookTitle);
-      let cardsPath = path.join(bookPath, 'cards', arg.cardClass);
+      let cardsPath = path.join(bookPath, 'cards');
       let cardPath = path.join(cardsPath, arg.cardNumber.toString());
-      await removeFile(cardPath);
+      await removeFile(cardPath + '.json');
       event.reply('remove-card', {success: true});
     } catch (error) {
       console.log(error);

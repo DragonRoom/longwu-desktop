@@ -120,7 +120,7 @@ export default function BookEditor(props) {
               <img src="/images/home3.svg" width={15} alt="大纲" />
             </Button>
           </Tooltip>
-          <Tooltip title="章节目录" color={"blue"}>
+          <Tooltip title="目录" color={"blue"}>
             <Button
               onClick={() => setShowContent(!showContent)}
               className={`${
@@ -150,7 +150,7 @@ export default function BookEditor(props) {
               <FormOutlined />
             </Button>
           </Tooltip>
-          <Tooltip title="人物卡片" color={"blue"}>
+          <Tooltip title="卡片" color={"blue"}>
             <Button
               onClick={() => setShowCard(!showCard)}
               className={`cursor-pointer ${
