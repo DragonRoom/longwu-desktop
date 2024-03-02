@@ -1,5 +1,5 @@
 import { Tag, Modal, Button, Input } from "antd";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Image } from 'antd';
 /*
 Card {
@@ -16,13 +16,28 @@ function CloseableImage(props) {
   return <div className="relative">
     <Image {...props} />
     <div className="absolute top-0 right-0">
-      <button onClick={props.onClose} className="text-white rounded-full w-6 h-6 flex justify-center items-center opacity-0 hover:opacity-80 hover:bg-[#ff00ff]">x</button>
+      <button onClick={props.onClose} className="text-white rounded-full w-6 h-6 flex justify-center items-center opacity-0 hover:opacity-80 hover:bg-[#ff0000]">x</button>
     </div>
   </div>
 }
 
 function NewCardModal(props) {
   const [selectedTags, setSelectedTags] = useState([]); // ['人物', '事件']
+  const [imgs, setImgs] = useState([]);
+
+  const inputFileRef = useRef(null)
+
+  const handleImageChange = (event) => {
+    console.log('insert img');
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImgs((pre)=>[...pre, reader.result]);
+        }
+        reader.readAsDataURL(file);
+    }
+  };
 
   return <Modal
     title="新建卡片"
@@ -36,7 +51,6 @@ function NewCardModal(props) {
       <button className="border p-2 w-20 m-2 rounded-lg bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-400" key="submit" type="primary" onClick={() => props.setShowNewCardModal(false)}>
         确定
       </button>,
-    
     ]}
   >
     <div className="w-full h-full flex flex-col">
@@ -55,19 +69,17 @@ function NewCardModal(props) {
     <input className="m-2 p-2 border rounded-lg" placeholder="引用：第X卷，第X章，第X段" />
     <Input className="m-2 p-2 border rounded-lg w-[456px]" placeholder="卡片图片" readOnly prefix={
       <div className="w-[450px]">
-        <Button>插入图片...</Button>
+        <Button onClick={()=>inputFileRef.current.click()}>插入图片...</Button>
         <div className="h-2" />
         <div className="flex flex-wrap gap-1">
-        <CloseableImage width={140} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
-        <CloseableImage width={140} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
-        <CloseableImage width={140} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
-        <CloseableImage width={140} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
-        <CloseableImage width={140} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
-        <CloseableImage width={140} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
-        <CloseableImage width={140} src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png" />
+        {
+          imgs.map((img, index) => <CloseableImage key={index} width={100} height={100} src={img} onClose={()=>setImgs((pre)=>pre.filter((v, i)=>i!==index))} />)
+        }
         </div>
       </div>
     } />
+    <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} ref={inputFileRef}/>
+
     </div>
     
   </Modal>
