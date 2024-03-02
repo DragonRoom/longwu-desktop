@@ -277,19 +277,23 @@ export default function Cards(props) {
         setShowNewCardModal(true);
       }}>+ 新建卡片</button>
       <div className="flex-grow-1 flex flex-wrap m-2">
-        <Tag className="cursor-pointer mb-1" color="blue">全部(0)</Tag>
-        <Tag className="cursor-pointer mb-1" color="purple">人物(1)</Tag>
-        <Tag className="cursor-pointer mb-1" color="cyan">事件</Tag>
-        <Tag className="cursor-pointer mb-1" color="volcano">地点</Tag>
-        <Tag className="cursor-pointer mb-1" color="orange">副本</Tag>
-        <Tag className="cursor-pointer mb-1" color="red">伏笔</Tag>
-        <Tag className="cursor-pointer mb-1" color="geekblue">线索</Tag>
-        <Tag className="cursor-pointer mb-1" color="green">背景</Tag>
-        <Tag className="cursor-pointer mb-1" color="magenta">其它</Tag>
+        {
+          ['全部', ...cardTags].map((tag, index) => <Tag key={index} onClick={()=>{
+            selectedTags.includes(tag) ? setSelectedTags((pre)=>[...pre].filter(v=>v !== tag)) : setSelectedTags((pre)=>[...pre, tag]);
+            if (tag !== '全部') {
+              setSelectedTags((pre)=>pre.filter(v=>v !== '全部'));
+            } else {
+              setSelectedTags(['全部']);
+            }
+
+          }} className="cursor-pointer mb-1" color={colors[index] + (selectedTags.includes(tag) ? "-inverse" : "")}>
+            {tag + '(' + (tag === '全部' ? Object.values(cards).length : Object.values(cards).filter(v=>v.selectedTags.includes(tag)).length)  + ')'}
+          </Tag>)
+        }
       </div>
       <div className="flex-grow-1 flex flex-wrap m-2 gap-1">
         {
-          Object.keys(cards).map((key, index) => <Card key={index} hoverable size="small" title={cards[key].cardTitle} className="w-[200px] h-[200px] relative overflow-hidden" onClick={()=>{
+          Object.keys(cards).filter((key)=>selectedTags.includes('全部') || cards[key].selectedTags.some(v=>selectedTags.includes(v))).map((key, index) => <Card key={index} hoverable size="small" title={cards[key].cardTitle} className="w-[200px] h-[200px] relative overflow-hidden" onClick={()=>{
             console.log('card', cards[key]);
             setCurrentCard(cards[key]);
             setCardNumber(key);
