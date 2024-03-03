@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Image, Card, Popconfirm } from 'antd';
 import { useBase } from "../../hooks/useBase";
 import { promisify } from "../../hooks/utils";
+import { useCurrent } from "../../hooks/useCurrent";
 
 const { Meta } = Card;
 /*
@@ -36,6 +37,7 @@ function NewCardModal(props) {
   const [imgs, setImgs] = useState([]);
 
   const { title } = useBase();
+  const { currentVolume, currentChapter }= useCurrent();
 
   const inputFileRef = useRef(null)
 
@@ -50,6 +52,10 @@ function NewCardModal(props) {
       reader.readAsDataURL(file);
     }
   };
+
+  useEffect(() => {
+    setCardReference(`卡片创建于：第${currentVolume}卷，第${currentChapter}章`);
+  }, [currentVolume, currentChapter]);
 
   return <Modal
     title="新建卡片"
@@ -269,6 +275,16 @@ export default function Cards(props) {
 
       setCards(ret.data);
     });
+
+    const newCard = () => {
+      console.log('快速添加卡片');
+      setShowNewCardModal(true);
+    }
+
+    window.addEventListener('new-card-keydown', newCard);
+    return () => {
+      window.removeEventListener('new-card-keydown', newCard);
+    }
   }, [updateCard, title])
 
   return (

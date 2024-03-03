@@ -27,6 +27,11 @@ document.addEventListener('keydown', (event) => {
     console.log('F9 pressed');
     // 在这里执行F9按下时的逻辑
     window.dispatchEvent(new CustomEvent('new-chapter-keydown'));
+  } else if (event.key === 'F10') {
+    console.log('F10 pressed');
+    // 在这里执行F10按下时的逻辑
+    window.dispatchEvent(new CustomEvent('new-card-keydown'));
+  
   }
 });
 
