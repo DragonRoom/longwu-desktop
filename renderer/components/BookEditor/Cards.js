@@ -269,7 +269,7 @@ export default function Cards(props) {
     window.ipc.on('list-cards', (ret) => {
       console.log('list-cards', ret);
       if (!ret.success) {
-        message.error('获取卡片失败');
+        console.error('获取卡片失败');
         return;
       }
 

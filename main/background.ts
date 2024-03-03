@@ -8,6 +8,7 @@ import { initThemeApi } from './apis/theme'
 import { initVolumeApi } from './apis/volume'
 import { initChapterApi } from './apis/chapter'
 import { initCardApi } from './apis/card'
+import { initRandomApi } from './apis/random'
 
 const fs = require('fs').promises;
 
@@ -64,3 +65,4 @@ initChapterApi(bookRoot);
 
 initCardApi(bookRoot);
 
+initRandomApi();

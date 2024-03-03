@@ -42,6 +42,7 @@ import { useThemeEffect } from "../../hooks/useThemeEffect";
 import { useWordCntEffect } from "../../hooks/useWordCntEffect";
 import { useKeydownEffect } from "../../hooks/useKeydownEffect";
 import Cards from "./Cards";
+import { RandomPanel } from "./RandomPanel";
 
 if (typeof window !== 'undefined' && window.document) {
   setSashSize(5);
@@ -166,6 +167,24 @@ export default function BookEditor(props) {
                 className={`cursor-pointer mr-2 p-1 hover:bg-blue-200 rounded border-none`}
               >
                 <img src="/images/style2.png" width={15} alt="大纲" />
+              </Button>
+            </Popover>
+          </Tooltip>
+          <Tooltip title="随机起名" color={"blue"}>
+            <Popover placement="bottomLeft" title={'随机起名'} content={RandomPanel} trigger="click">
+              <Button
+                className={`cursor-pointer mr-2 p-1 hover:bg-blue-200 rounded border-none`}
+              >
+                <img src="/images/random.svg" width={15} alt="大纲" />
+              </Button>
+            </Popover>
+          </Tooltip>
+          <Tooltip title="小黑屋" color={"blue"}>
+          <Popover placement="bottomLeft" title={'小黑屋'} content={RandomPanel} trigger="click">
+              <Button
+                className={`cursor-pointer mr-2 p-1 hover:bg-blue-200 rounded border-none`}
+              >
+                <img src="/images/blackroom.svg" width={15} alt="大纲" />
               </Button>
             </Popover>
           </Tooltip>
