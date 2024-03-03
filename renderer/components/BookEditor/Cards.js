@@ -248,7 +248,7 @@ function ModifyCardModal(props) {
 
 export default function Cards(props) {
   const [cards, setCards] = useState([]);
-  const [selectedTags, setSelectedTags] = useState([]); // ['人物', '事件']
+  const [selectedTags, setSelectedTags] = useState(['全部']); // ['人物', '事件']
   const [showNewCardModal, setShowNewCardModal] = useState(false);
   const [showModifyCardModal, setShowModifyCardModal] = useState(false);
   const [updateCard, setUpdateCard] = useState(0);
