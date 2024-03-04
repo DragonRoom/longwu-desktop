@@ -2,7 +2,7 @@
   "private": true,
   "name": "longwu",
   "description": "My application description",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "Yoshihide Shiono <shiono.yoshihide@gmail.com>",
   "main": "app/background.js",
   "scripts": {
