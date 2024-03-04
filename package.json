@@ -28,6 +28,7 @@
     "antd": "^5.10.2",
     "archiver": "^6.0.1",
     "chinese-random-name": "^2.0.1",
+    "chinese-random-skill": "^0.0.6",
     "copy-to-clipboard": "^3.3.3",
     "decompress": "^4.2.1",
     "docx": "^8.5.0",
@@ -41,6 +42,7 @@
     "local-font": "^0.1.1",
     "lodash-es": "^4.17.21",
     "prettier": "2.8.8",
+    "random_chinese_fantasy_names": "^0.1.18",
     "spectron": "^19.0.0",
     "y-websocket": "^1.5.0",
     "yjs": "^13.6.8"
