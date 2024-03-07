@@ -179,7 +179,7 @@ export default function BookEditor(props) {
               </Button>
             </Popover>
           </Tooltip>
-          <Tooltip title="小黑屋" color={"blue"}>
+          {/* <Tooltip title="小黑屋" color={"blue"}>
           <Popover placement="bottomLeft" title={'小黑屋'} content={RandomPanel} trigger="click">
               <Button
                 className={`cursor-pointer mr-2 p-1 hover:bg-blue-200 rounded border-none`}
@@ -187,7 +187,7 @@ export default function BookEditor(props) {
                 <img src="/images/blackroom.svg" width={15} alt="大纲" />
               </Button>
             </Popover>
-          </Tooltip>
+          </Tooltip> */}
 
         </div>
         <div className="h-2"></div>
