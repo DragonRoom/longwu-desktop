@@ -25,12 +25,22 @@ jobs:
       run: yarn build
       env:
         CI: true
-
-    - name: Archive Production Artifact
+    - name: Package setup files
+      run: Compress-Archive -Path ./dist/*.exe -DestinationPath ./dist/longwu-setup.zip
+    
+    - name: Package win-unpack directory
+      run: Compress-Archive -Path ./dist/win-unpacked -DestinationPath ./dist/longwu-green.zip
+    
+    - name: Upload longwu-setup.zip
       uses: actions/upload-artifact@v2
       with:
-        name: windows-app
-        path: |
-          ./dist/*.exe
+        name: longwu-setup
+        path: ./dist/longwu-setup.zip
         retention-days: 10
-        
+    
+    - name: Upload win-unpack.zip
+      uses: actions/upload-artifact@v2
+      with:
+        name: longwu-green
+        path: ./dist/longwu-green.zip
+        retention-days: 10
