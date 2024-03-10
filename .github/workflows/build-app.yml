@@ -1,23 +1,24 @@
-name: Build Electron App
+name: Build and Release Electron App
 
 on:
   push:
     tags:
-      - '*'
-      
+      - 'v*'
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [macos-latest, windows-latest]
+
     steps:
     - uses: actions/checkout@v2
 
     - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '18' # 更新为Node.js 18版本
+        node-version: '18'
 
     - name: Install Yarn
       run: npm install -g yarn
@@ -30,11 +31,59 @@ jobs:
       env:
         CI: true
 
-    - name: Archive Production Artifact
-      uses: actions/upload-artifact@v2
+    - name: Package macOS DMG
+      if: matrix.os == 'macos-latest'
+      run: |
+        mv ./dist/*.dmg ./dist/longwu-mac-${{ github.ref_name }}.dmg
+
+    - name: Package Windows setup files
+      if: matrix.os == 'windows-latest'
+      run: Compress-Archive -Path ./dist/*.exe -DestinationPath ./dist/longwu-win-setup-${{ github.ref_name }}.zip
+
+    - name: Package Windows win-unpacked directory
+      if: matrix.os == 'windows-latest'
+      run: Compress-Archive -Path ./dist/win-unpacked -DestinationPath ./dist/longwu-win-green-${{ github.ref_name }}.zip
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: ${{ runner.os }}-app
-        # 仅包括指定类型的文件
-        path: |
-          ./dist/*.dmg
-        retention-days: 10
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref_name }}
+        draft: false
+        prerelease: false
+
+    - name: Upload macOS DMG to Release
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/longwu-mac-${{ github.ref_name }}.dmg
+        asset_name: longwu-mac-${{ github.ref_name }}.dmg
+        asset_content_type: application/octet-stream
+
+    - name: Upload Windows setup ZIP to Release
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/longwu-win-setup-${{ github.ref_name }}.zip
+        asset_name: longwu-win-setup-${{ github.ref_name }}.zip
+        asset_content_type: application/zip
+
+    - name: Upload Windows longwu-win-green ZIP to Release
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/longwu-win-green-${{ github.ref_name }}.zip
+        asset_name: longwu-win-green-${{ github.ref_name }}.zip
+        asset_content_type: application/zip
