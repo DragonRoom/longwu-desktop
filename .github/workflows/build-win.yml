@@ -1,23 +1,19 @@
-name: Build Electron App
+name: Build Electron App for Windows
 
 on:
-  push:
-    tags:
-      - '*'
-      
+  workflow_dispatch:
+
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest]
+    runs-on: windows-latest
+
     steps:
     - uses: actions/checkout@v2
 
     - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '18' # 更新为Node.js 18版本
+        node-version: '18'
 
     - name: Install Yarn
       run: npm install -g yarn
@@ -33,8 +29,8 @@ jobs:
     - name: Archive Production Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ runner.os }}-app
-        # 仅包括指定类型的文件
+        name: windows-app
         path: |
-          ./dist/*.dmg
+          ./dist/*.exe
         retention-days: 10
+        
