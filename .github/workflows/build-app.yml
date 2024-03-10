@@ -20,14 +20,11 @@ jobs:
       with:
         node-version: '18'
 
-    - name: Install Yarn
-      run: npm install -g yarn
-
     - name: Install Dependencies
-      run: yarn install
+      run: npm install
 
     - name: Build
-      run: yarn build
+      run: npm run build
       env:
         CI: true
 
