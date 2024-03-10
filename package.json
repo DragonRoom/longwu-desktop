@@ -18,7 +18,7 @@
   "dependencies": {
     "@excalidraw/excalidraw": "^0.16.1",
     "@lexical/file": "^0.12.2",
-    "@lexical/headless": "^0.13.1",
+    "@lexical/headless": "^0.12.2",
     "@lexical/markdown": "^0.12.2",
     "@lexical/plain-text": "^0.12.2",
     "@lexical/react": "^0.12.2",

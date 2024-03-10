@@ -1566,10 +1566,10 @@
   dependencies:
     "@lexical/utils" "0.12.2"
 
-"@lexical/headless@^0.13.1":
-  version "0.13.1"
-  resolved "https://registry.yarnpkg.com/@lexical/headless/-/headless-0.13.1.tgz#61e475495de49a4c5732e383e1d5f75fc5e39664"
-  integrity sha512-W2mLUuWPrsyf2n73NWM8nKiBI11lEpVVzKE0OzMsjTskv5+AAMaeu1wQ7M1508vKdCcUZwA6AOh3To/hstLEpw==
+"@lexical/headless@^0.12.2":
+  version "0.12.6"
+  resolved "https://registry.yarnpkg.com/@lexical/headless/-/headless-0.12.6.tgz#4a05390be2637879b425b88c162dfbd48050e2e2"
+  integrity sha512-FDyN9FRvWqWUrMp3vzQAH+KngYLxwAfSjinhf40D+r4Y5OxgU7rpYBBBeQ5n6H+Zr1YvkIRFnTmOdqlKUcm3/g==
 
 "@lexical/history@0.12.2":
   version "0.12.2"
