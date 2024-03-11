@@ -1,4 +1,4 @@
-import { Tag, Modal, Button, Input, message } from "antd";
+import { Tag, Modal, Button, Input, message, Popover } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { Image, Card, Popconfirm } from 'antd';
 import { useBase } from "../../hooks/useBase";
@@ -261,6 +261,9 @@ export default function Cards(props) {
   const [currentCard, setCurrentCard] = useState({});
   const [cardNumber, setCardNumber] = useState(0);
   const { title } = useBase();
+  const [searchText, setSearchText] = useState('');
+  const [searchType, setSearchType] = useState('all'); // 'title' | 'content' | 'all'
+  const [filterChapter, setFilterChapter] = useState({volume: '', chapter: ''}); // 'all' | 'current' | 'custom'
 
   useEffect(()=>{
     if (!title) return;
@@ -306,10 +309,42 @@ export default function Cards(props) {
             {tag + '(' + (tag === '全部' ? Object.values(cards).length : Object.values(cards).filter(v=>v.selectedTags.includes(tag)).length)  + ')'}
           </Tag>)
         }
+        
+      </div>
+      <div>
+      <Popover content={<div className="flex gap-1 justify-center items-center">
+          <Input value={searchText} onChange={e=>setSearchText(e.target.value)} />
+          <select value={searchType} onChange={e=>setSearchType(e.target.value)} className="border border-solid border-gray-300 p-1 rounded-lg">
+            <option value="all">全部 ▼</option>
+            <option value="title">标题 ▼</option>
+            <option value="content">内容 ▼</option>
+          </select>
+        </div>} title="搜索卡片" trigger="click">
+          <Tag className="cursor-pointer mb-1" color={searchText ? 'blue-inverse' : ''}>🔍 搜索</Tag>
+        </Popover>
+        <Popover content={<div className="flex gap-2 justify-center items-center">
+          <div className="flex justify-center items-center gap-1">
+            <div>第</div>
+            <Input className="w-10 text-center" value={filterChapter.volume} onChange={e=>setFilterChapter({...filterChapter, volume: e.target.value})} />
+            <div>卷</div>
+          </div>
+          <div className="flex justify-center items-center gap-1">
+            <div>第</div>
+            <Input className="w-10 text-center" value={filterChapter.chapter} onChange={e=>setFilterChapter({...filterChapter, chapter: e.target.value})} />
+            <div>章</div>
+          </div>
+          <Button onClick={()=>setFilterChapter({volume:'', chapter:''})}>清除筛选</Button>
+        </div>} title="筛选卡片" trigger="click">
+        <Tag className="cursor-pointer mb-1" color={(filterChapter.volume !== '' || filterChapter.chapter !== '') ? 'blue-inverse' : ''}>▼ 筛选</Tag>
+        </Popover>
       </div>
       <div className="flex-grow-1 flex flex-wrap m-2 gap-1">
         {
-          Object.keys(cards).filter((key)=>selectedTags.includes('全部') || cards[key].selectedTags.some(v=>selectedTags.includes(v))).map((key, index) => <Card key={index} hoverable size="small" title={cards[key].cardTitle} className="w-[200px] h-[200px] relative overflow-hidden" onClick={()=>{
+          Object.keys(cards)
+            .filter((key)=>filterChapter.volume === '' || cards[key].cardReference.includes(`第${filterChapter.volume}卷`))
+            .filter((key)=>filterChapter.chapter === '' || cards[key].cardReference.includes(`第${filterChapter.chapter}章`))
+            .filter((key)=>searchText === '' || (searchType === 'title' && cards[key].cardTitle.includes(searchText)) || (searchType === 'content' && cards[key].cardContent.includes(searchText)) || (searchType === 'all' && (cards[key].cardTitle.includes(searchText) || cards[key].cardContent.includes(searchText))))
+            .filter((key)=>selectedTags.includes('全部') || cards[key].selectedTags.some(v=>selectedTags.includes(v))).map((key, index) => <Card key={index} hoverable size="small" title={cards[key].cardTitle} className="w-[200px] h-[200px] relative overflow-hidden" onClick={()=>{
             console.log('card', cards[key]);
             setCurrentCard(cards[key]);
             setCardNumber(key);
