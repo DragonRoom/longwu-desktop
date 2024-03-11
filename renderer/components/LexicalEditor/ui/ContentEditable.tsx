@@ -10,11 +10,14 @@
 
 import {ContentEditable} from '@lexical/react/LexicalContentEditable';
 import * as React from 'react';
+import {useTheme} from '../../../hooks/useTheme';
 
 export default function LexicalContentEditable({
   className,
 }: {
   className?: string;
 }): JSX.Element {
-  return <ContentEditable className={className || 'ContentEditable__root'} />;
+  const { fontSizeTimes } = useTheme();
+
+  return <ContentEditable className={className || 'ContentEditable__root'} style={{fontSize: fontSizeTimes + 'rem'}} />;
 }

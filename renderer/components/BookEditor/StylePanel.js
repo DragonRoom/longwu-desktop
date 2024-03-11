@@ -28,7 +28,8 @@ export default function StylePanel() {
     setParagraphHeight,
     lineHeight,
     setLineHeight,
-    
+    fontSizeTimes,
+    setFontSizeTimes,
     updateFontFamily,
   } = useTheme();
 
@@ -123,7 +124,7 @@ export default function StylePanel() {
       <div className="flex justify-start items-center mb-5">
         <div className="mr-4">字体选择：</div>
         <select
-          className="mr-5"
+          className="mr-5 border-solid p-1 rounded-lg border-gray-200"
           onChange={async (e) => {
             console.log("点击", e.target.value);
             updateFontFamily(e.target.value);
@@ -135,6 +136,17 @@ export default function StylePanel() {
             </option>
           ))}
         </select>
+      </div>
+      <div className="flex justify-start items-center mb-5">
+        <div className="mr-4">字体大小：</div>
+        <input
+          className="w-[160px] text-center"
+          type="range" min="0.1" max="3" step="0.05"
+          value={fontSizeTimes}
+          onChange={(e) => {
+            setFontSizeTimes(Number(e.target.value));
+          }}
+        />
       </div>
       {/* 设置行间距和段间距 */}
       <div className="flex justify-start items-center mb-5 gap-4">

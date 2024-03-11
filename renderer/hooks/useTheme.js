@@ -28,6 +28,7 @@ function _useTheme() {
   const [currentTheme, setCurrentTheme] = useState(0);
   const [paragraphHeight, setParagraphHeight] = useState(1.0);
   const [lineHeight, setLineHeight] = useState(1.8);
+  const [fontSizeTimes, setFontSizeTimes] = useState(1.0);
 
   return {
     color1,
@@ -52,6 +53,8 @@ function _useTheme() {
     setParagraphHeight,
     lineHeight,
     setLineHeight,
+    fontSizeTimes,
+    setFontSizeTimes,
 
     updateFontFamily,
   }
