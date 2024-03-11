@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, macos-arm64, windows-latest]
+        os: [macos-latest, macos-14, windows-latest]
 
     steps:
     - uses: actions/checkout@v2
@@ -34,7 +34,7 @@ jobs:
         mv ./dist/*.dmg ./dist/longwu-mac-intel-${{ github.ref_name }}.dmg
 
     - name: Package macOS DMG (ARM)
-      if: matrix.os == 'macos-arm64'
+      if: matrix.os == 'macos-14'
       run: |
         mv ./dist/*.dmg ./dist/longwu-mac-arm-${{ github.ref_name }}.dmg
 
