@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [macos-latest, macos-arm64, windows-latest]
 
     steps:
     - uses: actions/checkout@v2
@@ -28,10 +28,15 @@ jobs:
       env:
         CI: true
 
-    - name: Package macOS DMG
+    - name: Package macOS DMG (Intel)
       if: matrix.os == 'macos-latest'
       run: |
-        mv ./dist/*.dmg ./dist/longwu-mac-${{ github.ref_name }}.dmg
+        mv ./dist/*.dmg ./dist/longwu-mac-intel-${{ github.ref_name }}.dmg
+
+    - name: Package macOS DMG (ARM)
+      if: matrix.os == 'macos-arm64'
+      run: |
+        mv ./dist/*.dmg ./dist/longwu-mac-arm-${{ github.ref_name }}.dmg
 
     - name: Package Windows setup files
       if: matrix.os == 'windows-latest'
@@ -45,7 +50,8 @@ jobs:
       with:
         name: build-artifacts
         path: |
-          dist/longwu-mac-${{ github.ref_name }}.dmg
+          dist/longwu-mac-intel-${{ github.ref_name }}.dmg
+          dist/longwu-mac-arm-${{ github.ref_name }}.dmg
           dist/longwu-win-setup-${{ github.ref_name }}.zip
           dist/longwu-win-green-${{ github.ref_name }}.zip
 
@@ -69,14 +75,24 @@ jobs:
         draft: false
         prerelease: false
 
-    - name: Upload macOS DMG to Release
+    - name: Upload macOS Intel DMG to Release
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./longwu-mac-${{ github.ref_name }}.dmg
-        asset_name: longwu-mac-${{ github.ref_name }}.dmg
+        asset_path: ./longwu-mac-intel-${{ github.ref_name }}.dmg
+        asset_name: longwu-mac-intel-${{ github.ref_name }}.dmg
+        asset_content_type: application/octet-stream
+
+    - name: Upload macOS ARM DMG to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./longwu-mac-arm-${{ github.ref_name }}.dmg
+        asset_name: longwu-mac-arm-${{ github.ref_name }}.dmg
         asset_content_type: application/octet-stream
 
     - name: Upload Windows setup ZIP to Release
